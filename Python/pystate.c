@@ -400,6 +400,8 @@ _PyThreadState_AppendUnsharedIncref(PyObject *ob)
     PyThreadState *tstate = GET_TSTATE();
     assert(tstate != NULL);
     assert(_Py_Freethreaded);
+    if (_Py_IsFinalizing())
+        return;
 
     page = tstate->unshared_increfs;
     assert(page != NULL);
@@ -422,6 +424,8 @@ _PyThreadState_AppendUnsharedDecref(PyObject *ob)
     PyThreadState *tstate = GET_TSTATE();
     assert(tstate != NULL);
     assert(_Py_Freethreaded);
+    if (_Py_IsFinalizing())
+        return;
 
     page = tstate->unshared_decrefs;
     assert(page != NULL);
