@@ -192,6 +192,7 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #endif   /* Py_LIMITED_API */
 
 extern __thread uint64_t _PyThreadState_Id;
+uint64_t PyThreadState_Id();
 
 #ifdef Py_LIMITED_API
 typedef struct _ts PyThreadState;
