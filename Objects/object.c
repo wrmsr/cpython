@@ -234,7 +234,7 @@ Py_IncUnsharedRef(PyObject *o)
 void
 Py_DecUnsharedRef(PyObject *o)
 {
-    Py_FatalError("Py_IncUnsharedRef");
+    Py_FatalError("Py_DecUnsharedRef");
 }
 
 PyObject *
