@@ -890,7 +890,7 @@ pymain_parse_cmdline_impl(_PyMain *pymain, _Py_CommandLineDetails *cmdline)
             break;
 
         case 'z':
-            _Py_Freethreaded = 1;
+            config->freethreaded = 1;
             break;
 
         /* This space reserved for other options */

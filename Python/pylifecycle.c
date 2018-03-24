@@ -675,6 +675,8 @@ _Py_InitializeCore(const _PyCoreConfig *core_config)
         return _Py_INIT_ERR("can't make first thread");
     (void) PyThreadState_Swap(tstate);
 
+    // FIXME: _Py_Freethreaded = core_config->freethreaded
+
     /* We can't call _PyEval_FiniThreads() in Py_FinalizeEx because
        destroying the GIL might fail when it is being referenced from
        another running thread (see issue #9901).

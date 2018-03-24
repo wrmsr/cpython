@@ -821,7 +821,7 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 // FIXME: dereferencing type-punned pointer will break strict-aliasing rules
 #define Py_TINCREF(op, t_oid, t_rcs) (            \
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
-    !_Py_Freethreaded || Py_TREFCNT(op)->owned.owner_id == t_oid ? Py_REFCNT(op)++ : \
+    (!_Py_Freethreaded || Py_TREFCNT(op)->owned.owner_id == t_oid) ? Py_REFCNT(op)++ : \
     Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? t_rcs[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
     Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID ? 2 : \
     Py_IncUnsharedRef((PyObject*)op))
