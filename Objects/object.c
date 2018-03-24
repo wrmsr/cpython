@@ -216,7 +216,9 @@ _Py_NegativeRefcount(const char *fname, int lineno, PyObject *op)
 void
 Py_IncRef(PyObject *o)
 {
-    Py_XINCREF(o);
+    if (o != NULL)
+        Py_REFCNT(o)++;
+    // Py_XINCREF(o);
 }
 
 void
@@ -231,6 +233,7 @@ PyObject_Init(PyObject *op, PyTypeObject *tp)
     if (op == NULL)
         return PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT (objimpl.h) */
+    Py_THREAD_ID(op) = _PyThreadState_Id;
     Py_TYPE(op) = tp;
     _Py_NewReference(op);
     return op;
@@ -242,6 +245,7 @@ PyObject_InitVar(PyVarObject *op, PyTypeObject *tp, Py_ssize_t size)
     if (op == NULL)
         return (PyVarObject *) PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT_VAR */
+    Py_THREAD_ID(op) = _PyThreadState_Id;
     op->ob_size = size;
     Py_TYPE(op) = tp;
     _Py_NewReference((PyObject *)op);
