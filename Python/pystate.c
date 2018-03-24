@@ -13,6 +13,7 @@
 #define GET_INTERP_STATE() \
     (GET_TSTATE()->interp)
 
+int _Py_Freethreaded = 0;
 __thread Py_owner_id_t _PyThreadState_OwnershipId;
 __thread Py_refcnt_t *_PyThreadState_refcnts;
 
@@ -419,10 +420,10 @@ new_threadstate(PyInterpreterState *interp, int init)
 
         tstate->id = ++interp->tstate_next_unique_id;
 
-        if (interp->core_config.freethreaded) {
+        if (_Py_Freethreaded) {
             // FIXME
             tstate->ownership_id = (Py_owner_id_t) tstate->id;
-            tstate->refcnts = NULL;
+            tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
         }
 
         if (init)
@@ -613,6 +614,9 @@ PyThreadState_Clear(PyThreadState *tstate)
     Py_CLEAR(tstate->async_gen_finalizer);
 
     Py_CLEAR(tstate->context);
+
+    if (tstate->refcnts != NULL)
+        PyMem_RawFree(tstate->refcnts);
 }
 
 
