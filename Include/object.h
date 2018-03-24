@@ -107,6 +107,7 @@ typedef struct _object {
     _PyObject_HEAD_EXTRA
     Py_ssize_t ob_refcnt;
     struct _typeobject *ob_type;
+    uint64_t ob_thread_id;
 } PyObject;
 
 typedef struct {
@@ -116,6 +117,7 @@ typedef struct {
 
 #define Py_REFCNT(ob)           (((PyObject*)(ob))->ob_refcnt)
 #define Py_TYPE(ob)             (((PyObject*)(ob))->ob_type)
+#define Py_THREAD_ID(ob)        (((PyObject*)(ob))->ob_thread_id)
 #define Py_SIZE(ob)             (((PyVarObject*)(ob))->ob_size)
 
 #ifndef Py_LIMITED_API
@@ -790,15 +792,17 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 #endif
 #endif /* !Py_TRACE_REFS */
 
-#define Py_INCREF(op) (                         \
-    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
-    ((PyObject *)(op))->ob_refcnt++)
+#define Py_REFCNT_SHARED_MASK (1L << (sizeof(void *) * 8 - 2))
+
+#define Py_INCREF(op) (                           \
+    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
+    (Py_THREAD_ID(op) == _PyThreadState_Id ? Py_REFCNT(op)++ : Py_IncRef((PyObject*)op)), Py_REFCNT(op))
 
 #define Py_DECREF(op)                                   \
     do {                                                \
         PyObject *_py_decref_tmp = (PyObject *)(op);    \
         if (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
-        --(_py_decref_tmp)->ob_refcnt != 0)             \
+        --Py_REFCNT(_py_decref_tmp) != 0)               \
             _Py_CHECK_REFCNT(_py_decref_tmp)            \
         else                                            \
             _Py_Dealloc(_py_decref_tmp);                \

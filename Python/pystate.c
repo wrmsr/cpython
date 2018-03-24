@@ -7,10 +7,12 @@
 #define GET_TSTATE() \
     ((PyThreadState*)_Py_atomic_load_relaxed(&_PyThreadState_Current))
 #define SET_TSTATE(value) \
-    _Py_atomic_store_relaxed(&_PyThreadState_Current, (uintptr_t)(value))
+    { _Py_atomic_store_relaxed(&_PyThreadState_Current, (uintptr_t)(value)); \
+      _PyThreadState_Id = (value == NULL) ? 0 : ((PyThreadState*)value)->id; }
 #define GET_INTERP_STATE() \
     (GET_TSTATE()->interp)
 
+__thread uint64_t _PyThreadState_Id;
 
 /* --------------------------------------------------------------------------
 CAUTION
