@@ -360,18 +360,18 @@ _PyInterpreterState_IDDecref(PyInterpreterState *interp)
 }
 
 
-static PyObject_ListPage *
+static _PyObject_ListPage *
 pyobject_listpage_new(void) {
-    PyObject_ListPage *page;
+    _PyObject_ListPage *page;
     page = PyMem_RawMalloc(1024 * 1024);
-    page->capacity = (1024 * 1024) - (sizeof(PyObject_ListPage) / sizeof(PyObject *));
+    page->capacity = (1024 * 1024) - (sizeof(_PyObject_ListPage) / sizeof(PyObject *));
     return page;
 }
 
 void
 _PyThreadState_AppendUnsharedIncref(PyObject *ob)
 {
-    PyObject_ListPage *page;
+    _PyObject_ListPage *page;
     PyThreadState *tstate = GET_TSTATE();
     assert(tstate != NULL);
     assert(_Py_Freethreaded);
@@ -393,7 +393,7 @@ _PyThreadState_AppendUnsharedIncref(PyObject *ob)
 void
 _PyThreadState_AppendUnsharedDecref(PyObject *ob)
 {
-    PyObject_ListPage *page;
+    _PyObject_ListPage *page;
     PyThreadState *tstate = GET_TSTATE();
     assert(tstate != NULL);
     assert(_Py_Freethreaded);
@@ -680,13 +680,13 @@ PyThreadState_Clear(PyThreadState *tstate)
         PyMem_RawFree(tstate->refcnts);
 
     while (tstate->unshared_increfs != NULL) {
-        PyObject_ListPage *cur = tstate->unshared_increfs;
+        _PyObject_ListPage *cur = tstate->unshared_increfs;
         tstate->unshared_increfs = cur->next;
         PyMem_RawFree(cur);
     }
 
     while (tstate->unshared_decrefs != NULL) {
-        PyObject_ListPage *cur = tstate->unshared_decrefs;
+        _PyObject_ListPage *cur = tstate->unshared_decrefs;
         tstate->unshared_decrefs = cur->next;
         PyMem_RawFree(cur);
     }
