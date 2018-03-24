@@ -833,12 +833,14 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
         _Py_DEC_REFTOTAL;                                 \
         PyObject *_py_decref_tmp = (PyObject *)(op);      \
         Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id; \
-        if (!_Py_Freethreaded || _py_owner_id == t_oid) { \
+        if (!_Py_Freethreaded) {                          \
             if (--Py_REFCNT(_py_decref_tmp) != 0) {       \
                 _Py_CHECK_REFCNT(_py_decref_tmp);         \
             } else {                                      \
                 _Py_Dealloc(_py_decref_tmp);              \
             }                                             \
+        } else if (_py_owner_id == t_oid) {               \
+            --Py_TREFCNT(_py_decref_tmp)->owned.refcnt;   \
         } else if (_py_owner_id == Py_SHARED_OWNER_ID) {  \
             t_rcs[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--; \
         } else if (_py_owner_id == Py_PINNED_OWNER_ID) {  \
