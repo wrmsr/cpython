@@ -794,15 +794,9 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 #define Py_REFCNT_SHARED_MASK (1L << (sizeof(void *) * 8 - 2))
 
-#ifdef Py_BUILD_CORE
-#define _Py_GET_THREAD_ID _PyThreadState_Id
-#else
-#define _Py_GET_THREAD_ID PyThreadState_Id()
-#endif
-
 #define Py_INCREF(op) (                           \
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
-    (Py_THREAD_ID(op) == _Py_GET_THREAD_ID ? Py_REFCNT(op)++ : Py_IncRef((PyObject*)op)), Py_REFCNT(op))
+    (Py_THREAD_ID(op) == _Py_THREADSTATE_ID ? Py_REFCNT(op)++ : Py_IncRef((PyObject*)op)), Py_REFCNT(op))
 
 #define Py_DECREF(op)                                   \
     do {                                                \
