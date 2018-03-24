@@ -98,22 +98,23 @@ whose size is determined when the object is allocated.
 #define PyObject_VAR_HEAD      PyVarObject ob_base;
 #define Py_INVALID_SIZE (Py_ssize_t)-1
 
+typedef int16_t Py_owner_id_t;
 typedef int64_t Py_refcnt_t;
-typedef uint16_t Py_owner_id_t;
+typedef int32_t Py_refcnt_idx_t;
 
-#define Py_MAX_OWNER_ID = ((Py_owner_id_t)-1)
-#define Py_SHARED_OWNER_ID = (~Py_MAX_OWNER_ID)
+#define Py_INVALID_OWNER_ID ((Py_owner_id_t)-1)
+#define Py_SHARED_OWNER_ID ((Py_owner_id_t)-2)
 
 typedef union {
     Py_refcnt_t refcnt;
     struct {
-        unsigned int reserved: 16;
-        unsigned int owner_id: 16;
+        int reserved: 16;
+        Py_owner_id_t owner_id: 16;
         Py_refcnt_t refcnt: 32;
     } owned;
     struct {
-        unsigned int reserved: 32;
-        unsigned int refcnt_idx: 32;
+        int reserved: 32;
+        Py_refcnt_idx_t refcnt_idx: 32;
     } shared;
 } PyObject_TRefCnt;
 
@@ -814,18 +815,31 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 #define Py_REFCNT_SHARED_MASK (1L << (sizeof(void *) * 8 - 2))
 
-#define Py_INCREF(op) (                           \
-    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
-    (Py_TREFCNT(op)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID ? Py_REFCNT(op)++ : Py_IncRef((PyObject*)op)))
+#define Py_INCREF(op) Py_TINCREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
 
-#define Py_DECREF(op)                                   \
+#define Py_TINCREF(op, t_oid, t_rcs) (            \
+    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
+    Py_TREFCNT(op)->owned.owner_id == t_oid ? Py_REFCNT(op)++ : \
+    Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? t_rcs[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
+    Py_IncUnsharedRef((PyObject*)op))
+
+#define Py_DECREF(op) Py_TDECREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
+
+#define Py_TDECREF(op, t_oid, t_rcs)                    \
     do {                                                \
         PyObject *_py_decref_tmp = (PyObject *)(op);    \
-        if (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
-        --Py_REFCNT(_py_decref_tmp) != 0)               \
-            _Py_CHECK_REFCNT(_py_decref_tmp)            \
-        else                                            \
-            _Py_Dealloc(_py_decref_tmp);                \
+        _Py_DEC_REFTOTAL;                               \
+        if (Py_TREFCNT(_py_decref_tmp)->owned.owner_id == t_oid) {  \
+            if (--Py_REFCNT(_py_decref_tmp) != 0) {     \
+                _Py_CHECK_REFCNT(_py_decref_tmp);       \
+            } else {                                    \
+                _Py_Dealloc(_py_decref_tmp);            \
+            }                                           \
+        } else if (Py_TREFCNT(_py_decref_tmp)->owned.owner_id == Py_SHARED_OWNER_ID) { \
+            t_rcs[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--; \
+        } else {                                        \
+            Py_DecUnsharedRef(_py_decref_tmp);          \
+        }                                               \
     } while (0)
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
@@ -928,6 +942,8 @@ they can have object code that is not dependent on Python compilation flags.
 */
 PyAPI_FUNC(void) Py_IncRef(PyObject *);
 PyAPI_FUNC(void) Py_DecRef(PyObject *);
+PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
+PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
 
 #ifndef Py_LIMITED_API
 PyAPI_DATA(PyTypeObject) _PyNone_Type;
