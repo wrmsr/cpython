@@ -67,7 +67,7 @@ static wchar_t **orig_argv = NULL;
 static int orig_argc = 0;
 
 /* command line options */
-#define BASE_OPTS L"bBc:dEhiIJm:OqRsStuvVW:xX:?"
+#define BASE_OPTS L"bBc:dEhiIJm:OqRsStuvVW:xX:z?"
 
 #define PROGRAM_OPTS BASE_OPTS
 
@@ -115,6 +115,7 @@ static const char usage_3[] = "\
          also PYTHONWARNINGS=arg\n\
 -x     : skip first line of source, allowing use of non-Unix forms of #!cmd\n\
 -X opt : set implementation-specific option\n\
+-z     : enable freethreading\n\
 --check-hash-based-pycs always|default|never:\n\
     control how Python invalidates hash-based .pyc files\n\
 ";
@@ -882,6 +883,10 @@ pymain_parse_cmdline_impl(_PyMain *pymain, _PyCoreConfig *config,
 
         case 'R':
             config->use_hash_seed = 0;
+            break;
+
+        case 'z':
+            config->freethreaded = 1;
             break;
 
         /* This space reserved for other options */

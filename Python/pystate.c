@@ -8,11 +8,13 @@
     ((PyThreadState*)_Py_atomic_load_relaxed(&_PyThreadState_Current))
 #define SET_TSTATE(value) \
     { _Py_atomic_store_relaxed(&_PyThreadState_Current, (uintptr_t)(value)); \
-      _PyThreadState_Id = (value == NULL) ? 0 : ((PyThreadState*)value)->id; }
+      _PyThreadState_OwnershipId = (value == NULL) ? 0 : ((PyThreadState*)value)->ownership_id; \
+      _PyThreadState_refcnts = (value == NULL) ? 0 : ((PyThreadState*)value)->refcnts; }
 #define GET_INTERP_STATE() \
     (GET_TSTATE()->interp)
 
-__thread uint64_t _PyThreadState_Id;
+__thread Py_owner_id_t _PyThreadState_OwnershipId;
+__thread Py_refcnt_t *_PyThreadState_refcnts;
 
 /* --------------------------------------------------------------------------
 CAUTION
@@ -37,9 +39,14 @@ to avoid the expense of doing their own locking).
 extern "C" {
 #endif
 
-uint64_t PyThreadState_Id(void)
+Py_owner_id_t PyThreadState_OwnershipId(void)
 {
-    return _PyThreadState_Id;
+    return _PyThreadState_OwnershipId;
+}
+
+Py_refcnt_t *PyThreadState_refcnts(void)
+{
+    return _PyThreadState_refcnts;
 }
 
 static _PyInitError
@@ -415,6 +422,12 @@ new_threadstate(PyInterpreterState *interp, int init)
         tstate->context_ver = 1;
 
         tstate->id = ++interp->tstate_next_unique_id;
+
+        if (interp->core_config.freethreaded) {
+            // FIXME
+            tstate->ownership_id = (Py_owner_id_t) tstate->id;
+            tstate->refcnts = NULL;
+        }
 
         if (init)
             _PyThreadState_Init(tstate);
