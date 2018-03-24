@@ -357,6 +357,7 @@ PyAPI_FUNC(void) _PyState_ClearModules(void);
 #endif
 
 #if !defined(Py_LIMITED_API)
+void _PyThreadState_PrepareFreethreading(void);
 void _PyThreadState_AppendUnsharedIncref(PyObject *ob);
 void _PyThreadState_AppendUnsharedDecref(PyObject *ob);
 #endif

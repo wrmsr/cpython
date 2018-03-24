@@ -364,8 +364,33 @@ static _PyObject_ListPage *
 pyobject_listpage_new(void) {
     _PyObject_ListPage *page;
     page = PyMem_RawMalloc(1024 * 1024);
-    page->capacity = (1024 * 1024) - (sizeof(_PyObject_ListPage) / sizeof(PyObject *));
+    page->capacity = ((1024 * 1024) - sizeof(_PyObject_ListPage)) / sizeof(PyObject *);
     return page;
+}
+
+void
+_PyThreadState_PrepareFreethreading(void)
+{
+    PyInterpreterState *interp;
+    PyThreadState *tstate;
+    assert(_Py_Freethreaded);
+
+    HEAD_LOCK();
+    for (interp = _PyRuntime.interpreters.head; interp != NULL; interp = interp->next) {
+        for (tstate = interp->tstate_head; tstate != NULL; tstate = tstate->next) {
+            // FIXME:
+            if (tstate->ownership_id == 0)
+                tstate->ownership_id = (Py_owner_id_t) tstate->id;
+            if (tstate->refcnts == NULL)
+                tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
+
+            if (tstate->unshared_increfs == NULL)
+                tstate->unshared_increfs = pyobject_listpage_new();
+            if (tstate->unshared_decrefs == NULL)
+                tstate->unshared_decrefs = pyobject_listpage_new();
+        }
+    }
+    HEAD_UNLOCK();
 }
 
 void
@@ -411,7 +436,6 @@ _PyThreadState_AppendUnsharedDecref(PyObject *ob)
     page->contents[page->count] = ob;
     page->count++;
 }
-
 
 /* Default implementation for _PyThreadState_GetFrame */
 static struct _frame *

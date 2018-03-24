@@ -576,7 +576,7 @@ _PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
     PyObject *names;
     PyObject *consts;
 
-    // FIXME:
+    // FIXME: prob move to after gil check, need rendezvous thread
     // Py_LOCAL_THREAD_STATE;
 
 #ifdef LLTRACE
