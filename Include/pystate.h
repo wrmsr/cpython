@@ -44,7 +44,6 @@ typedef struct {
     int coerce_c_locale;    /* PYTHONCOERCECLOCALE, -1 means unknown */
     int coerce_c_locale_warn; /* PYTHONCOERCECLOCALE=warn */
     int utf8_mode;          /* PYTHONUTF8, -X utf8; -1 means unknown */
-    int freethreaded;      /* -z */
 
     wchar_t *program_name;  /* Program name, see also Py_GetProgramName() */
     int argc;               /* Number of command line arguments,
@@ -204,6 +203,7 @@ extern __thread Py_refcnt_t *_PyThreadState_refcnts;
 #define _Py_THREADSTATE_OWNERSHIP_ID PyThreadState_OwnershipId()
 #define _Py_THREADSTATE_REFCNTS PyThreadState_refcnts()
 #endif
+extern int _Py_Freethreaded;
 Py_owner_id_t PyThreadState_OwnershipId(void);
 Py_refcnt_t *PyThreadState_refcnts(void);
 
