@@ -104,6 +104,7 @@ typedef int32_t Py_refcnt_idx_t;
 
 #define Py_INVALID_OWNER_ID ((Py_owner_id_t)-1)
 #define Py_SHARED_OWNER_ID ((Py_owner_id_t)-2)
+#define Py_PINNED_OWNER_ID ((Py_owner_id_t)-3)
 
 typedef union {
     Py_refcnt_t refcnt;
@@ -821,25 +822,28 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
     Py_TREFCNT(op)->owned.owner_id == t_oid ? Py_REFCNT(op)++ : \
     Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? t_rcs[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
+    Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID ? 2 : \
     Py_IncUnsharedRef((PyObject*)op))
 
 #define Py_DECREF(op) Py_TDECREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
 
-#define Py_TDECREF(op, t_oid, t_rcs)                    \
-    do {                                                \
-        PyObject *_py_decref_tmp = (PyObject *)(op);    \
-        _Py_DEC_REFTOTAL;                               \
-        if (Py_TREFCNT(_py_decref_tmp)->owned.owner_id == t_oid) {  \
-            if (--Py_REFCNT(_py_decref_tmp) != 0) {     \
-                _Py_CHECK_REFCNT(_py_decref_tmp);       \
-            } else {                                    \
-                _Py_Dealloc(_py_decref_tmp);            \
-            }                                           \
-        } else if (Py_TREFCNT(_py_decref_tmp)->owned.owner_id == Py_SHARED_OWNER_ID) { \
+#define Py_TDECREF(op, t_oid, t_rcs)                     \
+    do {                                                 \
+        _Py_DEC_REFTOTAL;                                \
+        PyObject *_py_decref_tmp = (PyObject *)(op);     \
+        Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id; \
+        if (_py_owner_id == t_oid) {                     \
+            if (--Py_REFCNT(_py_decref_tmp) != 0) {      \
+                _Py_CHECK_REFCNT(_py_decref_tmp);        \
+            } else {                                     \
+                _Py_Dealloc(_py_decref_tmp);             \
+            }                                            \
+        } else if (_py_owner_id == Py_SHARED_OWNER_ID) { \
             t_rcs[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--; \
-        } else {                                        \
-            Py_DecUnsharedRef(_py_decref_tmp);          \
-        }                                               \
+        } else if (_py_owner_id == Py_PINNED_OWNER_ID) { \
+        } else {                                         \
+            Py_DecUnsharedRef(_py_decref_tmp);           \
+        }                                                \
     } while (0)
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
