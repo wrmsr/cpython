@@ -223,11 +223,11 @@ typedef struct _err_stackitem {
 
 
 typedef struct _obj_list_page {
-    _obj_list_page *next;
+    struct _obj_list_page *next;
     Py_ssize_t capacity;
     Py_ssize_t count;
     PyObject *contents[0];
-} PyObject_ListPage;
+} _PyObject_ListPage;
 
 
 typedef struct _ts {
@@ -323,8 +323,8 @@ typedef struct _ts {
     /* Freethreading. */
     Py_owner_id_t ownership_id;
     Py_refcnt_t *refcnts;
-    PyObject_ListPage *unshared_increfs;
-    PyObject_ListPage *unshared_decrefs;
+    struct _obj_list_page *unshared_increfs;
+    struct _obj_list_page *unshared_decrefs;
 
     /* XXX signal handlers should also be here */
 
