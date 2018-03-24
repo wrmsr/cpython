@@ -228,13 +228,17 @@ Py_DecRef(PyObject *o)
 void
 Py_IncUnsharedRef(PyObject *o)
 {
-    Py_FatalError("Py_IncUnsharedRef");
+    assert(_Py_Freethreaded);
+    _PyThreadState_AppendUnsharedIncref(o);
+    // Py_FatalError("Py_IncUnsharedRef");
 }
 
 void
 Py_DecUnsharedRef(PyObject *o)
 {
-    Py_FatalError("Py_DecUnsharedRef");
+    assert(_Py_Freethreaded);
+    _PyThreadState_AppendUnsharedDecref(o);
+    // Py_FatalError("Py_DecUnsharedRef");
 }
 
 PyObject *

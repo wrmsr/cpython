@@ -355,6 +355,11 @@ PyAPI_FUNC(PyObject*) PyState_FindModule(struct PyModuleDef*);
 PyAPI_FUNC(void) _PyState_ClearModules(void);
 #endif
 
+#if !defined(Py_LIMITED_API)
+void _PyThreadState_AppendUnsharedIncref(PyObject *ob);
+void _PyThreadState_AppendUnsharedDecref(PyObject *ob);
+#endif
+
 PyAPI_FUNC(PyThreadState *) PyThreadState_New(PyInterpreterState *);
 #ifndef Py_LIMITED_API
 PyAPI_FUNC(PyThreadState *) _PyThreadState_Prealloc(PyInterpreterState *);
