@@ -37,6 +37,11 @@ to avoid the expense of doing their own locking).
 extern "C" {
 #endif
 
+uint64_t PyThreadState_Id()
+{
+    return _PyThreadState_Id;
+}
+
 static _PyInitError
 _PyRuntimeState_Init_impl(_PyRuntimeState *runtime)
 {
