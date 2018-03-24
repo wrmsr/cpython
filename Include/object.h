@@ -102,9 +102,12 @@ typedef int16_t Py_owner_id_t;
 typedef int64_t Py_refcnt_t;
 typedef int32_t Py_refcnt_idx_t;
 
+#define Py_REFCNT_MAX       ((1L<<40L)-1)
+#define Py_REFCNT_MIDPOINT  (1L<<48L)
+
 #define Py_INVALID_OWNER_ID ((Py_owner_id_t)-1)
-#define Py_SHARED_OWNER_ID ((Py_owner_id_t)-2)
-#define Py_PINNED_OWNER_ID ((Py_owner_id_t)-3)
+#define Py_SHARED_OWNER_ID  ((Py_owner_id_t)-2)
+#define Py_PINNED_OWNER_ID  ((Py_owner_id_t)-3)
 
 typedef union {
     Py_refcnt_t refcnt;
@@ -141,6 +144,7 @@ typedef struct {
 
 #define Py_TREFCNT(ob)          ((PyObject_TRefCnt*)&((PyObject*)(ob))->ob_refcnt)
 #define Py_IS_SHARED(ob)        ((Py_TREFCNT(ob))->owned.owner_id == Py_SHARED_OWNER_ID)
+#define Py_NAIVE_REFCNT(ob)     (!_Py_Freethreaded ? Py_REFCNT(ob) : Py_TREFCNT(ob)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID ? Py_TREFCNT(ob)->owned.refcnt : Py_REFCNT_MIDPOINT)
 
 #ifndef Py_LIMITED_API
 /********************* String Literals ****************************************/

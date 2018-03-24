@@ -193,7 +193,7 @@ extern __thread Py_owner_id_t _PyThreadState_OwnershipId;
 extern __thread Py_refcnt_t *_PyThreadState_refcnts;
 #define _Py_THREADSTATE_OWNERSHIP_ID _PyThreadState_OwnershipId
 #define _Py_THREADSTATE_REFCNTS _PyThreadState_refcnts
-// FIXME: can only save ownership id, refcnts will change during exec... (thread rendezvous?)
+// FIXME: can only save ownership id, refcnts will change during exec... (both via thread rendezvous, at gil check?)
 #define Py_LOCAL_THREAD_STATE \
     Py_owner_id_t _PyThreadState_OwnershipId = PyThreadState_OwnershipId(); \
     Py_refcnt_t *_PyThreadState_refcnts = PyThreadState_refcnts();
