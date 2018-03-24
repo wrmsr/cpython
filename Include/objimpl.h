@@ -141,7 +141,7 @@ PyAPI_FUNC(PyVarObject *) _PyObject_NewVar(PyTypeObject *, Py_ssize_t);
 /* Macros trading binary compatibility for speed. See also pymem.h.
    Note that these macros expect non-NULL object pointers.*/
 #define PyObject_INIT(op, typeobj) \
-    ( Py_TYPE(op) = (typeobj), _Py_NewReference((PyObject *)(op)), (op) )
+    ( Py_TREFCNT(op)->owned.owner_id = (_Py_Freethreaded ? _Py_THREADSTATE_OWNERSHIP_ID : 0), Py_TYPE(op) = (typeobj), _Py_NewReference((PyObject *)(op)), (op) )
 #define PyObject_INIT_VAR(op, typeobj, size) \
     ( Py_SIZE(op) = (size), PyObject_INIT((op), (typeobj)) )
 

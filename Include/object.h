@@ -98,6 +98,30 @@ whose size is determined when the object is allocated.
 #define PyObject_VAR_HEAD      PyVarObject ob_base;
 #define Py_INVALID_SIZE (Py_ssize_t)-1
 
+typedef int16_t Py_owner_id_t;
+typedef int64_t Py_refcnt_t;
+typedef int32_t Py_refcnt_idx_t;
+
+#define Py_REFCNT_MAX       ((1L << 40L)-1)
+#define Py_REFCNT_MIDPOINT  (1L << 48L)
+
+#define Py_INVALID_OWNER_ID ((Py_owner_id_t)-1)
+#define Py_SHARED_OWNER_ID  ((Py_owner_id_t)-2)
+#define Py_PINNED_OWNER_ID  ((Py_owner_id_t)-3)
+
+typedef union {
+    Py_refcnt_t refcnt;
+    struct {
+        int reserved: 16;
+        Py_owner_id_t owner_id: 16;
+        Py_refcnt_t refcnt: 32;
+    } owned;
+    struct {
+        int reserved: 32;
+        Py_refcnt_idx_t refcnt_idx: 32;
+    } shared;
+} PyObject_TRefCnt;
+
 /* Nothing is actually declared to be a PyObject, but every pointer to
  * a Python object can be cast to a PyObject*.  This is inheritance built
  * by hand.  Similarly every pointer to a variable-size Python object can,
@@ -105,7 +129,7 @@ whose size is determined when the object is allocated.
  */
 typedef struct _object {
     _PyObject_HEAD_EXTRA
-    Py_ssize_t ob_refcnt;
+    Py_refcnt_t ob_refcnt;
     struct _typeobject *ob_type;
 } PyObject;
 
@@ -117,6 +141,10 @@ typedef struct {
 #define Py_REFCNT(ob)           (((PyObject*)(ob))->ob_refcnt)
 #define Py_TYPE(ob)             (((PyObject*)(ob))->ob_type)
 #define Py_SIZE(ob)             (((PyVarObject*)(ob))->ob_size)
+
+#define Py_TREFCNT(ob)          ((PyObject_TRefCnt*)&((PyObject*)(ob))->ob_refcnt)
+#define Py_IS_SHARED(ob)        ((Py_TREFCNT(ob))->owned.owner_id == Py_SHARED_OWNER_ID)
+#define Py_NAIVE_REFCNT(ob)     (!_Py_Freethreaded ? Py_REFCNT(ob) : Py_TREFCNT(ob)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID ? Py_TREFCNT(ob)->owned.refcnt : Py_REFCNT_MIDPOINT)
 
 #ifndef Py_LIMITED_API
 /********************* String Literals ****************************************/
@@ -790,19 +818,64 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 #endif
 #endif /* !Py_TRACE_REFS */
 
-#define Py_INCREF(op) (                         \
-    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
-    ((PyObject *)(op))->ob_refcnt++)
+// FIXME: dereferencing type-punned pointer will break strict-aliasing rules
 
-#define Py_DECREF(op)                                   \
-    do {                                                \
-        PyObject *_py_decref_tmp = (PyObject *)(op);    \
-        if (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
-        --(_py_decref_tmp)->ob_refcnt != 0)             \
-            _Py_CHECK_REFCNT(_py_decref_tmp)            \
-        else                                            \
-            _Py_Dealloc(_py_decref_tmp);                \
+#define Py_VINCREF(op) (                          \
+    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
+    (!_Py_Freethreaded || Py_TREFCNT(op)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID) ? Py_REFCNT(op)++ : \
+    Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? _Py_THREADSTATE_REFCNTS[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
+    Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID ? Py_REFCNT_MIDPOINT : \
+    Py_IncUnsharedRef((PyObject*)op))
+
+#define Py_ZINCREF(op)                                        \
+    do {                                                      \
+        _Py_INC_REFTOTAL;                                     \
+        if (!_Py_Freethreaded) {                              \
+            Py_REFCNT(op)++;                                  \
+        } else {                                              \
+            Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
+            Py_owner_id_t _py_owner_id = Py_TREFCNT(op)->owned.owner_id; \
+            if (_py_owner_id == Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk)) { \
+                Py_TREFCNT(op)->owned.refcnt++;               \
+            } else if (_py_owner_id == Py_SHARED_OWNER_ID) {  \
+                Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)[Py_TREFCNT(op)->shared.refcnt_idx]++; \
+            } else if (_py_owner_id == Py_PINNED_OWNER_ID) {  \
+            } else {                                          \
+                Py_IncUnsharedRef((PyObject*)op);             \
+            }                                                 \
+        }                                                     \
+    } while (0)                                               \
+
+#ifdef Py_BUILD_CORE
+#define Py_INCREF(op) Py_ZINCREF(op)
+#else
+#define Py_INCREF(op) Py_VINCREF(op)
+#endif
+
+#define Py_DECREF(op)                                         \
+    do {                                                      \
+        _Py_DEC_REFTOTAL;                                     \
+        PyObject *_py_decref_tmp = (PyObject *)(op);          \
+        if (!_Py_Freethreaded) {                              \
+            if (--Py_REFCNT(_py_decref_tmp) != 0) {           \
+                _Py_CHECK_REFCNT(_py_decref_tmp);             \
+            } else {                                          \
+                _Py_Dealloc(_py_decref_tmp);                  \
+            }                                                 \
+        } else {                                              \
+            Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
+            Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id; \
+            if (_py_owner_id == Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk)) { \
+                Py_TREFCNT(_py_decref_tmp)->owned.refcnt--;   \
+            } else if (_py_owner_id == Py_SHARED_OWNER_ID) {  \
+                Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--; \
+            } else if (_py_owner_id == Py_PINNED_OWNER_ID) {  \
+            } else {                                          \
+                Py_DecUnsharedRef(_py_decref_tmp);            \
+            }                                                 \
+        }                                                     \
     } while (0)
+
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
  * and tp_dealloc implementations.
@@ -904,6 +977,8 @@ they can have object code that is not dependent on Python compilation flags.
 */
 PyAPI_FUNC(void) Py_IncRef(PyObject *);
 PyAPI_FUNC(void) Py_DecRef(PyObject *);
+PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
+PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
 
 #ifndef Py_LIMITED_API
 PyAPI_DATA(PyTypeObject) _PyNone_Type;
@@ -920,7 +995,7 @@ PyAPI_DATA(PyObject) _Py_NoneStruct; /* Don't use this directly */
 #define Py_None (&_Py_NoneStruct)
 
 /* Macro for returning Py_None from a function */
-#define Py_RETURN_NONE return Py_INCREF(Py_None), Py_None
+#define Py_RETURN_NONE return Py_VINCREF(Py_None), Py_None
 
 /*
 Py_NotImplemented is a singleton used to signal that an operation is
@@ -931,7 +1006,7 @@ PyAPI_DATA(PyObject) _Py_NotImplementedStruct; /* Don't use this directly */
 
 /* Macro for returning Py_NotImplemented from a function */
 #define Py_RETURN_NOTIMPLEMENTED \
-    return Py_INCREF(Py_NotImplemented), Py_NotImplemented
+    return Py_VINCREF(Py_NotImplemented), Py_NotImplemented
 
 /* Rich comparison opcodes */
 #define Py_LT 0

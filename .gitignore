@@ -114,3 +114,9 @@ Tools/ssl/win32
 .vs/
 .vscode/
 gmon.out
+.cproject
+.project
+.settings/
+*.o-*
+.DS_Store
+compile_commands.json

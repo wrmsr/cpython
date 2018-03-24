@@ -925,6 +925,64 @@ Return a namedtuple of installed asynchronous generators hooks \
 );
 
 
+#define GEN_HEAD(n) (&_PyRuntime.gc.generations[n].head)
+#define AS_GC(o) ((PyGC_Head *)(o)-1)
+#define FROM_GC(g) ((PyObject *)(((PyGC_Head *)g)+1))
+
+static int
+freethread_enable_traverse(PyObject *op, Py_owner_id_t owner_id)
+{
+    Py_TREFCNT(op)->owned.owner_id = owner_id;
+    return 0;
+}
+
+static void
+freethread_enable_proc(void)
+{
+    _Py_Freethreaded = 1;
+    _PyThreadState_PrepareFreethreading();
+    Py_owner_id_t owner_id = PyThreadState_OwnershipId();
+    for (int i = 0; i < NUM_GENERATIONS; i++) {
+        PyGC_Head *gc;
+        PyGC_Head *gc_list = GEN_HEAD(i);
+        for (gc = gc_list->gc.gc_next; gc != gc_list; gc = gc->gc.gc_next) {
+            PyObject *op = FROM_GC(gc);
+            Py_TREFCNT(op)->owned.owner_id = owner_id;
+            Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, owner_id);
+        }
+    }
+
+}
+
+static PyObject *
+sys_freethread_enable(PyObject *self, PyObject *args)
+{
+    if (_Py_Freethreaded)
+        Py_RETURN_NONE;
+    freethread_enable_proc();
+    Py_RETURN_NONE;
+}
+
+PyDoc_STRVAR(freethread_enable_doc,
+"freethread_enable()\n\
+\n\
+Enables freethreading."
+);
+
+
+static PyObject *
+sys_freethread_enabled(PyObject *self, PyObject *args)
+{
+    return PyBool_FromLong(_Py_Freethreaded);
+}
+
+PyDoc_STRVAR(freethread_enabled_doc,
+"freethread_enabled()\n\
+\n\
+Returns if freethreading is enabled."
+);
+
+
 static PyTypeObject Hash_InfoType;
 
 PyDoc_STRVAR(hash_info_doc,
@@ -1588,6 +1646,10 @@ static PyMethodDef sys_methods[] = {
      METH_VARARGS | METH_KEYWORDS, set_asyncgen_hooks_doc},
     {"get_asyncgen_hooks", sys_get_asyncgen_hooks, METH_NOARGS,
      get_asyncgen_hooks_doc},
+    {"freethread_enable", sys_freethread_enable, METH_NOARGS,
+     freethread_enable_doc},
+    {"freethread_enabled", sys_freethread_enabled, METH_NOARGS,
+     freethread_enabled_doc},
 #ifdef ANDROID_API_LEVEL
     {"getandroidapilevel", (PyCFunction)sys_getandroidapilevel, METH_NOARGS,
      getandroidapilevel_doc},

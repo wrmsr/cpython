@@ -191,6 +191,29 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #define PyTrace_OPCODE 7
 #endif   /* Py_LIMITED_API */
 
+typedef uint64_t Py_ownership_block;
+#define _Py_OWNERSHIP_BLOCK_REFCNT_MASK      (~(0xFFFFL << 48L))
+#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_REFCNT_MASK)))
+#define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
+#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_REFCNT_MASK))
+#ifdef Py_BUILD_CORE
+extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
+// Weave into things like ceval but must refresh after every instr that calls out
+#define Py_LOCAL_THREAD_STATE \
+    Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#define Py_LOCAL_THREAD_STATE_REFRESH \
+    _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#else
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
+#endif
+#define _Py_THREADSTATE_OWNERSHIP_ID (Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+#define _Py_THREADSTATE_REFCNTS      (Py_OWNERSHIP_BLOCK_REFCNTS(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+extern int _Py_Freethreaded;
+Py_ownership_block PyThreadState_OwnershipBlock(void);
+Py_owner_id_t PyThreadState_OwnershipId(void);
+Py_refcnt_t *PyThreadState_refcnts(void);
+
 #ifdef Py_LIMITED_API
 typedef struct _ts PyThreadState;
 #else
@@ -207,6 +230,14 @@ typedef struct _err_stackitem {
     struct _err_stackitem *previous_item;
 
 } _PyErr_StackItem;
+
+
+typedef struct _obj_list_page {
+    struct _obj_list_page *next;
+    Py_ssize_t capacity;
+    Py_ssize_t count;
+    PyObject *contents[0];
+} _PyObject_ListPage;
 
 
 typedef struct _ts {
@@ -299,6 +330,12 @@ typedef struct _ts {
     /* Unique thread state id. */
     uint64_t id;
 
+    /* Freethreading. */
+    Py_owner_id_t ownership_id;
+    Py_refcnt_t *refcnts;
+    struct _obj_list_page *unshared_increfs;
+    struct _obj_list_page *unshared_decrefs;
+
     /* XXX signal handlers should also be here */
 
 } PyThreadState;
@@ -323,6 +360,12 @@ PyAPI_FUNC(int) PyState_RemoveModule(struct PyModuleDef*);
 PyAPI_FUNC(PyObject*) PyState_FindModule(struct PyModuleDef*);
 #ifndef Py_LIMITED_API
 PyAPI_FUNC(void) _PyState_ClearModules(void);
+#endif
+
+#if !defined(Py_LIMITED_API)
+void _PyThreadState_PrepareFreethreading(void);
+void _PyThreadState_AppendUnsharedIncref(PyObject *ob);
+void _PyThreadState_AppendUnsharedDecref(PyObject *ob);
 #endif
 
 PyAPI_FUNC(PyThreadState *) PyThreadState_New(PyInterpreterState *);

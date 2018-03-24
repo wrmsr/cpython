@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -ex
+
+declare -a PY_BREW_DEPS=(
+    "openssl"
+    "readline"
+    "sqlite3"
+    "zlib"
+)
+
+PY_CFLAGS=""
+PY_LDFLAGS=""
+for DEP in "${PY_BREW_DEPS[@]}" ; do
+    PY_CFLAGS="-I$(brew --prefix "$DEP")/include $PY_CFLAGS"
+    PY_LDFLAGS="-L$(brew --prefix "$DEP")/lib $PY_LDFLAGS"
+done
+
+export CFLAGS="$PY_CFLAGS $CFLAGS"
+export LDFLAGS="$PY_LDFLAGS $LDFLAGS"
+export PKG_CONFIG_PATH="$(brew --prefix openssl)/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+./configure "$@"

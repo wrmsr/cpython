@@ -378,6 +378,12 @@ PYTHON_OBJS=	\
 		$(MACHDEP_OBJS) \
 		$(DTRACE_OBJS)
 
+##########################################################################
+# Freethreading
+
+FT_OBJS=	\
+		Python/ft/lfds.o \
+		Python/ft/sync.o
 
 ##########################################################################
 # Objects
@@ -430,6 +436,7 @@ LIBRARY_OBJS_OMIT_FROZEN=	\
 		$(PARSER_OBJS) \
 		$(OBJECT_OBJS) \
 		$(PYTHON_OBJS) \
+		$(FT_OBJS) \
 		$(MODULE_OBJS) \
 		$(MODOBJS)
 
@@ -746,6 +753,7 @@ regen-all: regen-opcode regen-opcode-targets regen-typeslots regen-grammar \
 Modules/getbuildinfo.o: $(PARSER_OBJS) \
 		$(OBJECT_OBJS) \
 		$(PYTHON_OBJS) \
+		$(FT_OBJS) \
 		$(MODULE_OBJS) \
 		$(MODOBJS) \
 		$(srcdir)/Modules/getbuildinfo.c
@@ -1027,6 +1035,8 @@ PYTHON_HEADERS= \
 		pyconfig.h \
 		$(PARSER_HEADERS) \
 		$(srcdir)/Include/Python-ast.h \
+		$(srcdir)/Include/internal/ft/lfds.h \
+		$(srcdir)/Include/internal/ft/sync.h \
 		$(srcdir)/Include/internal/ceval.h \
 		$(srcdir)/Include/internal/gil.h \
 		$(srcdir)/Include/internal/mem.h \
