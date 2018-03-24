@@ -216,15 +216,25 @@ _Py_NegativeRefcount(const char *fname, int lineno, PyObject *op)
 void
 Py_IncRef(PyObject *o)
 {
-    if (o != NULL)
-        Py_REFCNT(o)++;
-    // Py_XINCREF(o);
+    Py_XINCREF(o);
 }
 
 void
 Py_DecRef(PyObject *o)
 {
     Py_XDECREF(o);
+}
+
+void
+Py_IncUnsharedRef(PyObject *o)
+{
+    Py_FatalError("Py_IncUnsharedRef");
+}
+
+void
+Py_DecUnsharedRef(PyObject *o)
+{
+    Py_FatalError("Py_IncUnsharedRef");
 }
 
 PyObject *
