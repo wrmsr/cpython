@@ -575,6 +575,8 @@ _PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
     PyObject *names;
     PyObject *consts;
 
+    Py_LOCAL_THREAD_STATE;
+
 #ifdef LLTRACE
     _Py_IDENTIFIER(__ltrace__);
 #endif
