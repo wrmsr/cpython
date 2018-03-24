@@ -356,6 +356,59 @@ _PyInterpreterState_IDDecref(PyInterpreterState *interp)
 }
 
 
+static PyObject_ListPage *
+pyobject_listpage_new(void) {
+    PyObject_ListPage *page;
+    page = PyMem_RawMalloc(1024 * 1024);
+    page->capacity = (1024 * 1024) - (sizeof(PyObject_ListPage) / sizeof(PyObject *));
+    return page;
+}
+
+void
+_PyThreadState_AppendUnsharedIncref(PyObject *ob)
+{
+    PyObject_ListPage *page;
+    PyThreadState *tstate = GET_TSTATE();
+    assert(tstate != NULL);
+    assert(_Py_Freethreaded);
+
+    page = tstate->unshared_increfs;
+    assert(page != NULL);
+    assert(page->count <= page->capacity);
+
+    if (page->count == page->capacity) {
+        page = pyobject_listpage_new();
+        page->next = tstate->unshared_increfs;
+        tstate->unshared_increfs = page;
+    }
+
+    page->contents[page->count] = ob;
+    page->count++;
+}
+
+void
+_PyThreadState_AppendUnsharedDecref(PyObject *ob)
+{
+    PyObject_ListPage *page;
+    PyThreadState *tstate = GET_TSTATE();
+    assert(tstate != NULL);
+    assert(_Py_Freethreaded);
+
+    page = tstate->unshared_decrefs;
+    assert(page != NULL);
+    assert(page->count <= page->capacity);
+
+    if (page->count == page->capacity) {
+        page = pyobject_listpage_new();
+        page->next = tstate->unshared_decrefs;
+        tstate->unshared_decrefs = page;
+    }
+
+    page->contents[page->count] = ob;
+    page->count++;
+}
+
+
 /* Default implementation for _PyThreadState_GetFrame */
 static struct _frame *
 threadstate_getframe(PyThreadState *self)
@@ -425,11 +478,8 @@ new_threadstate(PyInterpreterState *interp, int init)
             tstate->ownership_id = (Py_owner_id_t) tstate->id;
             tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
 
-            tstate->unshared_increfs = PyMem_RawMalloc(1024 * 1024);
-            tstate->unshared_increfs->capacity = (1024 * 1024) - (sizeof(PyObject_ListPage) / sizeof(PyObject *));
-
-            tstate->unshared_decrefs = PyMem_RawMalloc(1024 * 1024);
-            tstate->unshared_decrefs->capacity = (1024 * 1024) - (sizeof(PyObject_ListPage) / sizeof(PyObject *));
+            tstate->unshared_increfs = pyobject_listpage_new();
+            tstate->unshared_decrefs = pyobject_listpage_new();
         }
 
         if (init)
