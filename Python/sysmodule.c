@@ -936,7 +936,7 @@ sys_freethread_enable(PyObject *self, PyObject *args)
         for (gc = gc_list->gc.gc_next; gc != gc_list; gc = gc->gc.gc_next) {
             PyObject *op = FROM_GC(gc);
             Py_TREFCNT(op)->owned.owner_id = owner_id;
-            Py_TYPE(op)->tp_traverse(op, freethread_enable_traverse, owner_id);
+            Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, owner_id);
         }
     }
     Py_RETURN_NONE;
