@@ -818,6 +818,7 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 #define Py_INCREF(op) Py_TINCREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
 
+// FIXME: dereferencing type-punned pointer will break strict-aliasing rules
 #define Py_TINCREF(op, t_oid, t_rcs) (            \
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
     Py_TREFCNT(op)->owned.owner_id == t_oid ? Py_REFCNT(op)++ : \
