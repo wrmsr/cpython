@@ -44,6 +44,7 @@ typedef struct {
     int coerce_c_locale;    /* PYTHONCOERCECLOCALE, -1 means unknown */
     int coerce_c_locale_warn; /* PYTHONCOERCECLOCALE=warn */
     int utf8_mode;          /* PYTHONUTF8, -X utf8; -1 means unknown */
+    int freethreaded;      /* -z */
 
     wchar_t *program_name;  /* Program name, see also Py_GetProgramName() */
     int argc;               /* Number of command line arguments,
@@ -189,12 +190,16 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #endif   /* Py_LIMITED_API */
 
 #ifdef Py_BUILD_CORE
-extern __thread uint64_t _PyThreadState_Id;
-#define _Py_THREADSTATE_ID _PyThreadState_Id
+extern __thread Py_owner_id_t _PyThreadState_OwnershipId;
+extern __thread Py_refcnt_t *_PyThreadState_refcnts;
+#define _Py_THREADSTATE_OWNERSHIP_ID _PyThreadState_OwnershipId
+#define _Py_THREADSTATE_REFCNTS _PyThreadState_refcnts
 #else
-#define _Py_THREADSTATE_ID PyThreadState_Id()
+#define _Py_THREADSTATE_OWNERSHIP_ID PyThreadState_OwnershipId()
+#define _Py_THREADSTATE_REFCNTS PyThreadState_refcnts()
 #endif
-uint64_t PyThreadState_Id(void);
+Py_owner_id_t PyThreadState_OwnershipId(void);
+Py_refcnt_t *PyThreadState_refcnts(void);
 
 #ifdef Py_LIMITED_API
 typedef struct _ts PyThreadState;
@@ -303,6 +308,10 @@ typedef struct _ts {
 
     /* Unique thread state id. */
     uint64_t id;
+
+    /* Freethreading. */
+    Py_owner_id_t ownership_id;
+    Py_refcnt_t *refcnts;
 
     /* XXX signal handlers should also be here */
 

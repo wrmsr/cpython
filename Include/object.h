@@ -98,6 +98,25 @@ whose size is determined when the object is allocated.
 #define PyObject_VAR_HEAD      PyVarObject ob_base;
 #define Py_INVALID_SIZE (Py_ssize_t)-1
 
+typedef int64_t Py_refcnt_t;
+typedef uint16_t Py_owner_id_t;
+
+#define Py_MAX_OWNER_ID = ((Py_owner_id_t)-1)
+#define Py_SHARED_OWNER_ID = (~Py_MAX_OWNER_ID)
+
+typedef union {
+    Py_refcnt_t refcnt;
+    struct {
+        unsigned int reserved: 16;
+        unsigned int owner_id: 16;
+        Py_refcnt_t refcnt: 32;
+    } owned;
+    struct {
+        unsigned int reserved: 32;
+        unsigned int refcnt_idx: 32;
+    } shared;
+} PyObject_TRefCnt;
+
 /* Nothing is actually declared to be a PyObject, but every pointer to
  * a Python object can be cast to a PyObject*.  This is inheritance built
  * by hand.  Similarly every pointer to a variable-size Python object can,
@@ -105,9 +124,8 @@ whose size is determined when the object is allocated.
  */
 typedef struct _object {
     _PyObject_HEAD_EXTRA
-    Py_ssize_t ob_refcnt;
+    Py_refcnt_t ob_refcnt;
     struct _typeobject *ob_type;
-    uint64_t ob_thread_id;
 } PyObject;
 
 typedef struct {
@@ -117,8 +135,10 @@ typedef struct {
 
 #define Py_REFCNT(ob)           (((PyObject*)(ob))->ob_refcnt)
 #define Py_TYPE(ob)             (((PyObject*)(ob))->ob_type)
-#define Py_THREAD_ID(ob)        (((PyObject*)(ob))->ob_thread_id)
 #define Py_SIZE(ob)             (((PyVarObject*)(ob))->ob_size)
+
+#define Py_TREFCNT(ob)          ((PyObject_TRefCnt*)&((PyObject*)(ob))->ob_refcnt)
+#define Py_IS_SHARED(ob)        ((Py_TREFCNT(ob))->owned.owner_id == Py_SHARED_OWNER_ID)
 
 #ifndef Py_LIMITED_API
 /********************* String Literals ****************************************/
@@ -796,7 +816,7 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 #define Py_INCREF(op) (                           \
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
-    (Py_THREAD_ID(op) == _Py_THREADSTATE_ID ? Py_REFCNT(op)++ : Py_IncRef((PyObject*)op)), Py_REFCNT(op))
+    (Py_TREFCNT(op)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID ? Py_REFCNT(op)++ : Py_IncRef((PyObject*)op)))
 
 #define Py_DECREF(op)                                   \
     do {                                                \
