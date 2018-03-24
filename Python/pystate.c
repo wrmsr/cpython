@@ -37,7 +37,7 @@ to avoid the expense of doing their own locking).
 extern "C" {
 #endif
 
-uint64_t PyThreadState_Id()
+uint64_t PyThreadState_Id(void)
 {
     return _PyThreadState_Id;
 }
