@@ -925,6 +925,46 @@ Return a namedtuple of installed asynchronous generators hooks \
 );
 
 
+static PyObject *
+sys_freethread_enable(PyObject *self, PyObject *args)
+{
+    Py_RETURN_NONE;
+}
+
+PyDoc_STRVAR(freethread_enable_doc,
+"freethread_enable()\n\
+\n\
+Enables freethreading."
+);
+
+
+static PyObject *
+sys_freethread_enable(PyObject *self, PyObject *args)
+{
+    _Py_Freethreaded = 1;
+    Py_RETURN_NONE;
+}
+
+PyDoc_STRVAR(freethread_enable_doc,
+"freethread_enable()\n\
+\n\
+Enables freethreading."
+);
+
+
+static PyObject *
+sys_freethread_enabled(PyObject *self, PyObject *args)
+{
+    return PyBool_FromInt(_Py_Freethreaded);
+}
+
+PyDoc_STRVAR(freethread_enable_doc,
+"freethread_enabled()\n\
+\n\
+Returns if freethreading is enabled."
+);
+
+
 static PyTypeObject Hash_InfoType;
 
 PyDoc_STRVAR(hash_info_doc,
@@ -1588,6 +1628,10 @@ static PyMethodDef sys_methods[] = {
      METH_VARARGS | METH_KEYWORDS, set_asyncgen_hooks_doc},
     {"get_asyncgen_hooks", sys_get_asyncgen_hooks, METH_NOARGS,
      get_asyncgen_hooks_doc},
+    {"freethread_enable", sys_freethread_enable, METH_NOARGS,
+     freethread_enable_doc},
+    {"freethread_enabled", sys_freethread_enabled, METH_NOARGS,
+     freethread_enabled_doc},
 #ifdef ANDROID_API_LEVEL
     {"getandroidapilevel", (PyCFunction)sys_getandroidapilevel, METH_NOARGS,
      getandroidapilevel_doc},
