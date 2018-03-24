@@ -188,7 +188,12 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #define PyTrace_OPCODE 7
 #endif   /* Py_LIMITED_API */
 
+#ifdef Py_BUILD_CORE
 extern __thread uint64_t _PyThreadState_Id;
+#define _Py_THREADSTATE_ID _PyThreadState_Id
+#else
+#define _Py_THREADSTATE_ID PyThreadState_Id()
+#endif
 uint64_t PyThreadState_Id(void);
 
 #ifdef Py_LIMITED_API
