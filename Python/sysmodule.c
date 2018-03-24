@@ -928,6 +928,7 @@ sys_freethread_enable(PyObject *self, PyObject *args)
 {
     int i;
     _Py_Freethreaded = 1;
+    _PyThreadState_PrepareFreethreading();
     Py_owner_id_t owner_id = PyThreadState_OwnershipId();
     for (i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
