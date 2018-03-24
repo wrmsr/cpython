@@ -114,3 +114,6 @@ Tools/ssl/win32
 .vs/
 .vscode/
 gmon.out
+.cproject
+.project
+.settings/
