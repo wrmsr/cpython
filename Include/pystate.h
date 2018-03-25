@@ -189,6 +189,7 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #endif   /* Py_LIMITED_API */
 
 #ifdef Py_BUILD_CORE
+// FIXME: merge to uint64_t
 extern __thread Py_owner_id_t _PyThreadState_OwnershipId;
 extern __thread Py_refcnt_t *_PyThreadState_refcnts;
 #define _Py_THREADSTATE_OWNERSHIP_ID _PyThreadState_OwnershipId
