@@ -240,7 +240,18 @@ static int dictresize(PyDictObject *mp, Py_ssize_t minused);
  * time that a dictionary is modified. */
 static uint64_t pydict_global_version = 0;
 
-#define DICT_NEXT_VERSION() (++pydict_global_version)
+#define DICT_VERSION_PTR_MASK (1L << (sizeof(void*) * 8 - 1))
+
+static void
+dict_set_next_version(PyDictObject *d)
+{
+    uint64_t version = ++pydict_global_version;
+    if (d->ma_version_tag & DICT_VERSION_PTR_MASK) {
+        *(uint64_t*)(d->ma_version_tag & DICT_VERSION_PTR_MASK) = version;
+    } else {
+        d->ma_version_tag = version;
+    }
+}
 
 /* Dictionary reuse scheme to save calls to malloc and free */
 #ifndef PyDict_MAXFREELIST
@@ -591,7 +602,7 @@ new_dict(PyDictKeysObject *keys, PyObject **values)
     mp->ma_keys = keys;
     mp->ma_values = values;
     mp->ma_used = 0;
-    mp->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(mp);
     assert(_PyDict_CheckConsistency(mp));
     return (PyObject *)mp;
 }
@@ -1044,7 +1055,7 @@ insertdict(PyDictObject *mp, PyObject *key, Py_hash_t hash, PyObject *value)
             ep->me_value = value;
         }
         mp->ma_used++;
-        mp->ma_version_tag = DICT_NEXT_VERSION();
+        dict_set_next_version(mp);
         mp->ma_keys->dk_usable--;
         mp->ma_keys->dk_nentries++;
         assert(mp->ma_keys->dk_usable >= 0);
@@ -1065,7 +1076,7 @@ insertdict(PyDictObject *mp, PyObject *key, Py_hash_t hash, PyObject *value)
         DK_ENTRIES(mp->ma_keys)[ix].me_value = value;
     }
 
-    mp->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(mp);
     Py_XDECREF(old_value); /* which **CAN** re-enter (see issue #22653) */
     assert(_PyDict_CheckConsistency(mp));
     Py_DECREF(key);
@@ -1486,7 +1497,7 @@ delitem_common(PyDictObject *mp, Py_hash_t hash, Py_ssize_t ix,
     assert(hashpos >= 0);
 
     mp->ma_used--;
-    mp->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(mp);
     ep = &DK_ENTRIES(mp->ma_keys)[ix];
     dk_set_index(mp->ma_keys, hashpos, DKIX_DUMMY);
     ENSURE_ALLOWS_DELETIONS(mp);
@@ -1623,7 +1634,7 @@ PyDict_Clear(PyObject *op)
     mp->ma_keys = Py_EMPTY_KEYS;
     mp->ma_values = empty_values;
     mp->ma_used = 0;
-    mp->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(mp);
     /* ...then clear the keys and values */
     if (oldvalues != NULL) {
         n = oldkeys->dk_nentries;
@@ -1757,7 +1768,7 @@ _PyDict_Pop_KnownHash(PyObject *dict, PyObject *key, Py_hash_t hash, PyObject *d
     assert(hashpos >= 0);
     assert(old_value != NULL);
     mp->ma_used--;
-    mp->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(mp);
     dk_set_index(mp->ma_keys, hashpos, DKIX_DUMMY);
     ep = &DK_ENTRIES(mp->ma_keys)[ix];
     ENSURE_ALLOWS_DELETIONS(mp);
@@ -2830,7 +2841,7 @@ PyDict_SetDefault(PyObject *d, PyObject *key, PyObject *defaultobj)
             ep->me_value = value;
         }
         mp->ma_used++;
-        mp->ma_version_tag = DICT_NEXT_VERSION();
+        dict_set_next_version(mp);
         mp->ma_keys->dk_usable--;
         mp->ma_keys->dk_nentries++;
         assert(mp->ma_keys->dk_usable >= 0);
@@ -2843,7 +2854,7 @@ PyDict_SetDefault(PyObject *d, PyObject *key, PyObject *defaultobj)
         MAINTAIN_TRACKING(mp, key, value);
         mp->ma_values[ix] = value;
         mp->ma_used++;
-        mp->ma_version_tag = DICT_NEXT_VERSION();
+        dict_set_next_version(mp);
     }
 
     assert(_PyDict_CheckConsistency(mp));
@@ -2947,7 +2958,7 @@ dict_popitem(PyDictObject *mp)
     /* We can't dk_usable++ since there is DKIX_DUMMY in indices */
     mp->ma_keys->dk_nentries = i;
     mp->ma_used--;
-    mp->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(mp);
     assert(_PyDict_CheckConsistency(mp));
     return res;
 }
@@ -3159,7 +3170,7 @@ dict_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
         _PyObject_GC_UNTRACK(d);
 
     d->ma_used = 0;
-    d->ma_version_tag = DICT_NEXT_VERSION();
+    dict_set_next_version(d);
     d->ma_keys = new_keys_object(PyDict_MINSIZE);
     if (d->ma_keys == NULL) {
         Py_DECREF(self);
