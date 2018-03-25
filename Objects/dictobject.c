@@ -242,17 +242,13 @@ static PyObject* dict_iter(PyDictObject *dict);
  * time that a dictionary is modified. */
 static uint64_t pydict_global_version = 0;
 
-#define DICT_VERSION_PTR_MASK (1L << (sizeof(void*) * 8 - 1))
-
 static void
 dict_set_next_version(PyDictObject *d)
 {
-    uint64_t version = ++pydict_global_version;
-    if (d->ma_version_tag & DICT_VERSION_PTR_MASK) {
-        *(uint64_t*)(d->ma_version_tag & DICT_VERSION_PTR_MASK) = version;
-    } else {
-        d->ma_version_tag = version;
-    }
+    if (_Py_Freethreaded)
+        ++d->ma_version_tag;
+    else
+        d->ma_version_tag = ++pydict_global_version;
 }
 
 /* Dictionary reuse scheme to save calls to malloc and free */
