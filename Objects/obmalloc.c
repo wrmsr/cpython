@@ -151,6 +151,9 @@ _PyObject_ArenaFree(void *ctx, void *ptr, size_t size)
 }
 #endif
 
+struct alloc_context;
+extern struct alloc_context _alloc_context;
+
 #define MALLOC_ALLOC {&_alloc_context, _PyMem_RawMalloc, _PyMem_RawCalloc, _PyMem_RawRealloc, _PyMem_RawFree}
 #ifdef WITH_PYMALLOC
 #  define PYMALLOC_ALLOC {&_alloc_context, _PyObject_Malloc, _PyObject_Calloc, _PyObject_Realloc, _PyObject_Free}
@@ -1049,61 +1052,68 @@ on that C doesn't insert any padding anywhere in a pool_header at or before
 the prevpool member.
 **************************************************************************** */
 
-#define PTA(x)  ((poolp )((uint8_t *)&(usedpools[2*(x)]) - 2*sizeof(block *)))
-#define PT(x)   PTA(x), PTA(x)
+#define PTA(ctx, x)  ((poolp )((uint8_t *)&((ctx)->usedpools[2*(x)]) - 2*sizeof(block *)))
+#define PT(ctx, x)   PTA(ctx, x), PTA(ctx, x)
 
 #define USED_POOL_ARR_SIZE (2 * ((NB_SMALL_SIZE_CLASSES + 7) / 8) * 8)
 
-#define INITIALIZE_USEDPOOLS0 \
-    PT(0), PT(1), PT(2), PT(3), PT(4), PT(5), PT(6), PT(7)
-#define INITIALIZE_USEDPOOLS1
-#define INITIALIZE_USEDPOOLS2
-#define INITIALIZE_USEDPOOLS3
-#define INITIALIZE_USEDPOOLS4
-#define INITIALIZE_USEDPOOLS5
-#define INITIALIZE_USEDPOOLS6
-#define INITIALIZE_USEDPOOLS7
+#define INITIALIZE_USEDPOOLS0(ctx) \
+    PT(ctx, 0), PT(ctx, 1), PT(ctx, 2), PT(ctx, 3), PT(ctx, 4), PT(ctx, 5), PT(ctx, 6), PT(ctx, 7)
 #if NB_SMALL_SIZE_CLASSES > 8
-#define INITIALIZE_USEDPOOLS1 \
-    , PT(8), PT(9), PT(10), PT(11), PT(12), PT(13), PT(14), PT(15)
+#define INITIALIZE_USEDPOOLS1(ctx) \
+    , PT(ctx, 8), PT(ctx, 9), PT(ctx, 10), PT(ctx, 11), PT(ctx, 12), PT(ctx, 13), PT(ctx, 14), PT(ctx, 15)
 #if NB_SMALL_SIZE_CLASSES > 16
-#define INITIALIZE_USEDPOOLS2 \
-    , PT(16), PT(17), PT(18), PT(19), PT(20), PT(21), PT(22), PT(23)
+#define INITIALIZE_USEDPOOLS2(ctx) \
+    , PT(ctx, 16), PT(ctx, 17), PT(ctx, 18), PT(ctx, 19), PT(ctx, 20), PT(ctx, 21), PT(ctx, 22), PT(ctx, 23)
 #if NB_SMALL_SIZE_CLASSES > 24
-#define INITIALIZE_USEDPOOLS3 \
-    , PT(24), PT(25), PT(26), PT(27), PT(28), PT(29), PT(30), PT(31)
+#define INITIALIZE_USEDPOOLS3(ctx) \
+    , PT(ctx, 24), PT(ctx, 25), PT(ctx, 26), PT(ctx, 27), PT(ctx, 28), PT(ctx, 29), PT(ctx, 30), PT(ctx, 31)
 #if NB_SMALL_SIZE_CLASSES > 32
-#define INITIALIZE_USEDPOOLS4 \
-    , PT(32), PT(33), PT(34), PT(35), PT(36), PT(37), PT(38), PT(39)
+#define INITIALIZE_USEDPOOLS4(ctx) \
+    , PT(ctx, 32), PT(ctx, 33), PT(ctx, 34), PT(ctx, 35), PT(ctx, 36), PT(ctx, 37), PT(ctx, 38), PT(ctx, 39)
 #if NB_SMALL_SIZE_CLASSES > 40
-#define INITIALIZE_USEDPOOLS5 \
-    , PT(40), PT(41), PT(42), PT(43), PT(44), PT(45), PT(46), PT(47)
+#define INITIALIZE_USEDPOOLS5(ctx) \
+    , PT(ctx, 40), PT(ctx, 41), PT(ctx, 42), PT(ctx, 43), PT(ctx, 44), PT(ctx, 45), PT(ctx, 46), PT(ctx, 47)
 #if NB_SMALL_SIZE_CLASSES > 48
-#define INITIALIZE_USEDPOOLS6 \
-    , PT(48), PT(49), PT(50), PT(51), PT(52), PT(53), PT(54), PT(55)
+#define INITIALIZE_USEDPOOLS6(ctx) \
+    , PT(ctx, 48), PT(ctx, 49), PT(ctx, 50), PT(ctx, 51), PT(ctx, 52), PT(ctx, 53), PT(ctx, 54), PT(ctx, 55)
 #if NB_SMALL_SIZE_CLASSES > 56
-#define INITIALIZE_USEDPOOLS7 \
-    , PT(56), PT(57), PT(58), PT(59), PT(60), PT(61), PT(62), PT(63)
+#define INITIALIZE_USEDPOOLS7(ctx) \
+    , PT(ctx, 56), PT(ctx, 57), PT(ctx, 58), PT(ctx, 59), PT(ctx, 60), PT(ctx, 61), PT(ctx, 62), PT(ctx, 63)
 #if NB_SMALL_SIZE_CLASSES > 64
 #error "NB_SMALL_SIZE_CLASSES should be less than 64"
 #endif /* NB_SMALL_SIZE_CLASSES > 64 */
+#else
+#define INITIALIZE_USEDPOOLS7(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES > 56 */
+#else
+#define INITIALIZE_USEDPOOLS6(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES > 48 */
+#else
+#define INITIALIZE_USEDPOOLS5(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES > 40 */
+#else
+#define INITIALIZE_USEDPOOLS4(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES > 32 */
+#else
+#define INITIALIZE_USEDPOOLS3(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES > 24 */
+#else
+#define INITIALIZE_USEDPOOLS2(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES > 16 */
+#else
+#define INITIALIZE_USEDPOOLS1(ctx)
 #endif /* NB_SMALL_SIZE_CLASSES >  8 */
 
-#define INITIALIZE_USEDPOOLS \
-    INITIALIZE_USEDPOOLS0 \
-    INITIALIZE_USEDPOOLS1 \
-    INITIALIZE_USEDPOOLS2 \
-    INITIALIZE_USEDPOOLS3 \
-    INITIALIZE_USEDPOOLS4 \
-    INITIALIZE_USEDPOOLS5 \
-    INITIALIZE_USEDPOOLS6 \
-    INITIALIZE_USEDPOOLS7
+#define INITIALIZE_USEDPOOLS(ctx) \
+    INITIALIZE_USEDPOOLS0(ctx) \
+    INITIALIZE_USEDPOOLS1(ctx) \
+    INITIALIZE_USEDPOOLS2(ctx) \
+    INITIALIZE_USEDPOOLS3(ctx) \
+    INITIALIZE_USEDPOOLS4(ctx) \
+    INITIALIZE_USEDPOOLS5(ctx) \
+    INITIALIZE_USEDPOOLS6(ctx) \
+    INITIALIZE_USEDPOOLS7(ctx)
 
 
 /*==========================================================================
@@ -1143,36 +1153,36 @@ currently in use isn't on either list.
 
 struct alloc_context {
     /* Array of objects used to track chunks of memory (arenas). */
-    static struct arena_object* arenas = NULL;
+    struct arena_object* arenas;
     /* Number of slots currently allocated in the `arenas` vector. */
-    static uint maxarenas = 0;
+    uint maxarenas;
 
     /* The head of the singly-linked, NULL-terminated list of available
      * arena_objects.
      */
-    static struct arena_object* unused_arena_objects = NULL;
+    struct arena_object* unused_arena_objects;
 
     /* The head of the doubly-linked, NULL-terminated at each end, list of
      * arena_objects associated with arenas that have pools available.
      */
-    static struct arena_object* usable_arenas = NULL;
-
-    /* How many arena_objects do we initially allocate?
-     * 16 = can allocate 16 arenas = 16 * ARENA_SIZE = 4MB before growing the
-     * `arenas` vector.
-     */
-    #define INITIAL_ARENA_OBJECTS 16
+    struct arena_object* usable_arenas;
 
     /* Number of arenas allocated that haven't been free()'d. */
-    static size_t narenas_currently_allocated = 0;
+    size_t narenas_currently_allocated;
 
     /* Total number of times malloc() called to allocate an arena. */
-    static size_t ntimes_arena_allocated = 0;
+    size_t ntimes_arena_allocated;
     /* High water mark (max value ever seen) for narenas_currently_allocated. */
-    static size_t narenas_highwater = 0;
+    size_t narenas_highwater;
 
     poolp usedpools[USED_POOL_ARR_SIZE];
 };
+
+/* How many arena_objects do we initially allocate?
+ * 16 = can allocate 16 arenas = 16 * ARENA_SIZE = 4MB before growing the
+ * `arenas` vector.
+ */
+#define INITIAL_ARENA_OBJECTS 16
 
 static Py_ssize_t _Py_AllocatedBlocks = 0;
 
@@ -1180,7 +1190,7 @@ int _PyMem_USED_POOL_ARR_SIZE = USED_POOL_ARR_SIZE;
 
 struct alloc_context _alloc_context = {
     .usedpools = {
-        INITIALIZE_USEDPOOLS
+        INITIALIZE_USEDPOOLS(&_alloc_context)
     }
 };
 
@@ -1292,7 +1302,7 @@ new_arena(struct alloc_context *ctx)
 
 
 /*
-address_in_range(P, POOL)
+address_in_range(CTX, P, POOL)
 
 Return true if and only if P is an address that was allocated by pymalloc.
 POOL must be the pool address associated with P, i.e., POOL = POOL_ADDR(P)
@@ -1367,7 +1377,7 @@ extremely desirable that it be this fast.
 */
 
 static bool ATTRIBUTE_NO_ADDRESS_SAFETY_ANALYSIS
-address_in_range(void *p, poolp pool, struct alloc_context *ctx)
+address_in_range(struct alloc_context *ctx, void *p, poolp pool)
 {
     // Since address_in_range may be reading from memory which was not allocated
     // by Python, it is important that pool->arenaindex is read only once, as
@@ -1403,7 +1413,7 @@ pymalloc_alloc(void *pctx, void **ptr_p, size_t nbytes)
     poolp pool;
     poolp next;
     uint size;
-    struct alloc_context *ctx = (struct alloc_context)pctx;
+    struct alloc_context *ctx = (struct alloc_context*)pctx;
 
 #ifdef WITH_VALGRIND
     if (UNLIKELY(running_on_valgrind == -1)) {
@@ -1470,7 +1480,7 @@ pymalloc_alloc(void *pctx, void **ptr_p, size_t nbytes)
             goto failed;
         }
 #endif
-        ctx->usable_arenas = new_arena();
+        ctx->usable_arenas = new_arena(ctx);
         if (ctx->usable_arenas == NULL) {
             goto failed;
         }
@@ -1649,7 +1659,7 @@ pymalloc_free(void *pctx, void *p)
 #endif
 
     pool = POOL_ADDR(p);
-    if (!address_in_range(p, pool)) {
+    if (!address_in_range(ctx, p, pool)) {
         return 0;
     }
     /* We allocated this address. */
@@ -1887,7 +1897,7 @@ pymalloc_realloc(void *ctx, void **newptr_p, void *p, size_t nbytes)
 #endif
 
     pool = POOL_ADDR(p);
-    if (!address_in_range(p, pool)) {
+    if (!address_in_range(ctx, p, pool)) {
         /* pymalloc is not managing this block.
 
            If nbytes <= SMALL_REQUEST_THRESHOLD, it's tempting to try to take
@@ -2520,7 +2530,7 @@ _PyObject_DebugMallocStats(FILE *out)
         return 0;
     }
 
-    struct alloc_context *ctx = _alloc_context;
+    struct alloc_context *ctx = &_alloc_context;
     uint i;
     const uint numclasses = SMALL_REQUEST_THRESHOLD >> ALIGNMENT_SHIFT;
     /* # of pools, allocated blocks, and free blocks per class index */
