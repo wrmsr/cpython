@@ -102,8 +102,8 @@ typedef int16_t Py_owner_id_t;
 typedef int64_t Py_refcnt_t;
 typedef int32_t Py_refcnt_idx_t;
 
-#define Py_REFCNT_MAX       ((1L<<40L)-1)
-#define Py_REFCNT_MIDPOINT  (1L<<48L)
+#define Py_REFCNT_MAX       ((1L << 40L)-1)
+#define Py_REFCNT_MIDPOINT  (1L << 48L)
 
 #define Py_INVALID_OWNER_ID ((Py_owner_id_t)-1)
 #define Py_SHARED_OWNER_ID  ((Py_owner_id_t)-2)
@@ -818,50 +818,63 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 #endif
 #endif /* !Py_TRACE_REFS */
 
-#define Py_REFCNT_SHARED_MASK (1L << (sizeof(void *) * 8 - 2))
-
 // FIXME: dereferencing type-punned pointer will break strict-aliasing rules
-#define Py_TINCREF(op, t_oid, t_rcs) (            \
+
+#define Py_VINCREF(op) (                          \
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
-    (!_Py_Freethreaded || Py_TREFCNT(op)->owned.owner_id == t_oid) ? Py_REFCNT(op)++ : \
-    Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? t_rcs[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
-    Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID ? 2 : \
+    (!_Py_Freethreaded || Py_TREFCNT(op)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID) ? Py_REFCNT(op)++ : \
+    Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? _Py_THREADSTATE_REFCNTS[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
+    Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID ? Py_REFCNT_MIDPOINT : \
     Py_IncUnsharedRef((PyObject*)op))
 
-#define Py_TDECREF(op, t_oid, t_rcs)                      \
-    do {                                                  \
-        _Py_DEC_REFTOTAL;                                 \
-        PyObject *_py_decref_tmp = (PyObject *)(op);      \
-        Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id; \
-        if (!_Py_Freethreaded) {                          \
-            if (--Py_REFCNT(_py_decref_tmp) != 0) {       \
-                _Py_CHECK_REFCNT(_py_decref_tmp);         \
-            } else {                                      \
-                _Py_Dealloc(_py_decref_tmp);              \
-            }                                             \
-        } else if (_py_owner_id == t_oid) {               \
-            --Py_TREFCNT(_py_decref_tmp)->owned.refcnt;   \
-        } else if (_py_owner_id == Py_SHARED_OWNER_ID) {  \
-            t_rcs[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--; \
-        } else if (_py_owner_id == Py_PINNED_OWNER_ID) {  \
-        } else {                                          \
-            Py_DecUnsharedRef(_py_decref_tmp);            \
-        }                                                 \
+#define Py_ZINCREF(op)                                        \
+    do {                                                      \
+        _Py_INC_REFTOTAL                                      \
+        if (!_Py_Freethreaded) {                              \
+            Py_REFCNT(op)++;                                  \
+        } else {                                              \
+            Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
+            Py_owner_id_t _py_owner_id = Py_TREFCNT(op)->owned.owner_id; \
+            if (_py_owner_id == Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk)) { \
+                Py_TREFCNT(op)->owned.refcnt++;               \
+            } else if (_py_owner_id == Py_SHARED_OWNER_ID) {  \
+                Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)[Py_TREFCNT(op)->shared.refcnt_idx]++; \
+            } else if (_py_owner_id == Py_PINNED_OWNER_ID) {  \
+            } else {                                          \
+                Py_IncUnsharedRef((PyObject*)op);             \
+            }                                                 \
+        }                                                     \
+    } while (0)                                               \
+
+#ifdef Py_BUILD_CORE
+#define Py_INCREF(op) Py_ZINCREF(op)
+#else
+#define Py_INCREF(op) Py_VINCREF(op)
+#endif
+
+#define Py_DECREF(op)                                         \
+    do {                                                      \
+        _Py_DEC_REFTOTAL;                                     \
+        PyObject *_py_decref_tmp = (PyObject *)(op);          \
+        if (!_Py_Freethreaded) {                              \
+            if (--Py_REFCNT(_py_decref_tmp) != 0) {           \
+                _Py_CHECK_REFCNT(_py_decref_tmp);             \
+            } else {                                          \
+                _Py_Dealloc(_py_decref_tmp);                  \
+            }                                                 \
+        } else {                                              \
+            Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
+            Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id; \
+            if (_py_owner_id == Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk)) { \
+                Py_TREFCNT(_py_decref_tmp)->owned.refcnt--;   \
+            } else if (_py_owner_id == Py_SHARED_OWNER_ID) {  \
+                Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--; \
+            } else if (_py_owner_id == Py_PINNED_OWNER_ID) {  \
+            } else {                                          \
+                Py_DecUnsharedRef(_py_decref_tmp);            \
+            }                                                 \
+        }                                                     \
     } while (0)
-
-#define Py_VINCREF(op) Py_TINCREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
-
-#define Py_INCREF(op)                                     \
-    do {                                                  \
-        Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
-        Py_TINCREF(op, Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk), Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)); \
-    } while (0)                                           \
-
-#define Py_DECREF(op)                                     \
-    do {                                                  \
-        Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
-        Py_TDECREF(op, Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk), Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)); \
-    } while (0)                                           \
 
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear

@@ -192,17 +192,17 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #endif   /* Py_LIMITED_API */
 
 typedef uint64_t Py_ownership_block;
-#define _Py_OWNERSHIP_BLOCK_MASK             (~(0xFFFFL << 48L))
-#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_MASK)))
+#define _Py_OWNERSHIP_BLOCK_REFCNT_MASK      (~(0xFFFFL << 48L))
+#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_REFCNT_MASK)))
 #define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
-#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_MASK))
+#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_REFCNT_MASK))
 #ifdef Py_BUILD_CORE
 // FIXME: merge to uint64_t
 extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
 #define Py_LOCAL_THREAD_STATE \
     Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
-#define Py_LOCAL_THREAD_STATE_UPDATE \
+#define Py_LOCAL_THREAD_STATE_REFRESH \
     _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
 #else
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
