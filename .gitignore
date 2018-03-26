@@ -118,3 +118,4 @@ gmon.out
 .project
 .settings/
 *.o-*
+.DS_Store
