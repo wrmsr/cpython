@@ -225,7 +225,7 @@ Py_DecRef(PyObject *o)
     Py_XDECREF(o);
 }
 
-void
+void _Py_NO_INLINE
 Py_IncUnsharedRef(PyObject *o)
 {
     assert(_Py_Freethreaded);
@@ -233,7 +233,7 @@ Py_IncUnsharedRef(PyObject *o)
     // Py_FatalError("Py_IncUnsharedRef");
 }
 
-void
+void _Py_NO_INLINE
 Py_DecUnsharedRef(PyObject *o)
 {
     assert(_Py_Freethreaded);
