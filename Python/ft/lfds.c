@@ -114,105 +114,15 @@ void lfds711_misc_internal_backoff_init( struct lfds711_misc_backoff_state *bs )
 
 
 
-/***** defines *****/
-#define and &&
-#define or  ||
+/***** lfds711_list_addonly_singlylinked_unordered/lfds711_list_addonly_singlylinked_unordered_internal.h *****/
 
-#define NO_FLAGS 0x0
 
-#define LFDS711_VERSION_STRING   "7.1.1"
-#define LFDS711_VERSION_INTEGER  711
 
-#if( defined KERNEL_MODE )
-  #define MODE_TYPE_STRING "kernel-mode"
-#endif
 
-#if( !defined KERNEL_MODE )
-  #define MODE_TYPE_STRING "user-mode"
-#endif
 
-#if( defined NDEBUG && !defined COVERAGE && !defined TSAN && !defined PROF )
-  #define BUILD_TYPE_STRING "release"
-#endif
+/***** the library wide include file *****/
 
-#if( !defined NDEBUG && !defined COVERAGE && !defined TSAN && !defined PROF )
-  #define BUILD_TYPE_STRING "debug"
-#endif
-
-#if( !defined NDEBUG && defined COVERAGE && !defined TSAN && !defined PROF )
-  #define BUILD_TYPE_STRING "coverage"
-#endif
-
-#if( !defined NDEBUG && !defined COVERAGE && defined TSAN && !defined PROF )
-  #define BUILD_TYPE_STRING "threadsanitizer"
-#endif
-
-#if( !defined NDEBUG && !defined COVERAGE && !defined TSAN && defined PROF )
-  #define BUILD_TYPE_STRING "profiling"
-#endif
-
-#define LFDS711_BACKOFF_INITIAL_VALUE  0
-#define LFDS711_BACKOFF_LIMIT          10
-
-#define LFDS711_BACKOFF_EXPONENTIAL_BACKOFF( backoff_state, backoff_iteration )                \
-{                                                                                              \
-  lfds711_pal_uint_t volatile                                                                  \
-    loop;                                                                                      \
-                                                                                               \
-  lfds711_pal_uint_t                                                                           \
-    endloop;                                                                                   \
-                                                                                               \
-  if( (backoff_iteration) == LFDS711_BACKOFF_LIMIT )                                           \
-    (backoff_iteration) = LFDS711_BACKOFF_INITIAL_VALUE;                                       \
-  else                                                                                         \
-  {                                                                                            \
-    endloop = ( ((lfds711_pal_uint_t) 0x1) << (backoff_iteration) ) * (backoff_state).metric;  \
-    for( loop = 0 ; loop < endloop ; loop++ );                                                 \
-  }                                                                                            \
-                                                                                               \
-  (backoff_iteration)++;                                                                       \
-}
-
-#define LFDS711_BACKOFF_AUTOTUNE( bs, backoff_iteration )                                                                           \
-{                                                                                                                                   \
-  if( (backoff_iteration) < 2 )                                                                                                     \
-    (bs).backoff_iteration_frequency_counters[(backoff_iteration)]++;                                                               \
-                                                                                                                                    \
-  if( ++(bs).total_operations >= 10000 and (bs).lock == LFDS711_MISC_FLAG_LOWERED )                                                 \
-  {                                                                                                                                 \
-    char unsigned                                                                                                                   \
-      result;                                                                                                                       \
-                                                                                                                                    \
-    lfds711_pal_uint_t LFDS711_PAL_ALIGN(LFDS711_PAL_ATOMIC_ISOLATION_IN_BYTES)                                                     \
-      compare = LFDS711_MISC_FLAG_LOWERED;                                                                                          \
-                                                                                                                                    \
-    LFDS711_PAL_ATOMIC_CAS( &(bs).lock, &compare, LFDS711_MISC_FLAG_RAISED, LFDS711_MISC_CAS_STRENGTH_WEAK, result );               \
-                                                                                                                                    \
-    if( result == 1 )                                                                                                               \
-    {                                                                                                                               \
-      /* TRD : if E[1] is less than 1/100th of E[0], decrease the metric, to increase E[1] */                                       \
-      if( (bs).backoff_iteration_frequency_counters[1] < (bs).backoff_iteration_frequency_counters[0] / 100 )                       \
-      {                                                                                                                             \
-        if( (bs).metric >= 11 )                                                                                                     \
-          (bs).metric -= 10;                                                                                                        \
-      }                                                                                                                             \
-      else                                                                                                                          \
-        (bs).metric += 10;                                                                                                          \
-                                                                                                                                    \
-      (bs).backoff_iteration_frequency_counters[0] = 0;                                                                             \
-      (bs).backoff_iteration_frequency_counters[1] = 0;                                                                             \
-      (bs).total_operations = 0;                                                                                                    \
-                                                                                                                                    \
-      LFDS711_MISC_BARRIER_STORE;                                                                                                   \
-                                                                                                                                    \
-      LFDS711_PAL_ATOMIC_SET( &(bs).lock, LFDS711_MISC_FLAG_LOWERED );                                                              \
-    }                                                                                                                               \
-  }                                                                                                                                 \
-}
-
-/***** library-wide prototypes *****/
-void lfds711_misc_internal_backoff_init( struct lfds711_misc_backoff_state *bs );
-
+/***** private prototypes *****/
 
 
 
@@ -663,6 +573,20 @@ int lfds711_list_asu_get_by_key( struct lfds711_list_asu_state *lasus,
 
 
 
+/***** lfds711_stack/lfds711_stack_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
+
+
+
+
+
 /***** lfds711_stack/lfds711_stack_cleanup.c *****/
 
 
@@ -978,6 +902,38 @@ void lfds711_stack_init_valid_on_current_logical_core( struct lfds711_stack_stat
 
   return;
 }
+
+
+
+
+
+/***** lfds711_btree_addonly_unbalanced/lfds711_btree_addonly_unbalanced_internal.h *****/
+
+
+
+
+
+/***** the library-wide header file *****/
+
+/***** enums *****/
+enum lfds711_btree_au_move
+{
+  LFDS711_BTREE_AU_MOVE_INVALID,
+  LFDS711_BTREE_AU_MOVE_SMALLEST_FROM_RIGHT_CHILD,
+  LFDS711_BTREE_AU_MOVE_LARGEST_FROM_LEFT_CHILD,
+  LFDS711_BTREE_AU_MOVE_GET_PARENT,
+  LFDS711_BTREE_AU_MOVE_MOVE_UP_TREE
+};
+
+enum lfds711_btree_au_delete_action
+{
+  LFDS711_BTREE_AU_DELETE_SELF,
+  LFDS711_BTREE_AU_DELETE_SELF_REPLACE_WITH_LEFT_CHILD,
+  LFDS711_BTREE_AU_DELETE_SELF_REPLACE_WITH_RIGHT_CHILD,
+  LFDS711_BTREE_AU_DELETE_MOVE_LEFT
+};
+
+/***** private prototypes *****/
 
 
 
@@ -1922,6 +1878,22 @@ int lfds711_btree_au_get_by_absolute_position_and_then_by_relative_position( str
 
 
 
+/***** lfds711_freelist/lfds711_freelist_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
+void lfds711_freelist_internal_push_without_ea( struct lfds711_freelist_state *fs,
+                                                struct lfds711_freelist_element *fe );
+
+
+
+
+
 /***** lfds711_freelist/lfds711_freelist_query.c *****/
 
 
@@ -2389,6 +2361,20 @@ void lfds711_freelist_internal_push_without_ea( struct lfds711_freelist_state *f
 
 
 
+/***** lfds711_queue_bounded_singleproducer_singleconsumer/lfds711_queue_bounded_singleproducer_singleconsumer_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
+
+
+
+
+
 /***** lfds711_queue_bounded_singleproducer_singleconsumer/lfds711_queue_bounded_singleproducer_singleconsumer_dequeue.c *****/
 
 
@@ -2662,6 +2648,20 @@ int lfds711_queue_bss_enqueue( struct lfds711_queue_bss_state *qbsss,
 
   return 0;
 }
+
+
+
+
+
+/***** lfds711_list_addonly_singlylinked_ordered/lfds711_list_addonly_singlylinked_ordered_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
 
 
 
@@ -3049,6 +3049,20 @@ void lfds711_list_aso_cleanup( struct lfds711_list_aso_state *lasos,
 
   return;
 }
+
+
+
+
+
+/***** lfds711_hash_addonly/lfds711_hash_addonly_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
 
 
 
@@ -3483,6 +3497,20 @@ void lfds711_hash_a_init_valid_on_current_logical_core( struct lfds711_hash_a_st
 
 
 
+/***** lfds711_prng/lfds711_prng_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
+
+
+
+
+
 /***** lfds711_prng/lfds711_prng_init.c *****/
 
 
@@ -3523,6 +3551,20 @@ void lfds711_prng_st_init( struct lfds711_prng_st_state *psts, lfds711_pal_uint_
 
   return;
 }
+
+
+
+
+
+/***** lfds711_queue_bounded_manyproducer_manyconsumer/lfds711_queue_bounded_manyproducer_manyconsumer_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
 
 
 
@@ -3915,6 +3957,20 @@ int lfds711_queue_bmm_dequeue( struct lfds711_queue_bmm_state *qbmms,
 
 
 
+/***** lfds711_ringbuffer/lfds711_ringbuffer_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
+
+
+
+
+
 /***** lfds711_ringbuffer/lfds711_ringbuffer_cleanup.c *****/
 
 
@@ -4268,6 +4324,29 @@ static void lfds711_ringbuffer_internal_validate( struct lfds711_ringbuffer_stat
 
   return;
 }
+
+
+
+
+
+/***** lfds711_queue_unbounded_manyproducer_manyconsumer/lfds711_queue_unbounded_manyproducer_manyconsumer_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** enums *****/
+enum lfds711_queue_umm_queue_state
+{
+  LFDS711_QUEUE_UMM_QUEUE_STATE_UNKNOWN,
+  LFDS711_QUEUE_UMM_QUEUE_STATE_EMPTY,
+  LFDS711_QUEUE_UMM_QUEUE_STATE_ENQUEUE_OUT_OF_PLACE,
+  LFDS711_QUEUE_UMM_QUEUE_STATE_ATTEMPT_DEQUEUE
+};
+
+/***** private prototypes *****/
 
 
 
@@ -4752,6 +4831,21 @@ void lfds711_queue_umm_cleanup( struct lfds711_queue_umm_state *qumms,
 
 
 
+/***** lfds711_misc/lfds711_misc_internal.h *****/
+
+
+
+
+
+/***** the library wide include file *****/
+
+/***** private prototypes *****/
+void lfds711_misc_prng_internal_big_slow_high_quality_init( int long long unsigned seed );
+
+
+
+
+
 /***** lfds711_misc/lfds711_misc_query.c *****/
 
 
@@ -4830,9 +4924,3 @@ void lfds711_misc_internal_backoff_init( struct lfds711_misc_backoff_state *bs )
 
   return;
 }
-
-
-
-
-
-
