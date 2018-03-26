@@ -820,8 +820,6 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 #define Py_REFCNT_SHARED_MASK (1L << (sizeof(void *) * 8 - 2))
 
-#define Py_INCREF(op) Py_TINCREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
-
 // FIXME: dereferencing type-punned pointer will break strict-aliasing rules
 #define Py_TINCREF(op, t_oid, t_rcs) (            \
     _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA         \
@@ -829,8 +827,6 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
     Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID ? t_rcs[Py_TREFCNT(op)->shared.refcnt_idx]++ : \
     Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID ? 2 : \
     Py_IncUnsharedRef((PyObject*)op))
-
-#define Py_DECREF(op) Py_TDECREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
 
 #define Py_TDECREF(op, t_oid, t_rcs)                      \
     do {                                                  \
@@ -852,6 +848,21 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
             Py_DecUnsharedRef(_py_decref_tmp);            \
         }                                                 \
     } while (0)
+
+#define Py_VINCREF(op) Py_TINCREF(op, _Py_THREADSTATE_OWNERSHIP_ID, _Py_THREADSTATE_REFCNTS)
+
+#define Py_INCREF(op)                                     \
+    do {                                                  \
+        Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
+        Py_TINCREF(op, Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk), Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)); \
+    } while (0)                                           \
+
+#define Py_DECREF(op)                                     \
+    do {                                                  \
+        Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK; \
+        Py_TDECREF(op, Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk), Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)); \
+    } while (0)                                           \
+
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
  * and tp_dealloc implementations.
@@ -971,7 +982,7 @@ PyAPI_DATA(PyObject) _Py_NoneStruct; /* Don't use this directly */
 #define Py_None (&_Py_NoneStruct)
 
 /* Macro for returning Py_None from a function */
-#define Py_RETURN_NONE return Py_INCREF(Py_None), Py_None
+#define Py_RETURN_NONE return Py_VINCREF(Py_None), Py_None
 
 /*
 Py_NotImplemented is a singleton used to signal that an operation is
@@ -982,7 +993,7 @@ PyAPI_DATA(PyObject) _Py_NotImplementedStruct; /* Don't use this directly */
 
 /* Macro for returning Py_NotImplemented from a function */
 #define Py_RETURN_NOTIMPLEMENTED \
-    return Py_INCREF(Py_NotImplemented), Py_NotImplemented
+    return Py_VINCREF(Py_NotImplemented), Py_NotImplemented
 
 /* Rich comparison opcodes */
 #define Py_LT 0

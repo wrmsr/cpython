@@ -188,21 +188,26 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #define PyTrace_OPCODE 7
 #endif   /* Py_LIMITED_API */
 
+typedef uint64_t Py_ownership_block;
+#define _Py_OWNERSHIP_BLOCK_MASK             (~(0xFFFFL << 48L))
+#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_MASK)))
+#define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
+#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_MASK))
 #ifdef Py_BUILD_CORE
 // FIXME: merge to uint64_t
-extern __thread Py_owner_id_t _PyThreadState_OwnershipId;
-extern __thread Py_refcnt_t *_PyThreadState_refcnts;
-#define _Py_THREADSTATE_OWNERSHIP_ID _PyThreadState_OwnershipId
-#define _Py_THREADSTATE_REFCNTS _PyThreadState_refcnts
-// FIXME: can only save ownership id, refcnts will change during exec... (both via thread rendezvous, at gil check?)
+extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
 #define Py_LOCAL_THREAD_STATE \
-    Py_owner_id_t _PyThreadState_OwnershipId = PyThreadState_OwnershipId(); \
-    Py_refcnt_t *_PyThreadState_refcnts = PyThreadState_refcnts();
+    Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#define Py_LOCAL_THREAD_STATE_UPDATE \
+    _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
 #else
-#define _Py_THREADSTATE_OWNERSHIP_ID PyThreadState_OwnershipId()
-#define _Py_THREADSTATE_REFCNTS PyThreadState_refcnts()
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
 #endif
+#define _Py_THREADSTATE_OWNERSHIP_ID (Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+#define _Py_THREADSTATE_REFCNTS      (Py_OWNERSHIP_BLOCK_REFCNTS(_Py_THREADSTATE_OWNERSHIP_BLOCK))
 extern int _Py_Freethreaded;
+Py_ownership_block PyThreadState_OwnershipBlock(void);
 Py_owner_id_t PyThreadState_OwnershipId(void);
 Py_refcnt_t *PyThreadState_refcnts(void);
 
