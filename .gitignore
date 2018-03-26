@@ -117,3 +117,4 @@ gmon.out
 .cproject
 .project
 .settings/
+*.o-*
