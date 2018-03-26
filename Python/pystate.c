@@ -703,6 +703,7 @@ PyThreadState_Clear(PyThreadState *tstate)
     Py_CLEAR(tstate->context);
 
     // FIXME: should apply or explode if any present
+    //  NO: should add to list of orphans
 
     if (tstate->refcnts != NULL)
         PyMem_RawFree(tstate->refcnts);
