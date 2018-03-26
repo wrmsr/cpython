@@ -13,11 +13,6 @@ extern "C" {
   /***** defines *****/
   #define LIBLFDS711_H
 
-  /***** pragmas on *****/
-  #pragma warning( push )
-  #pragma warning( disable : 4324 )                                          // TRD : 4324 disables MSVC warnings for structure alignment padding due to alignment specifiers
-  #pragma prefast( disable : 28113 28182 28183, "blah" )
-
   /***** includes *****/
 /***** liblfds711/lfds711_porting_abstraction_layer_compiler.h *****/
 
@@ -1298,8 +1293,6 @@ static LFDS711_PAL_INLINE void lfds711_misc_force_store( void );
 void lfds711_misc_query( enum lfds711_misc_query query_type, void *query_input, void *query_output );
 
 /***** public in-line functions *****/
-#pragma prefast( disable : 28112, "blah" )
-
 static LFDS711_PAL_INLINE void lfds711_misc_force_store()
 {
   lfds711_pal_uint_t volatile LFDS711_PAL_ALIGN(LFDS711_PAL_ATOMIC_ISOLATION_IN_BYTES)
@@ -2227,10 +2220,6 @@ void lfds711_stack_query( struct lfds711_stack_state *ss,
 
 
 
-
-
-  /***** pragmas off *****/
-  #pragma warning( pop )
 
 #endif
 
