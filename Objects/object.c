@@ -248,7 +248,7 @@ PyObject_Init(PyObject *op, PyTypeObject *tp)
         return PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT (objimpl.h) */
     if (_Py_Freethreaded)
-        Py_TREFCNT(op)->owned.owner_id = _PyThreadState_OwnershipId;
+        Py_TREFCNT(op)->owned.owner_id = PyThreadState_OwnershipId();
     Py_TYPE(op) = tp;
     _Py_NewReference(op);
     return op;
@@ -261,7 +261,7 @@ PyObject_InitVar(PyVarObject *op, PyTypeObject *tp, Py_ssize_t size)
         return (PyVarObject *) PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT_VAR */
     if (_Py_Freethreaded)
-        Py_TREFCNT(op)->owned.owner_id = _PyThreadState_OwnershipId;
+        Py_TREFCNT(op)->owned.owner_id = PyThreadState_OwnershipId();
     op->ob_size = size;
     Py_TYPE(op) = tp;
     _Py_NewReference((PyObject *)op);
