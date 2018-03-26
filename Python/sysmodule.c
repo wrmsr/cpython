@@ -936,14 +936,13 @@ freethread_enable_traverse(PyObject *op, Py_owner_id_t owner_id)
     return 0;
 }
 
-static PyObject *
-sys_freethread_enable(PyObject *self, PyObject *args)
+static void
+freethread_enable_proc(void)
 {
-    int i;
     _Py_Freethreaded = 1;
     _PyThreadState_PrepareFreethreading();
     Py_owner_id_t owner_id = PyThreadState_OwnershipId();
-    for (i = 0; i < NUM_GENERATIONS; i++) {
+    for (int i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
         PyGC_Head *gc_list = GEN_HEAD(i);
         for (gc = gc_list->gc.gc_next; gc != gc_list; gc = gc->gc.gc_next) {
@@ -952,6 +951,15 @@ sys_freethread_enable(PyObject *self, PyObject *args)
             Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, owner_id);
         }
     }
+
+}
+
+static PyObject *
+sys_freethread_enable(PyObject *self, PyObject *args)
+{
+    if (_Py_Freethreaded)
+        Py_RETURN_NONE;
+    freethread_enable_proc();
     Py_RETURN_NONE;
 }
 

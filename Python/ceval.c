@@ -562,7 +562,6 @@ _PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
     PyObject *retval = NULL;            /* Return value */
     PyThreadState *tstate = PyThreadState_GET();
     PyCodeObject *co;
-    Py_LOCAL_THREAD_STATE;
 
     /* when tracing we set things up so that
 
@@ -985,7 +984,6 @@ _PyEval_EvalFrameDefault(PyFrameObject *f, int throwflag)
                 /* Other threads may run now */
 
                 take_gil(tstate);
-                Py_LOCAL_THREAD_STATE_REFRESH;
 
                 /* Check if we should make a quick exit. */
                 if (_Py_IsFinalizing() &&
