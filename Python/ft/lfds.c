@@ -320,8 +320,6 @@ void lfds711_list_asu_insert_at_end( struct lfds711_list_asu_state *lasus,
 
 
 /****************************************************************************/
-#pragma warning( disable : 4100 )
-
 void lfds711_list_asu_insert_after_element( struct lfds711_list_asu_state *lasus,
                                             struct lfds711_list_asu_element *lasue,
                                             struct lfds711_list_asu_element *lasue_predecessor )
@@ -355,8 +353,6 @@ void lfds711_list_asu_insert_after_element( struct lfds711_list_asu_state *lasus
 
   return;
 }
-
-#pragma warning( default : 4100 )
 
 
 
@@ -3110,8 +3106,6 @@ void lfds711_hash_a_cleanup( struct lfds711_hash_a_state *has,
 
 
 /****************************************************************************/
-#pragma warning( disable : 4100 )
-
 static void btree_au_element_cleanup_function( struct lfds711_btree_au_state *baus,
                                                struct lfds711_btree_au_element *baue )
 {
@@ -3131,8 +3125,6 @@ static void btree_au_element_cleanup_function( struct lfds711_btree_au_state *ba
 
   return;
 }
-
-#pragma warning( default : 4100 )
 
 
 
@@ -4010,8 +4002,6 @@ void lfds711_ringbuffer_cleanup( struct lfds711_ringbuffer_state *rs,
 
 
 /****************************************************************************/
-#pragma warning( disable : 4100 )
-
 static void lfds711_ringbuffer_internal_queue_umm_element_cleanup_callback( struct lfds711_queue_umm_state *qumms,
                                                                             struct lfds711_queue_umm_element *qumme,
                                                                             enum lfds711_misc_flag dummy_element_flag )
@@ -4035,15 +4025,11 @@ static void lfds711_ringbuffer_internal_queue_umm_element_cleanup_callback( stru
   return;
 }
 
-#pragma warning( default : 4100 )
-
 
 
 
 
 /****************************************************************************/
-#pragma warning( disable : 4100 )
-
 static void lfds711_ringbuffer_internal_freelist_element_cleanup_callback( struct lfds711_freelist_state *fs,
                                                                            struct lfds711_freelist_element *fe )
 {
@@ -4063,8 +4049,6 @@ static void lfds711_ringbuffer_internal_freelist_element_cleanup_callback( struc
 
   return;
 }
-
-#pragma warning( default : 4100 )
 
 
 
@@ -4853,8 +4837,6 @@ void lfds711_misc_prng_internal_big_slow_high_quality_init( int long long unsign
 
 
 /****************************************************************************/
-#pragma warning( disable : 4100 )
-
 void lfds711_misc_query( enum lfds711_misc_query query_type,
                          void *query_input,
                          void *query_output )
@@ -4880,8 +4862,6 @@ void lfds711_misc_query( enum lfds711_misc_query query_type,
 
   return;
 }
-
-#pragma warning( default : 4100 )
 
 
 

@@ -11,20 +11,28 @@ def main(basedir):
         lambda l: re.match(r'^#include ', l),
     ]
 
+    def srcfn(fdir, fn, dfn):
+        with open(os.path.join(fdir, fn), 'r') as f:
+            lines = f.read().strip().split('\n')
+        lines = [l for l in lines if not any(drop(l) for drop in drops)]
+        while lines[0] == '':
+            del lines[0]
+        while lines[-1] == '':
+            del lines[-1]
+        lines[0:0] = [f'/***** {dfn} *****/'] + [''] * 5
+        lines.extend([''] * 6)
+        buf.write('\n'.join(lines))
+
     srcdir = os.path.join(basedir, 'src')
+    for fn in [fn for fn in os.listdir(srcdir) if fn.endswith('.h')]:
+        srcfn(srcdir, fn, fn)
     for d in [d for d in os.listdir(srcdir) if os.path.isdir(os.path.join(srcdir, d))]:
         fdir = os.path.join(srcdir, d)
-        for fn in [fn for fn in os.listdir(fdir) if fn.endswith('.c')]:
-            with open(os.path.join(fdir, fn), 'r') as f:
-                lines = f.read().strip().split('\n')
-            lines = [l for l in lines if not any(drop(l) for drop in drops)]
-            while lines[0] == '':
-                del lines[0]
-            while lines[-1] == '':
-                del lines[-1]
-            lines[0:0] = [f'/***** {os.path.join(d, fn)} *****/'] + [''] * 5
-            lines.extend([''] * 6)
-            buf.write('\n'.join(lines))
+        for fn in (
+                [fn for fn in os.listdir(fdir) if fn.endswith('.h')] +
+                [fn for fn in os.listdir(fdir) if fn.endswith('.c')]
+        ):
+            srcfn(fdir, fn, os.path.join(d, fn))
 
     print(buf.getvalue())
     del buf
