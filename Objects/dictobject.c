@@ -2565,7 +2565,7 @@ PyDict_Copy(PyObject *o)
         split_copy->ma_values = newvalues;
         split_copy->ma_keys = mp->ma_keys;
         split_copy->ma_used = mp->ma_used;
-        split_copy->ma_version_tag = DICT_NEXT_VERSION();
+        dict_set_next_version(split_copy);
         DK_INCREF(mp->ma_keys);
         for (i = 0, n = size; i < n; i++) {
             PyObject *value = mp->ma_values[i];

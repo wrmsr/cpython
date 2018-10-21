@@ -2,14 +2,14 @@
 set -ex
 
 declare -a PY_BREW_DEPS=(
-	"openssl"
-	"readline"
-	"sqlite3"
-	"zlib"
+    "openssl"
+    "readline"
+    "sqlite3"
+    "zlib"
 )
 
-PY_CFLAGS="" 
-PY_LDFLAGS="" 
+PY_CFLAGS=""
+PY_LDFLAGS=""
 for DEP in "${PY_BREW_DEPS[@]}" ; do
     PY_CFLAGS="-I$(brew --prefix "$DEP")/include $PY_CFLAGS"
     PY_LDFLAGS="-L$(brew --prefix "$DEP")/lib $PY_LDFLAGS"
