@@ -829,7 +829,7 @@ PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 #define Py_ZINCREF(op)                                        \
     do {                                                      \
-        _Py_INC_REFTOTAL                                      \
+        _Py_INC_REFTOTAL;                                     \
         if (!_Py_Freethreaded) {                              \
             Py_REFCNT(op)++;                                  \
         } else {                                              \
