@@ -2742,7 +2742,8 @@ pymain_init(_PyMain *pymain)
 #endif
 
     if (getenv("PYMAIN_INIT_PAUSE")) {
-        getc(stdin);
+        fprintf(stderr, "%d\n", getpid());
+        getchar();
     }
 
     config->_disable_importlib = 0;
