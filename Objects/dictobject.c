@@ -3041,6 +3041,12 @@ dict_sizeof(PyDictObject *mp)
     return PyLong_FromSsize_t(_PyDict_SizeOf(mp));
 }
 
+static PyObject *
+dict_global_version(PyObject *cls, PyObject *dummy)
+{
+    return PyLong_FromLong(pydict_global_version);
+}
+
 PyDoc_STRVAR(getitem__doc__, "x.__getitem__(y) <==> x[y]");
 
 PyDoc_STRVAR(sizeof__doc__,
@@ -3065,6 +3071,9 @@ PyDoc_STRVAR(clear__doc__,
 
 PyDoc_STRVAR(copy__doc__,
 "D.copy() -> a shallow copy of D");
+
+PyDoc_STRVAR(global_version__doc__,
+"dict._global_version() -> global dictionary version");
 
 /* Forward */
 static PyObject *dictkeys_new(PyObject *);
@@ -3103,6 +3112,8 @@ static PyMethodDef mapp_methods[] = {
      clear__doc__},
     {"copy",            (PyCFunction)dict_copy,         METH_NOARGS,
      copy__doc__},
+    {"_global_version()", (PyCFunction)dict_global_version, METH_NOARGS | METH_CLASS,
+     global_version__doc__},
     {NULL,              NULL}   /* sentinel */
 };
 
