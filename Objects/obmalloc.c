@@ -2597,7 +2597,7 @@ _PyObject_DebugMallocStats(FILE *out)
             if (p->ref.count == 0) {
                 /* currently unused */
 #ifdef Py_DEBUG
-                assert(pool_is_in_list(p, arenas[i].freepools));
+                assert(pool_is_in_list(p, ctx->arenas[i].freepools));
 #endif
                 continue;
             }
@@ -2607,7 +2607,7 @@ _PyObject_DebugMallocStats(FILE *out)
             numfreeblocks[sz] += freeblocks;
 #ifdef Py_DEBUG
             if (freeblocks > 0)
-                assert(pool_is_in_list(p, usedpools[sz + sz]));
+                assert(pool_is_in_list(p, ctx->usedpools[sz + sz]));
 #endif
         }
     }

@@ -3112,7 +3112,7 @@ static PyMethodDef mapp_methods[] = {
      clear__doc__},
     {"copy",            (PyCFunction)dict_copy,         METH_NOARGS,
      copy__doc__},
-    {"_global_version()", (PyCFunction)dict_global_version, METH_NOARGS | METH_CLASS,
+    {"_global_version", (PyCFunction)dict_global_version, METH_NOARGS | METH_CLASS,
      global_version__doc__},
     {NULL,              NULL}   /* sentinel */
 };
