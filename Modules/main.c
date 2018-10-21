@@ -2741,6 +2741,10 @@ pymain_init(_PyMain *pymain)
     fedisableexcept(FE_OVERFLOW);
 #endif
 
+    if (getenv("PYMAIN_INIT_PAUSE")) {
+        getc(stdin);
+    }
+
     config->_disable_importlib = 0;
     config->install_signal_handlers = 1;
     _PyCoreConfig_GetGlobalConfig(config);
