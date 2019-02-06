@@ -1,0 +1,108 @@
+- compiler switchable branch liklihood bias
+- switchable deallocation modes: call dtor or dont
+- todo freelists
+- https://code.google.com/p/chromium/wiki/LinuxZygote
+- https://stackoverflow.com/questions/2731531/faster-forking-of-large-processes-on-linux
+- https://github.com/Yelp/zygote/tree/master/zygote
+- make sure greenlet still works
+- l3 sharing
+- page analyzer
+- pre-toucher / ideally modify page flags to let it happen naturally in fork()
+- /proc smaps + pagemap
+- graceful fallback cfg'd in py, already available in ctypes.pythonapi
+- mallocstat can tell which arenas are pinned in py
+- port Py_PINNED to py
+- track parent [well, root really] pid in zygote, pagemaps can tell which were hit
+- ... only things allocated are arenas, maintain freelist
+ - sort and shrink
+  - naw just double LL, choose least
+ - fork friendly malloc? alloc all holes?
+- Memory mappings that have been marked with the madvise(2) MADV_DONTFORK flag are not inherited across a fork().
+- configurable bump allocation (for both pymalloc and jemalloc) - uh wow pin use remaining pinned space :||||
+- jemalloc just reinit, fuck freeing
+- https://www.python.org/dev/peps/pep-0445/#don-t-call-malloc-directly-anymore
+- https://media.blackhat.com/bh-us-12/Briefings/Argyoudis/BH_US_12_Argyroudis_Exploiting_the_%20jemalloc_Memory_%20Allocator_WP.pdf
+- shared mem for transport
+- wsgi client recycling policy
+https://github.com/torvalds/linux/blob/master/fs/proc/task_mmu.c#L1329 oh you fucking pricks
+https://github.com/torvalds/linux/commit/ab676b7d6fbf4b294bf198fb27ade5b0e865c7ce <^>
+
+- interactive zygote, python repl
+
+https://github.com/wrmsr/cpython-zygote/compare/master...wrmsr_zygote#files_bucket
+
+http://neugierig.org/software/chromium/notes/2011/08/zygote.html
+
+* TODO allocation context struct - threadlocal
+- mp [billiard] worker pool, zmq pool
+
+gc.unpinned thread-local | ctxmgr, unpinned arena
+
+sudo apt-get install libbz2-dev
+ ./configure --enable-unicode=ucs4
+
+*** failure to import is likely caused by missing __init__.py in parent dirs
+ - *** strace grep .pth - site is fuxcked
+  - site.py is customized on debian :|
+
+break import_submodule if strcmp(fullname, "zope") == 0
+
+worker release policies - rss, time, reqs, blah
+ - PSS
+
+- can cheaply estimate private usage from unpinned pymalloc and jemalloc arenas, can supplement with dirty map
+- dirtymap bitvec? rtree? compressed bitmap per map?
+- ... wsgi over zmq, load balance, can use hybrid thread/process model....
+- become user for interactive via sec cred
+- look at other dynamic threadpool impls
+- nesting... call pin multiple times from different tree lineages, keep allocating contig until sealed..
+- http://celery.readthedocs.org/en/latest/userguide/workers.html#autoscaling
+ - gossip + mingle for version awareness
+- http://celery.readthedocs.org/en/latest/whatsnew-3.1.html
+- http://zguide.zeromq.org/page:all#advanced-request-reply
+- https://zeromq.github.io/pyzmq/eventloop.html#pyzmq-and-gevent
+- java oomkiller rss stupidly is certainly going to be relevant here.
+- broker v freelance - do both
+
+http://tldp.org/LDP/tlk/mm/memory.html
+http://tldp.org/LDP/khg/HyperNews/get/memory/linuxmm.html
+
+hitlist:
+- markupsafe/_speedups
+- lxml/etree
+- _mysql
+- pycurl
+- pygear
+- _pylibmc
+- _snappy
+- sqlalchemy/coprocessors
+- sqlalchemy/cresultproxy
+- sqlalchemy/cutils
+- _yaml
+- zope/interface/_zope_interface_coptimizations
+
+- importable shim, check pythonapi, load cdll if missing
+- https://github.com/airlift/jvmkill
+ - https://www.kernel.org/doc/Documentation/vm/overcommit-accounting
+ - /proc/meminfo
+ - https://www.kernel.org/doc/Documentation/vm/ lol
+- LD_PRELOAD shim
+
+
+- modules: mp, zmq, ymalloc, jemalloc, wsgi, g*?
+ fuck zmq
+
+- Schedule-based autoscaling
+- Metrics-based autoscaling - CPU utilization over the last hour, backlog of messages
+- https://github.com/zeromq/zbroker
+
+
+- mpsc per process, https://code.google.com/p/hmpi/wiki/SharedHeapAllocator
+ - but who frees on death D:
+  - the reaper ofc
+ - uh wait neverfucking mind its coarse as fuck just keep a freelist of pages
+  - with dense ownership pid table for reaper cleanup
+   - *two* owner pids for transfer
+  - still need sleep/notify, wtb unsafe.park :<
+
+https://github.com/wrmsr/hystrix-py
