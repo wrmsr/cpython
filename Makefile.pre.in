@@ -382,8 +382,9 @@ PYTHON_OBJS=	\
 # Freethreading
 
 FT_OBJS=	\
-		Python/ft/lfds.o \
 		Python/ft/sync.o
+
+		# Python/ft/lfds.o \
 
 ##########################################################################
 # Objects
