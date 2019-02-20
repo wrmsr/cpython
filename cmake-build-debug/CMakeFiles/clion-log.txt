@@ -1,0 +1,988 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/spinlock/src/wrmsr/cpython
+CMake Error at CMakeLists.txt:3 (string):
+  string sub-command REPLACE requires at least four arguments.
+
+
+-- Checking which MACOSX_DEPLOYMENT_TARGET to use
+-- Checking which MACOSX_DEPLOYMENT_TARGET to use - 10.14
+-- The C compiler identification is AppleClang 10.0.0.10001145
+-- The ASM compiler identification is AppleClang
+-- Found assembler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+CMake Deprecation Warning at CMakeLists.txt:27 (cmake_policy):
+  The OLD behavior for policy CMP0042 will be removed from a future version
+  of CMake.
+
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
+
+
+-- Looking for CMake command configure_package_config_file
+-- Looking for CMake command configure_package_config_file - found
+-- Looking for CMake command write_basic_package_version_file
+-- Looking for CMake command write_basic_package_version_file - found
+-- Looking for CMake command target_compile_definitions
+-- Looking for CMake command target_compile_definitions - found
+-- Looking for CMake property POSITION_INDEPENDENT_CODE
+-- Looking for CMake property POSITION_INDEPENDENT_CODE - found
+-- SRC_DIR: /Users/spinlock/src/wrmsr/cpython
+-- PY_VERSION     : 3.7.1
+-- PY_VERSION_LONG: 3.7.1
+CMake Warning at CMakeLists.txt:270 (message):
+  warning: selected python version '3.7.1' is not tested.  Tested versions
+  match '2.7.[3-14]' or '3.5.[1-5]' or `3.6.[0-4]`
+
+
+-- Overwriting PYTHON_VERSION with value read from 'patchlevel.h':  -> 3.7.1
+-- Found Git: /usr/local/bin/git (found version "2.20.1") 
+-- Skipping patches: Directory '/Users/spinlock/src/wrmsr/cpython/patches/3.7' does not exist
+-- Skipping patches: Directory '/Users/spinlock/src/wrmsr/cpython/patches/3.7.1' does not exist
+-- Skipping patches: Directory '/Users/spinlock/src/wrmsr/cpython/patches/3.7.1/Darwin' does not exist
+-- Skipping patches: Directory '/Users/spinlock/src/wrmsr/cpython/patches/3.7.1/Darwin-Clang' does not exist
+-- Skipping patches: Directory '/Users/spinlock/src/wrmsr/cpython/patches/3.7.1/Darwin-Clang/10.0.0.10001145' does not exist
+-- The system name is Darwin
+-- The system processor is x86_64
+-- The system version is 18.2.0
+-- Found BZip2: /usr/lib/libbz2.dylib (found version "1.0.6") 
+-- Looking for BZ2_bzCompressInit
+-- Looking for BZ2_bzCompressInit - found
+-- Found Curses: /usr/lib/libcurses.dylib  
+-- Found EXPAT: /usr/lib/libexpat.dylib (found version "2.2.1") 
+-- Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_INCLUDE_DIR) (Required is at least version "0.9.7")
+-- Found Tclsh: /usr/bin/tclsh (found version "8.5") 
+-- Found TCL: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/tcl.framework  
+-- Found TCLTK: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/tcl.framework  
+-- Found TK: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/tk.framework  
+-- Found ZLIB: /usr/lib/libz.dylib (found version "1.2.11") 
+-- Checking WITH_HASH_ALGORITHM option
+-- Checking WITH_HASH_ALGORITHM option [default]
+-- Checking ABIFLAGS - m
+-- Checking SOABI - cpython-37m-darwin
+-- Looking for include file dirent.h
+-- Looking for include file dirent.h - found
+-- Looking for dirfd
+-- Looking for dirfd - found
+-- Looking for include file alloca.h
+-- Looking for include file alloca.h - found
+-- Looking for include file asm/types.h
+-- Looking for include file asm/types.h - not found
+-- Looking for include file arpa/inet.h
+-- Looking for include file arpa/inet.h - found
+-- Looking for include file bluetooth/bluetooth.h
+-- Looking for include file bluetooth/bluetooth.h - not found
+-- Looking for include file bluetooth.h
+-- Looking for include file bluetooth.h - not found
+-- Looking for include file conio.h
+-- Looking for include file conio.h - not found
+-- Looking for include file curses.h
+-- Looking for include file curses.h - found
+-- Looking for include file direct.h
+-- Looking for include file direct.h - not found
+-- Looking for include file dlfcn.h
+-- Looking for include file dlfcn.h - found
+-- Looking for include file errno.h
+-- Looking for include file errno.h - found
+-- Looking for include file fcntl.h
+-- Looking for include file fcntl.h - found
+-- Looking for include file fpu_control.h
+-- Looking for include file fpu_control.h - not found
+-- Looking for include file grp.h
+-- Looking for include file grp.h - found
+-- Looking for include file ieeefp.h
+-- Looking for include file ieeefp.h - not found
+-- Looking for include file inttypes.h
+-- Looking for include file inttypes.h - found
+-- Looking for include file io.h
+-- Looking for include file io.h - not found
+-- Looking for include file langinfo.h
+-- Looking for include file langinfo.h - found
+-- Looking for include file libintl.h
+-- Looking for include file libintl.h - not found
+-- Looking for include file libutil.h
+-- Looking for include file libutil.h - not found
+-- Looking for include file linux/tipc.h
+-- Looking for include file linux/tipc.h - not found
+-- Looking for include file locale.h
+-- Looking for include file locale.h - found
+-- Looking for include file sys/socket.h
+-- Looking for include file sys/socket.h - found
+-- Looking for include files sys/socket.h, linux/netlink.h
+-- Looking for include files sys/socket.h, linux/netlink.h - not found
+-- Looking for include files sys/socket.h, linux/can.h
+-- Looking for include files sys/socket.h, linux/can.h - not found
+-- Looking for include files sys/socket.h, linux/can/bcm.h
+-- Looking for include files sys/socket.h, linux/can/bcm.h - not found
+-- Looking for include files sys/socket.h, linux/can/raw.h
+-- Looking for include files sys/socket.h, linux/can/raw.h - not found
+-- Looking for include file memory.h
+-- Looking for include file memory.h - found
+-- Looking for include file minix/config.h
+-- Looking for include file minix/config.h - not found
+-- Looking for include file ncurses.h
+-- Looking for include file ncurses.h - found
+-- Looking for include file ncurses/panel.h
+-- Looking for include file ncurses/panel.h - not found
+-- Looking for include file netdb.h
+-- Looking for include file netdb.h - found
+-- Looking for include file netinet/in.h
+-- Looking for include file netinet/in.h - found
+-- Looking for include file netpacket/packet.h
+-- Looking for include file netpacket/packet.h - not found
+-- Looking for include file panel.h
+-- Looking for include file panel.h - found
+-- Looking for include file poll.h
+-- Looking for include file poll.h - found
+-- Looking for include file process.h
+-- Looking for include file process.h - not found
+-- Looking for include file pthread.h
+-- Looking for include file pthread.h - found
+-- Looking for include file pty.h
+-- Looking for include file pty.h - not found
+-- Looking for include file pwd.h
+-- Looking for include file pwd.h - found
+-- Looking for include files stdio.h, readline/readline.h
+-- Looking for include files stdio.h, readline/readline.h - found
+-- Looking for include file semaphore.h
+-- Looking for include file semaphore.h - found
+-- Looking for include file shadow.h
+-- Looking for include file shadow.h - not found
+-- Looking for include file signal.h
+-- Looking for include file signal.h - found
+-- Looking for include file spawn.h
+-- Looking for include file spawn.h - found
+-- Looking for include file stdint.h
+-- Looking for include file stdint.h - found
+-- Looking for include file stdlib.h
+-- Looking for include file stdlib.h - found
+-- Looking for include file strings.h
+-- Looking for include file strings.h - found
+-- Looking for include file string.h
+-- Looking for include file string.h - found
+-- Looking for include file stropts.h
+-- Looking for include file stropts.h - not found
+-- Looking for include file sysexits.h
+-- Looking for include file sysexits.h - found
+-- Looking for include file sys/audioio.h
+-- Looking for include file sys/audioio.h - not found
+-- Looking for include file sys/bsdtty.h
+-- Looking for include file sys/bsdtty.h - not found
+-- Looking for include file sys/epoll.h
+-- Looking for include file sys/epoll.h - not found
+-- Looking for include file sys/event.h
+-- Looking for include file sys/event.h - found
+-- Looking for include file sys/file.h
+-- Looking for include file sys/file.h - found
+-- Looking for include file sys/loadavg.h
+-- Looking for include file sys/loadavg.h - not found
+-- Looking for include file sys/lock.h
+-- Looking for include file sys/lock.h - found
+-- Looking for include file sys/sysmacros.h
+-- Looking for include file sys/sysmacros.h - not found
+-- Looking for include file sys/mkdev.h
+-- Looking for include file sys/mkdev.h - not found
+-- Looking for include file sys/mman.h
+-- Looking for include file sys/mman.h - found
+-- Looking for include file sys/modem.h
+-- Looking for include file sys/modem.h - not found
+-- Looking for include file sys/param.h
+-- Looking for include file sys/param.h - found
+-- Looking for include file sys/poll.h
+-- Looking for include file sys/poll.h - found
+-- Looking for include file sys/random.h
+-- Looking for include file sys/random.h - not found
+-- Looking for include file sys/resource.h
+-- Looking for include file sys/resource.h - found
+-- Looking for include file sys/select.h
+-- Looking for include file sys/select.h - found
+-- Looking for include file sys/statvfs.h
+-- Looking for include file sys/statvfs.h - found
+-- Looking for include file sys/stat.h
+-- Looking for include file sys/stat.h - found
+-- Looking for include file sys/timeb.h
+-- Looking for include file sys/timeb.h - found
+-- Looking for include file sys/termio.h
+-- Looking for include file sys/termio.h - not found
+-- Looking for include file sys/times.h
+-- Looking for include file sys/times.h - found
+-- Looking for include file sys/time.h
+-- Looking for include file sys/time.h - found
+-- Looking for include file sys/types.h
+-- Looking for include file sys/types.h - found
+-- Looking for include file sys/un.h
+-- Looking for include file sys/un.h - found
+-- Looking for include file sys/utsname.h
+-- Looking for include file sys/utsname.h - found
+-- Looking for include file sys/wait.h
+-- Looking for include file sys/wait.h - found
+-- Looking for include file termios.h
+-- Looking for include file termios.h - found
+-- Looking for include file term.h
+-- Looking for include file term.h - found
+-- Looking for include file unistd.h
+-- Looking for include file unistd.h - found
+-- Looking for include file util.h
+-- Looking for include file util.h - found
+-- Looking for include file utime.h
+-- Looking for include file utime.h - found
+-- Looking for include file wchar.h
+-- Looking for include file wchar.h - found
+-- Looking for 4 include files stdlib.h, ..., float.h
+-- Looking for 4 include files stdlib.h, ..., float.h - found
+-- Looking for include file stdarg.h
+-- Looking for include file stdarg.h - found
+-- Looking for include file endian.h
+-- Looking for include file endian.h - not found
+-- Looking for include file sched.h
+-- Looking for include file sched.h - found
+-- Looking for include file sys/devpoll.h
+-- Looking for include file sys/devpoll.h - not found
+-- Looking for include file sys/endian.h
+-- Looking for include file sys/endian.h - not found
+-- Looking for include file sys/ioctl.h
+-- Looking for include file sys/ioctl.h - found
+-- Looking for include files sys/types.h, sys/kern_control.h
+-- Looking for include files sys/types.h, sys/kern_control.h - found
+-- Looking for include file sys/sendfile.h
+-- Looking for include file sys/sendfile.h - not found
+-- Looking for include file sys/syscall.h
+-- Looking for include file sys/syscall.h - found
+-- Looking for include file sys/sys_domain.h
+-- Looking for include file sys/sys_domain.h - found
+-- Looking for include file sys/uio.h
+-- Looking for include file sys/uio.h - found
+-- Looking for include file sys/xattr.h
+-- Looking for include file sys/xattr.h - found
+-- Looking for 4 include files stdlib.h, ..., net/if.h
+-- Looking for 4 include files stdlib.h, ..., net/if.h - found
+-- ptmx: //dev/ptmx ptc: HAVE_DEV_PTC-NOTFOUND
+-- Looking for acosh
+-- Looking for acosh - found
+-- Looking for openpty
+-- Looking for openpty - found
+-- Looking for pthread_create
+-- Looking for pthread_create - found
+-- Found Threads: TRUE  
+-- Checking for RAND_egd in -lcrypto
+CMake Deprecation Warning at cmake/CMakeExpandImportedTargets.cmake:57 (cmake_policy):
+  The OLD behavior for policy CMP0045 will be removed from a future version
+  of CMake.
+
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
+Call Stack (most recent call first):
+  cmake/PlatformTest.cmake:17 (CMAKE_EXPAND_IMPORTED_TARGETS)
+  cmake/ConfigureChecks.cmake:408 (python_platform_test)
+  CMakeLists.txt:319 (include)
+
+
+-- Checking for RAND_egd in -lcrypto - no
+-- Checking for XOPEN_SOURCE
+-- Checking for XOPEN_SOURCE - no
+-- Checking for Large File Support
+-- Checking for Large File Support - yes
+-- Check if the system is big endian
+-- Searching 16 bit integer
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of unsigned short
+-- Check size of unsigned short - done
+-- Using unsigned short
+-- Check if the system is big endian - little endian
+-- Check size of double
+-- Check size of double - done
+-- Check size of float
+-- Check size of float - done
+-- Check size of fpos_t
+-- Check size of fpos_t - done
+-- Check size of int
+-- Check size of int - done
+-- Check size of long
+-- Check size of long - done
+-- Check size of long double
+-- Check size of long double - done
+-- Check size of long long
+-- Check size of long long - done
+-- Check size of off_t
+-- Check size of off_t - done
+-- Check size of pid_t
+-- Check size of pid_t - done
+-- Check size of pthread_t
+-- Check size of pthread_t - done
+-- Check size of short
+-- Check size of short - done
+-- Check size of size_t
+-- Check size of size_t - done
+-- Check size of ssize_t
+-- Check size of ssize_t - done
+-- Check size of time_t
+-- Check size of time_t - done
+-- Check size of uintptr_t
+-- Check size of uintptr_t - done
+-- Check size of void *
+-- Check size of void * - done
+-- Check size of wchar_t
+-- Check size of wchar_t - done
+-- Check size of _Bool
+-- Check size of _Bool - done
+-- Looking for alarm
+-- Looking for alarm - found
+-- Looking for alloca
+-- Looking for alloca - found
+-- Looking for altzone
+-- Looking for altzone - not found
+-- Looking for bind_textdomain_codeset
+-- Looking for bind_textdomain_codeset - not found
+-- Looking for chflags
+-- Looking for chflags - found
+-- Looking for chown
+-- Looking for chown - found
+-- Looking for chroot
+-- Looking for chroot - found
+-- Looking for clock
+-- Looking for clock - found
+-- Looking for confstr
+-- Looking for confstr - found
+-- Looking for ctermid
+-- Looking for ctermid - found
+-- Looking for ctermid_r
+-- Looking for ctermid_r - found
+-- Looking for dup2
+-- Looking for dup2 - found
+-- Looking for epoll_create
+-- Looking for epoll_create - not found
+-- Looking for epoll_create1
+-- Looking for epoll_create1 - not found
+-- Looking for execv
+-- Looking for execv - found
+-- Looking for fchdir
+-- Looking for fchdir - found
+-- Looking for fchmod
+-- Looking for fchmod - found
+-- Looking for fchown
+-- Looking for fchown - found
+-- Looking for fdatasync
+-- Looking for fdatasync - not found
+-- Looking for flock
+-- Looking for flock - found
+-- Looking for fork
+-- Looking for fork - found
+-- Looking for forkpty
+-- Looking for forkpty - found
+-- Looking for fpathconf
+-- Looking for fpathconf - found
+-- Looking for __fpu_control
+-- Looking for __fpu_control - not found
+-- Looking for __fpu_control in ieee
+-- Looking for __fpu_control in ieee - not found
+-- Looking for fseek64
+-- Looking for fseek64 - not found
+-- Looking for fseeko
+-- Looking for fseeko - found
+-- Looking for fstatvfs
+-- Looking for fstatvfs - found
+-- Looking for fsync
+-- Looking for fsync - found
+-- Looking for ftell64
+-- Looking for ftell64 - not found
+-- Looking for ftello
+-- Looking for ftello - found
+-- Looking for ftime
+-- Looking for ftime - found
+-- Looking for ftruncate
+-- Looking for ftruncate - found
+-- Looking for getc_unlocked
+-- Looking for getc_unlocked - found
+-- Looking for getgroups
+-- Looking for getgroups - found
+-- Looking for getitimer
+-- Looking for getitimer - found
+-- Looking for getloadavg
+-- Looking for getloadavg - found
+-- Looking for getlogin
+-- Looking for getlogin - found
+-- Looking for getpagesize
+-- Looking for getpagesize - found
+-- Looking for getpgid
+-- Looking for getpgid - found
+-- Looking for getpgrp
+-- Looking for getpgrp - found
+-- Looking for getpid
+-- Looking for getpid - found
+-- Checking for getpriority
+-- Checking for getpriority - yes
+-- Looking for getpwent
+-- Looking for getpwent - found
+-- Looking for getresgid
+-- Looking for getresgid - not found
+-- Looking for getresuid
+-- Looking for getresuid - not found
+-- Looking for getsid
+-- Looking for getsid - found
+-- Looking for getspent
+-- Looking for getspent - not found
+-- Looking for getspnam
+-- Looking for getspnam - not found
+-- Looking for gettimeofday
+-- Looking for gettimeofday - found
+-- Looking for getwd
+-- Looking for getwd - found
+-- Looking for hypot
+-- Looking for hypot - found
+-- Looking for initgroups
+-- Looking for initgroups - found
+-- Looking for kill
+-- Looking for kill - found
+-- Looking for killpg
+-- Looking for killpg - found
+-- Looking for kqueue
+-- Looking for kqueue - found
+-- Looking for lchflags
+-- Looking for lchflags - found
+-- Checking for lchmod
+-- Checking for lchmod - yes
+-- Looking for lchown
+-- Looking for lchown - found
+-- Looking for link
+-- Looking for link - found
+-- Looking for lstat
+-- Looking for lstat - found
+-- Looking for makedev
+-- Looking for makedev - found
+-- Looking for memcpy
+-- Looking for memcpy - found
+-- Looking for memmove
+-- Looking for memmove - found
+-- Looking for mkfifo
+-- Looking for mkfifo - found
+-- Looking for mknod
+-- Looking for mknod - found
+-- Looking for mktime
+-- Looking for mktime - found
+-- Looking for mmap
+-- Looking for mmap - found
+-- Looking for mremap
+-- Looking for mremap - not found
+-- Looking for nice
+-- Looking for nice - found
+-- Looking for openpty
+-- Looking for openpty - found
+-- Looking for pathconf
+-- Looking for pathconf - found
+-- Looking for pause
+-- Looking for pause - found
+-- Looking for plock
+-- Looking for plock - not found
+-- Looking for poll
+-- Looking for poll - found
+-- Looking for putenv
+-- Looking for putenv - found
+-- Looking for readlink
+-- Looking for readlink - found
+-- Looking for realpath
+-- Looking for realpath - found
+-- Looking for select
+-- Looking for select - found
+-- Looking for setegid
+-- Looking for setegid - found
+-- Looking for seteuid
+-- Looking for seteuid - found
+-- Looking for setgid
+-- Looking for setgid - found
+-- Looking for setgroups
+-- Looking for setgroups - found
+-- Looking for setitimer
+-- Looking for setitimer - found
+-- Looking for setlocale
+-- Looking for setlocale - found
+-- Looking for setpgid
+-- Looking for setpgid - found
+-- Looking for setpgrp
+-- Looking for setpgrp - found
+-- Looking for setregid
+-- Looking for setregid - found
+-- Looking for setreuid
+-- Looking for setreuid - found
+-- Looking for setresgid
+-- Looking for setresgid - not found
+-- Looking for setresuid
+-- Looking for setresuid - not found
+-- Looking for setsid
+-- Looking for setsid - found
+-- Looking for setuid
+-- Looking for setuid - found
+-- Looking for setvbuf
+-- Looking for setvbuf - found
+-- Looking for sigaction
+-- Looking for sigaction - found
+-- Looking for siginterrupt
+-- Looking for siginterrupt - found
+-- Looking for sigrelse
+-- Looking for sigrelse - found
+-- Looking for snprintf
+-- Looking for snprintf - found
+-- Looking for socketpair
+-- Looking for socketpair - found
+-- Looking for statvfs
+-- Looking for statvfs - found
+-- Looking for strdup
+-- Looking for strdup - found
+-- Looking for strftime
+-- Looking for strftime - found
+-- Looking for symlink
+-- Looking for symlink - found
+-- Looking for sysconf
+-- Looking for sysconf - found
+-- Looking for tcgetpgrp
+-- Looking for tcgetpgrp - found
+-- Looking for tcsetpgrp
+-- Looking for tcsetpgrp - found
+-- Looking for tempnam
+-- Looking for tempnam - found
+-- Looking for timegm
+-- Looking for timegm - found
+-- Looking for times
+-- Looking for times - found
+-- Looking for tmpfile
+-- Looking for tmpfile - found
+-- Looking for tmpnam
+-- Looking for tmpnam - found
+-- Looking for tmpnam_r
+-- Looking for tmpnam_r - not found
+-- Looking for truncate
+-- Looking for truncate - found
+-- Looking for uname
+-- Looking for uname - found
+-- Looking for unsetenv
+-- Looking for unsetenv - found
+-- Looking for utimes
+-- Looking for utimes - found
+-- Looking for wait3
+-- Looking for wait3 - found
+-- Looking for wait4
+-- Looking for wait4 - found
+-- Looking for waitpid
+-- Looking for waitpid - found
+-- Looking for wcscoll
+-- Looking for wcscoll - found
+-- Looking for _getpty
+-- Looking for _getpty - not found
+-- Looking for accept4
+-- Looking for accept4 - not found
+-- Looking for dup3
+-- Looking for dup3 - not found
+-- Looking for faccessat
+-- Looking for faccessat - found
+-- Looking for fchmodat
+-- Looking for fchmodat - found
+-- Looking for fchownat
+-- Looking for fchownat - found
+-- Looking for fexecve
+-- Looking for fexecve - not found
+-- Looking for fdopendir
+-- Looking for fdopendir - found
+-- Looking for fstatat
+-- Looking for fstatat - found
+-- Looking for futimens
+-- Looking for futimens - found
+-- Looking for futimes
+-- Looking for futimes - found
+-- Looking for futimesat
+-- Looking for futimesat - not found
+-- Looking for getentropy
+-- Looking for getentropy - not found
+-- Looking for getgrouplist
+-- Looking for getgrouplist - found
+-- Looking for htole64
+-- Looking for htole64 - not found
+-- Looking for if_nameindex
+-- Looking for if_nameindex - found
+-- Looking for linkat
+-- Looking for linkat - found
+-- Looking for lockf
+-- Looking for lockf - found
+-- Looking for lutimes
+-- Looking for lutimes - found
+-- Looking for mbrtowc
+-- Looking for mbrtowc - found
+-- Looking for memrchr
+-- Looking for memrchr - not found
+-- Looking for mkdirat
+-- Looking for mkdirat - found
+-- Looking for mkfifoat
+-- Looking for mkfifoat - not found
+-- Looking for mknodat
+-- Looking for mknodat - not found
+-- Looking for openat
+-- Looking for openat - found
+-- Looking for pipe2
+-- Looking for pipe2 - not found
+-- Looking for posix_fadvise
+-- Looking for posix_fadvise - not found
+-- Looking for posix_fallocate
+-- Looking for posix_fallocate - not found
+-- Looking for pread
+-- Looking for pread - found
+-- Looking for prlimit
+-- Looking for prlimit - not found
+-- Looking for pthread_kill
+-- Looking for pthread_kill - found
+-- Looking for pwrite
+-- Looking for pwrite - found
+-- Looking for readlinkat
+-- Looking for readlinkat - found
+-- Looking for readv
+-- Looking for readv - found
+-- Looking for renameat
+-- Looking for renameat - found
+-- Looking for sched_rr_get_interval
+-- Looking for sched_rr_get_interval - not found
+-- Looking for sched_setaffinity
+-- Looking for sched_setaffinity - not found
+-- Looking for sched_setparam
+-- Looking for sched_setparam - not found
+-- Looking for sched_setscheduler
+-- Looking for sched_setscheduler - not found
+-- Looking for sendfile
+-- Looking for sendfile - found
+-- Looking for sethostname
+-- Looking for sethostname - found
+-- Looking for setpriority
+-- Looking for setpriority - found
+-- Looking for sched_get_priority_max
+-- Looking for sched_get_priority_max - found
+-- Looking for sigaltstack
+-- Looking for sigaltstack - found
+-- Looking for sigpending
+-- Looking for sigpending - found
+-- Looking for sigtimedwait
+-- Looking for sigtimedwait - not found
+-- Looking for sigwait
+-- Looking for sigwait - found
+-- Looking for sigwaitinfo
+-- Looking for sigwaitinfo - not found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for symlinkat
+-- Looking for symlinkat - found
+-- Looking for sync
+-- Looking for sync - found
+-- Looking for unlinkat
+-- Looking for unlinkat - found
+-- Looking for utimensat
+-- Looking for utimensat - found
+-- Looking for waitid
+-- Looking for waitid - found
+-- Looking for wcsftime
+-- Looking for wcsftime - found
+-- Looking for wcsxfrm
+-- Looking for wcsxfrm - found
+-- Looking for wmemcmp
+-- Looking for wmemcmp - found
+-- Looking for writev
+-- Looking for writev - found
+-- Performing Test HAVE_STAT_TV_NSEC
+-- Performing Test HAVE_STAT_TV_NSEC - Failed
+-- Performing Test HAVE_STAT_TV_NSEC2
+-- Performing Test HAVE_STAT_TV_NSEC2 - Success
+-- Performing Test HAVE_STRUCT_STAT_ST_BIRTHTIME
+-- Performing Test HAVE_STRUCT_STAT_ST_BIRTHTIME - Success
+-- Performing Test HAVE_STRUCT_STAT_ST_BLKSIZE
+-- Performing Test HAVE_STRUCT_STAT_ST_BLKSIZE - Success
+-- Performing Test HAVE_STRUCT_STAT_ST_BLOCKS
+-- Performing Test HAVE_STRUCT_STAT_ST_BLOCKS - Success
+-- Performing Test HAVE_STRUCT_STAT_ST_FLAGS
+-- Performing Test HAVE_STRUCT_STAT_ST_FLAGS - Success
+-- Performing Test HAVE_STRUCT_STAT_ST_GEN
+-- Performing Test HAVE_STRUCT_STAT_ST_GEN - Success
+-- Performing Test HAVE_STRUCT_STAT_ST_RDEV
+-- Performing Test HAVE_STRUCT_STAT_ST_RDEV - Success
+-- Checking for x64 gcc inline assembler
+-- Checking for x64 gcc inline assembler - yes
+-- Checking whether C doubles are little-endian IEEE 754 binary64
+-- Checking whether C doubles are little-endian IEEE 754 binary64 - yes
+-- Checking whether C doubles are big-endian IEEE 754 binary64
+-- Checking whether C doubles are big-endian IEEE 754 binary64 - no
+-- Checking doubles are ARM mixed-endian IEEE 754 binary64
+-- Checking doubles are ARM mixed-endian IEEE 754 binary64 - no
+-- Checking whether we can use gcc inline assembler to get and set x87 control word
+-- Checking whether we can use gcc inline assembler to get and set x87 control word - yes
+-- Checking whether read-only mmap of a plain file works
+-- Checking whether read-only mmap of a plain file works - yes
+-- Checking whether assembler supports .ascii
+-- Checking whether assembler supports .ascii - yes
+-- Checking whether assembler supports .cfi_* directives
+-- Checking whether assembler supports .cfi_* directives - yes
+-- Checking whether assembler supports .string
+-- Checking whether assembler supports .string - yes
+-- Checking whether assembler supports PC relative relocs
+-- Checking whether assembler supports PC relative relocs - no
+-- Performing Test HAVE_HIDDEN_VISIBILITY_ATTRIBUTE
+-- Performing Test HAVE_HIDDEN_VISIBILITY_ATTRIBUTE - Success
+-- Performing Test HAVE_MMAP_ANON
+-- Performing Test HAVE_MMAP_ANON - Success
+-- Performing Test HAVE_MMAP_DEV_ZERO
+-- Performing Test HAVE_MMAP_DEV_ZERO - Failed
+-- Checking whether we can use gcc inline assembler to get and set mc68881 fpcr
+-- Checking whether we can use gcc inline assembler to get and set mc68881 fpcr - no
+-- Checking for x87-style double rounding
+-- Checking for x87-style double rounding - no
+-- Checking whether tanh preserves the sign of zero
+-- Checking whether tanh preserves the sign of zero - yes
+-- Checking whether log1p drops the sign of negative zero
+-- Checking whether log1p drops the sign of negative zero - no
+-- Looking for acosh
+-- Looking for acosh - found
+-- Looking for asinh
+-- Looking for asinh - found
+-- Looking for atanh
+-- Looking for atanh - found
+-- Looking for copysign
+-- Looking for copysign - found
+-- Looking for erf
+-- Looking for erf - found
+-- Looking for erfc
+-- Looking for erfc - found
+-- Looking for expm1
+-- Looking for expm1 - found
+-- Looking for finite
+-- Looking for finite - found
+-- Looking for gamma
+-- Looking for gamma - found
+-- Looking for lgamma
+-- Looking for lgamma - found
+-- Looking for log1p
+-- Looking for log1p - found
+-- Looking for round
+-- Looking for round - found
+-- Looking for tgamma
+-- Looking for tgamma - found
+-- Looking for log2
+-- Looking for log2 - found
+-- Looking for isinf
+-- Looking for isinf - found
+-- Looking for isnan
+-- Looking for isnan - found
+-- Looking for isfinite
+-- Looking for isfinite - found
+-- Performing Test HAVE_STRUCT_TM_TM_ZONE
+-- Performing Test HAVE_STRUCT_TM_TM_ZONE - Success
+-- Check size of struct tm
+-- Check size of struct tm - done
+-- Performing Test TIME_WITH_SYS_TIME
+-- Performing Test TIME_WITH_SYS_TIME - Success
+-- Performing Test SYS_SELECT_WITH_SYS_TIME
+-- Performing Test SYS_SELECT_WITH_SYS_TIME - Success
+-- Performing Test GETTIMEOFDAY_WITH_TZ
+-- Performing Test GETTIMEOFDAY_WITH_TZ - Success
+-- Looking for clock_getres
+-- Looking for clock_getres - found
+-- Looking for clock_gettime
+-- Looking for clock_gettime - found
+-- Checking for UCS-4 tcl
+-- Checking for UCS-4 tcl - no
+-- Looking for gethostbyname_r
+-- Looking for gethostbyname_r - not found
+-- Looking for gethostbyname
+-- Looking for gethostbyname - found
+-- Looking for gai_strerror
+-- Looking for gai_strerror - found
+-- Looking for getaddrinfo
+-- Looking for getaddrinfo - found
+-- Looking for getnameinfo
+-- Looking for getnameinfo - found
+-- Looking for getpeername
+-- Looking for getpeername - found
+-- Looking for hstrerror
+-- Looking for hstrerror - found
+-- Looking for inet_aton
+-- Looking for inet_aton - found
+-- Looking for inet_pton
+-- Looking for inet_pton - found
+-- Check size of struct addrinfo
+-- Check size of struct addrinfo - done
+-- Performing Test HAVE_SOCKADDR_SA_LEN
+-- Performing Test HAVE_SOCKADDR_SA_LEN - Success
+-- Check size of struct sockaddr_storage
+-- Check size of struct sockaddr_storage - done
+-- Looking for pthread_sigmask
+-- Looking for pthread_sigmask - found
+-- Looking for pthread_atfork
+-- Looking for pthread_atfork - found
+-- Looking for sem_getvalue
+-- Looking for sem_getvalue - found
+-- Looking for sem_open
+-- Looking for sem_open - found
+-- Looking for sem_timedwait
+-- Looking for sem_timedwait - not found
+-- Looking for sem_unlink
+-- Looking for sem_unlink - found
+-- Checking whether POSIX semaphores are enabled
+-- Checking whether POSIX semaphores are enabled - no
+-- Checking for broken sem_getvalue
+-- Checking for broken sem_getvalue - yes
+-- Looking for rl_callback_handler_install
+-- Looking for rl_callback_handler_install - found
+-- Looking for rl_catch_signals
+-- Looking for rl_catch_signals - not found
+-- Looking for rl_completion_append_character
+-- Looking for rl_completion_append_character - found
+-- Looking for rl_completion_display_matches_hook
+-- Looking for rl_completion_display_matches_hook - found
+-- Looking for rl_completion_suppress_append
+-- Looking for rl_completion_suppress_append - not found
+-- Looking for rl_completion_matches
+-- Looking for rl_completion_matches - found
+-- Looking for rl_pre_input_hook
+-- Looking for rl_pre_input_hook - found
+-- Looking for rl_resize_terminal
+-- Looking for rl_resize_terminal - not found
+-- Looking for is_term_resized
+-- Looking for is_term_resized - found
+-- Looking for resizeterm
+-- Looking for resizeterm - found
+-- Looking for resize_term
+-- Looking for resize_term - found
+-- Performing Test WINDOW_HAS_FLAGS
+-- Performing Test WINDOW_HAS_FLAGS - Failed
+-- Performing Test MVWDELCH_IS_EXPRESSION
+-- Performing Test MVWDELCH_IS_EXPRESSION - Success
+-- Looking for dlopen
+-- Looking for dlopen - found
+-- Check size of gid_t
+-- Check size of gid_t - done
+-- Check size of mode_t
+-- Check size of mode_t - done
+-- Check size of off_t
+-- Check size of off_t - done
+-- Check size of pid_t
+-- Check size of pid_t - done
+-- Check size of size_t
+-- Check size of size_t - done
+-- Check size of uint64_t
+-- Check size of uint64_t - done
+-- Check size of int64_t
+-- Check size of int64_t - done
+-- Check size of uint32_t
+-- Check size of uint32_t - done
+-- Check size of int32_t
+-- Check size of int32_t - done
+-- Check size of __uint128_t
+-- Check size of __uint128_t - done
+-- Check size of socklen_t
+-- Check size of socklen_t - done
+-- Check size of uid_t
+-- Check size of uid_t - done
+-- Check size of clock_t
+-- Check size of clock_t - done
+-- Performing Test const_WORKS
+-- Performing Test const_WORKS - Success
+-- Performing Test signed_WORKS
+-- Performing Test signed_WORKS - Success
+-- Performing Test volatile_WORKS
+-- Performing Test volatile_WORKS - Success
+-- Checking for prototypes
+-- Checking for prototypes - yes
+-- Performing Test NOT_VA_LIST_IS_ARRAY
+-- Performing Test NOT_VA_LIST_IS_ARRAY - Failed
+-- Checking whether char is unsigned
+-- Checking whether char is unsigned - no
+-- Checking if the dirent structure of a d_type field
+-- Checking if the dirent structure of a d_type field - yes
+-- Checking for the Linux getrandom() syscall
+-- Checking for the Linux getrandom() syscall - no
+-- Checking for the getrandom() function
+-- Checking for the getrandom() function - no
+-- Performing Test GETPGRP_HAVE_ARG
+-- Performing Test GETPGRP_HAVE_ARG - Failed
+-- Performing Test SETPGRP_HAVE_ARG
+-- Performing Test SETPGRP_HAVE_ARG - Failed
+-- Checking for inline
+-- Checking for inline - yes
+-- Checking for append_history in -lreadline
+CMake Deprecation Warning at cmake/CMakeExpandImportedTargets.cmake:57 (cmake_policy):
+  The OLD behavior for policy CMP0045 will be removed from a future version
+  of CMake.
+
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
+Call Stack (most recent call first):
+  cmake/PlatformTest.cmake:17 (CMAKE_EXPAND_IMPORTED_TARGETS)
+  cmake/ConfigureChecks.cmake:1990 (python_platform_test)
+  CMakeLists.txt:319 (include)
+
+
+-- Checking for append_history in -lreadline - no
+-- Performing Test HAVE_BROKEN_NICE
+-- Performing Test HAVE_BROKEN_NICE - Failed
+-- Performing Test HAVE_BROKEN_POLL
+-- Performing Test HAVE_BROKEN_POLL - Failed
+-- Checking for working tzset()
+-- Checking for working tzset() - yes
+-- Checking for broken unsetenv
+-- Checking for broken unsetenv - no
+-- Checking aligned memory access is required
+-- Checking aligned memory access is required - no
+-- Checking for broken mbstowcs
+-- Checking for broken mbstowcs - no
+-- Checking whether Clang supports computed gotos
+-- Checking whether Clang supports computed gotos - yes
+-- Performing Test have_O2
+-- Performing Test have_O2 - Success
+-- Checking for glibc _FORTIFY_SOURCE/memmove bug
+-- Checking for glibc _FORTIFY_SOURCE/memmove bug - no
+-- Checking for stdatomic.h
+-- Checking for stdatomic.h - yes
+-- Checking for GCC >= 4.7 __atomic builtins
+-- Checking for GCC >= 4.7 __atomic builtins - yes
+-- Checking for %lld and %llu printf() format support
+-- Checking for %lld and %llu printf() format support - yes
+-- Checking for %zd printf() format support()
+-- Checking for %zd printf() format support() - yes
+-- Looking for inflateCopy
+-- Looking for inflateCopy - found
+-- Performing Test HAVE_LINUX_CAN_RAW_FD_FRAMES
+-- Performing Test HAVE_LINUX_CAN_RAW_FD_FRAMES - Failed
+-- Checking for OSX 10.5 SDK or later
+-- Checking for OSX 10.5 SDK or later - yes
+-- 
+-- The following extensions will NOT be built:
+-- 
+--     cPickle (not set: IS_PY2)
+--     _crypt (not set: HAVE_LIBCRYPT)
+--     cStringIO (not set: IS_PY2)
+--     future_builtins (not set: IS_PY2)
+--     _hotshot (not set: IS_PY2)
+--     operator (not set: IS_PY2)
+--     strop (not set: IS_PY2)
+--     nis (not set: HAVE_LIBNSL)
+--     spwd (not set: HAVE_GETSPNAM HAVE_GETSPENT)
+--     linuxaudiodev (not set: LINUX IS_PY2)
+--     ossaudiodev (not set: LINUX)
+--     _msi (not set: WIN32)
+--     msvcrt (not set: MSVC)
+--     nt (not set: WIN32)
+--     _subprocess (not set: WIN32 IS_PY2)
+--     winreg (not set: WIN32)
+--     _overlapped (not set: WIN32)
+--     _winapi (not set: WIN32)
+--     _bsddb (not set: DB_LIBRARIES)
+--     _dbm (not set: GDBM_COMPAT_LIBRARY)
+--     _gdbm (not set: GDBM_COMPAT_LIBRARY)
+--     _hashlib (not set: OPENSSL_INCLUDE_DIR)
+--     _ssl (not set: OPENSSL_INCLUDE_DIR)
+--     _tkinter (not set: X11_INCLUDE_DIR X11_LIBRARIES)
+-- 
+-- Configuring incomplete, errors occurred!
+See also "/Users/spinlock/src/wrmsr/cpython/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+See also "/Users/spinlock/src/wrmsr/cpython/cmake-build-debug/CMakeFiles/CMakeError.log".
