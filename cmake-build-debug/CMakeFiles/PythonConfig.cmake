@@ -27,7 +27,7 @@ else()
 endif()
 
 set_and_check(PYTHON_CONFIG_DIR "${PACKAGE_PREFIX_DIR}/share/python3.7")
-set_and_check(PYTHON_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/include/python3.7m")
+set_and_check(PYTHON_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/include/python3.7")
 set_and_check(PYTHON_TARGETS "${PACKAGE_PREFIX_DIR}/share/python3.7/PythonTargets.cmake")
 
 

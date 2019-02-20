@@ -10,22 +10,8 @@ extern PyObject* PyInit__datetime(void);
 extern PyObject* PyInit__io(void);
 extern PyObject* PyInit__thread(void);
 extern PyObject* PyInit_time(void);
-extern PyObject* PyInit_atexit(void);
-extern PyObject* PyInit__codecs(void);
-extern PyObject* PyInit_faulthandler(void);
-extern PyObject* PyInit__opcode(void);
-extern PyObject* PyInit__pickle(void);
-extern PyObject* PyInit__sre(void);
-extern PyObject* PyInit__stat(void);
-extern PyObject* PyInit__symtable(void);
-extern PyObject* PyInit__tracemalloc(void);
-extern PyObject* PyInit__weakref(void);
-extern PyObject* PyInit_xxsubtype(void);
-extern PyObject* PyInit_zipimport(void);
 extern PyObject* PyInit_posix(void);
 extern PyObject* PyInit_pwd(void);
-extern PyObject* PyInit_errno(void);
-extern PyObject* PyInit__posixsubprocess(void);
 extern PyObject* PyInit__socket(void);
 
 
@@ -54,22 +40,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"_io", PyInit__io},
     {"_thread", PyInit__thread},
     {"time", PyInit_time},
-    {"atexit", PyInit_atexit},
-    {"_codecs", PyInit__codecs},
-    {"faulthandler", PyInit_faulthandler},
-    {"_opcode", PyInit__opcode},
-    {"_pickle", PyInit__pickle},
-    {"_sre", PyInit__sre},
-    {"_stat", PyInit__stat},
-    {"_symtable", PyInit__symtable},
-    {"_tracemalloc", PyInit__tracemalloc},
-    {"_weakref", PyInit__weakref},
-    {"xxsubtype", PyInit_xxsubtype},
-    {"zipimport", PyInit_zipimport},
     {"posix", PyInit_posix},
     {"pwd", PyInit_pwd},
-    {"errno", PyInit_errno},
-    {"_posixsubprocess", PyInit__posixsubprocess},
     {"_socket", PyInit__socket},
 
 

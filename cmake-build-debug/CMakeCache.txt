@@ -26,10 +26,6 @@ BUILD_TESTING:BOOL=ON
 //If this is set the "array" extension will be compiled in to libpython
 BUILTIN_ARRAY:BOOL=OFF
 
-//If this is set the "atexit" extension will be compiled in to
-// libpython
-BUILTIN_ATEXIT:BOOL=ON
-
 //If this is set the "audioop" extension will be compiled in to
 // libpython
 BUILTIN_AUDIOOP:BOOL=OFF
@@ -47,10 +43,6 @@ BUILTIN_BZ2:BOOL=OFF
 
 //If this is set the "cmath" extension will be compiled in to libpython
 BUILTIN_CMATH:BOOL=OFF
-
-//If this is set the "_codecs" extension will be compiled in to
-// libpython
-BUILTIN_CODECS:BOOL=ON
 
 //If this is set the "_codecs_cn" extension will be compiled in
 // to libpython
@@ -103,13 +95,6 @@ BUILTIN_DECIMAL:BOOL=OFF
 // in to libpython
 BUILTIN_ELEMENTTREE:BOOL=OFF
 
-//If this is set the "errno" extension will be compiled in to libpython
-BUILTIN_ERRNO:BOOL=ON
-
-//If this is set the "faulthandler" extension will be compiled
-// in to libpython
-BUILTIN_FAULTHANDLER:BOOL=ON
-
 //If this is set the "fcntl" extension will be compiled in to libpython
 BUILTIN_FCNTL:BOOL=OFF
 
@@ -159,28 +144,12 @@ BUILTIN_MULTIBYTECODEC:BOOL=OFF
 // in to libpython
 BUILTIN_MULTIPROCESSING:BOOL=OFF
 
-//If this is set the "_opcode" extension will be compiled in to
-// libpython
-BUILTIN_OPCODE:BOOL=ON
-
-//If this is set the "_operator" extension will be compiled in
-// to libpython
-BUILTIN_OPERATOR:BOOL=OFF
-
 //If this is set the "parser" extension will be compiled in to
 // libpython
 BUILTIN_PARSER:BOOL=OFF
 
-//If this is set the "_pickle" extension will be compiled in to
-// libpython
-BUILTIN_PICKLE:BOOL=ON
-
 //If this is set the "posix" extension will be compiled in to libpython
 BUILTIN_POSIX:BOOL=ON
-
-//If this is set the "_posixsubprocess" extension will be compiled
-// in to libpython
-BUILTIN_POSIXSUBPROCESS:BOOL=ON
 
 //If this is set the "pwd" extension will be compiled in to libpython
 BUILTIN_PWD:BOOL=ON
@@ -228,19 +197,9 @@ BUILTIN_SOCKET:BOOL=ON
 // libpython
 BUILTIN_SQLITE3:BOOL=OFF
 
-//If this is set the "_sre" extension will be compiled in to libpython
-BUILTIN_SRE:BOOL=ON
-
-//If this is set the "_stat" extension will be compiled in to libpython
-BUILTIN_STAT:BOOL=ON
-
 //If this is set the "_struct" extension will be compiled in to
 // libpython
 BUILTIN_STRUCT:BOOL=OFF
-
-//If this is set the "_symtable" extension will be compiled in
-// to libpython
-BUILTIN_SYMTABLE:BOOL=ON
 
 //If this is set the "syslog" extension will be compiled in to
 // libpython
@@ -250,18 +209,6 @@ BUILTIN_SYSLOG:BOOL=OFF
 // libpython
 BUILTIN_TERMIOS:BOOL=OFF
 
-//If this is set the "_testbuffer" extension will be compiled in
-// to libpython
-BUILTIN_TESTBUFFER:BOOL=OFF
-
-//If this is set the "_testimportmultiple" extension will be compiled
-// in to libpython
-BUILTIN_TESTIMPORTMULTIPLE:BOOL=OFF
-
-//If this is set the "_testmultiphase" extension will be compiled
-// in to libpython
-BUILTIN_TESTMULTIPHASE:BOOL=OFF
-
 //If this is set the "_thread" extension will be compiled in to
 // libpython
 BUILTIN_THREAD:BOOL=ON
@@ -269,25 +216,9 @@ BUILTIN_THREAD:BOOL=ON
 //If this is set the "time" extension will be compiled in to libpython
 BUILTIN_TIME:BOOL=ON
 
-//If this is set the "_tracemalloc" extension will be compiled
-// in to libpython
-BUILTIN_TRACEMALLOC:BOOL=ON
-
 //If this is set the "unicodedata" extension will be compiled in
 // to libpython
 BUILTIN_UNICODEDATA:BOOL=OFF
-
-//If this is set the "_weakref" extension will be compiled in to
-// libpython
-BUILTIN_WEAKREF:BOOL=ON
-
-//If this is set the "xxlimited" extension will be compiled in
-// to libpython
-BUILTIN_XXLIMITED:BOOL=OFF
-
-//If this is set the "xxsubtype" extension will be compiled in
-// to libpython
-BUILTIN_XXSUBTYPE:BOOL=ON
 
 //If this is set the "zlib" extension will be compiled in to libpython
 BUILTIN_ZLIB:BOOL=OFF
@@ -617,7 +548,7 @@ ENABLE_CURSES_PANEL:BOOL=ON
 //Controls whether the "_datetime" extension will be built
 ENABLE_DATETIME:BOOL=ON
 
-//Controls whether the "_dbm" extension will be built
+//Controls whether the "dbm" extension will be built
 ENABLE_DBM:BOOL=ON
 
 //Controls whether the "_decimal" extension will be built
@@ -641,7 +572,7 @@ ENABLE_FUNCTOOLS:BOOL=ON
 //Controls whether the "future_builtins" extension will be built
 ENABLE_FUTURE_BUILTINS:BOOL=ON
 
-//Controls whether the "_gdbm" extension will be built
+//Controls whether the "gdbm" extension will be built
 ENABLE_GDBM:BOOL=ON
 
 //Controls whether the "grp" extension will be built
@@ -1031,6 +962,9 @@ USE_SYSTEM_EXPAT:BOOL=ON
 //Use system GDBM
 USE_SYSTEM_GDBM:BOOL=ON
 
+//Use system LIBMPDEC
+USE_SYSTEM_LIBMPDEC:BOOL=ON
+
 //Use system libraries
 USE_SYSTEM_LIBRARIES:BOOL=ON
 
@@ -1296,8 +1230,9 @@ extension_zlib_LIB_DEPENDS:STATIC=general;/usr/lib/libz.dylib;
 
 //ADVANCED property for variable: BUILTIN_ARRAY
 BUILTIN_ARRAY-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_ATEXIT
-BUILTIN_ATEXIT-ADVANCED:INTERNAL=0
+//If this is set the "atexit" extension will be compiled in to
+// libpython
+BUILTIN_ATEXIT:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_AUDIOOP
 BUILTIN_AUDIOOP-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_BINASCII
@@ -1308,8 +1243,9 @@ BUILTIN_BISECT-ADVANCED:INTERNAL=1
 BUILTIN_BZ2-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_CMATH
 BUILTIN_CMATH-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_CODECS
-BUILTIN_CODECS-ADVANCED:INTERNAL=0
+//If this is set the "_codecs" extension will be compiled in to
+// libpython
+BUILTIN_CODECS:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_CODECS_CN
 BUILTIN_CODECS_CN-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_CODECS_HK
@@ -1336,10 +1272,11 @@ BUILTIN_DATETIME-ADVANCED:INTERNAL=0
 BUILTIN_DECIMAL-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_ELEMENTTREE
 BUILTIN_ELEMENTTREE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_ERRNO
-BUILTIN_ERRNO-ADVANCED:INTERNAL=0
-//ADVANCED property for variable: BUILTIN_FAULTHANDLER
-BUILTIN_FAULTHANDLER-ADVANCED:INTERNAL=0
+//If this is set the "errno" extension will be compiled in to libpython
+BUILTIN_ERRNO:INTERNAL=ON
+//If this is set the "faulthandler" extension will be compiled
+// in to libpython
+BUILTIN_FAULTHANDLER:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_FCNTL
 BUILTIN_FCNTL-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_FUNCTOOLS
@@ -1368,18 +1305,22 @@ BUILTIN_MMAP-ADVANCED:INTERNAL=1
 BUILTIN_MULTIBYTECODEC-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_MULTIPROCESSING
 BUILTIN_MULTIPROCESSING-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_OPCODE
-BUILTIN_OPCODE-ADVANCED:INTERNAL=0
-//ADVANCED property for variable: BUILTIN_OPERATOR
-BUILTIN_OPERATOR-ADVANCED:INTERNAL=1
+//If this is set the "_opcode" extension will be compiled in to
+// libpython
+BUILTIN_OPCODE:INTERNAL=ON
+//If this is set the "_operator" extension will be compiled in
+// to libpython
+BUILTIN_OPERATOR:INTERNAL=OFF
 //ADVANCED property for variable: BUILTIN_PARSER
 BUILTIN_PARSER-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_PICKLE
-BUILTIN_PICKLE-ADVANCED:INTERNAL=0
+//If this is set the "_pickle" extension will be compiled in to
+// libpython
+BUILTIN_PICKLE:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_POSIX
 BUILTIN_POSIX-ADVANCED:INTERNAL=0
-//ADVANCED property for variable: BUILTIN_POSIXSUBPROCESS
-BUILTIN_POSIXSUBPROCESS-ADVANCED:INTERNAL=0
+//If this is set the "_posixsubprocess" extension will be compiled
+// in to libpython
+BUILTIN_POSIXSUBPROCESS:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_PWD
 BUILTIN_PWD-ADVANCED:INTERNAL=0
 //ADVANCED property for variable: BUILTIN_PYEXPAT
@@ -1404,38 +1345,46 @@ BUILTIN_SHA512-ADVANCED:INTERNAL=1
 BUILTIN_SOCKET-ADVANCED:INTERNAL=0
 //ADVANCED property for variable: BUILTIN_SQLITE3
 BUILTIN_SQLITE3-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_SRE
-BUILTIN_SRE-ADVANCED:INTERNAL=0
-//ADVANCED property for variable: BUILTIN_STAT
-BUILTIN_STAT-ADVANCED:INTERNAL=0
+//If this is set the "_sre" extension will be compiled in to libpython
+BUILTIN_SRE:INTERNAL=ON
+//If this is set the "_stat" extension will be compiled in to libpython
+BUILTIN_STAT:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_STRUCT
 BUILTIN_STRUCT-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_SYMTABLE
-BUILTIN_SYMTABLE-ADVANCED:INTERNAL=0
+//If this is set the "_symtable" extension will be compiled in
+// to libpython
+BUILTIN_SYMTABLE:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_SYSLOG
 BUILTIN_SYSLOG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BUILTIN_TERMIOS
 BUILTIN_TERMIOS-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_TESTBUFFER
-BUILTIN_TESTBUFFER-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_TESTIMPORTMULTIPLE
-BUILTIN_TESTIMPORTMULTIPLE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_TESTMULTIPHASE
-BUILTIN_TESTMULTIPHASE-ADVANCED:INTERNAL=1
+//If this is set the "_testbuffer" extension will be compiled in
+// to libpython
+BUILTIN_TESTBUFFER:INTERNAL=OFF
+//If this is set the "_testimportmultiple" extension will be compiled
+// in to libpython
+BUILTIN_TESTIMPORTMULTIPLE:INTERNAL=OFF
+//If this is set the "_testmultiphase" extension will be compiled
+// in to libpython
+BUILTIN_TESTMULTIPHASE:INTERNAL=OFF
 //ADVANCED property for variable: BUILTIN_THREAD
 BUILTIN_THREAD-ADVANCED:INTERNAL=0
 //ADVANCED property for variable: BUILTIN_TIME
 BUILTIN_TIME-ADVANCED:INTERNAL=0
-//ADVANCED property for variable: BUILTIN_TRACEMALLOC
-BUILTIN_TRACEMALLOC-ADVANCED:INTERNAL=0
+//If this is set the "_tracemalloc" extension will be compiled
+// in to libpython
+BUILTIN_TRACEMALLOC:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_UNICODEDATA
 BUILTIN_UNICODEDATA-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_WEAKREF
-BUILTIN_WEAKREF-ADVANCED:INTERNAL=0
-//ADVANCED property for variable: BUILTIN_XXLIMITED
-BUILTIN_XXLIMITED-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: BUILTIN_XXSUBTYPE
-BUILTIN_XXSUBTYPE-ADVANCED:INTERNAL=0
+//If this is set the "_weakref" extension will be compiled in to
+// libpython
+BUILTIN_WEAKREF:INTERNAL=ON
+//If this is set the "xxlimited" extension will be compiled in
+// to libpython
+BUILTIN_XXLIMITED:INTERNAL=OFF
+//If this is set the "xxsubtype" extension will be compiled in
+// to libpython
+BUILTIN_XXSUBTYPE:INTERNAL=ON
 //ADVANCED property for variable: BUILTIN_ZLIB
 BUILTIN_ZLIB-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: BZIP2_INCLUDE_DIR
@@ -1545,7 +1494,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=60
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=54
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -3028,8 +2977,8 @@ __pkg_config_checked_PC_EXPAT:INTERNAL=1
 __pkg_config_checked__OPENSSL:INTERNAL=1
 //Test const_WORKS
 const_WORKS:INTERNAL=1
-extensions_disabled:INTERNAL=cPickle (not set: IS_PY2);_crypt (not set: HAVE_LIBCRYPT);cStringIO (not set: IS_PY2);future_builtins (not set: IS_PY2);_hotshot (not set: IS_PY2);operator (not set: IS_PY2);strop (not set: IS_PY2);nis (not set: HAVE_LIBNSL);spwd (not set: HAVE_GETSPNAM HAVE_GETSPENT);linuxaudiodev (not set: LINUX IS_PY2);ossaudiodev (not set: LINUX);_msi (not set: WIN32);msvcrt (not set: MSVC);nt (not set: WIN32);_subprocess (not set: WIN32 IS_PY2);winreg (not set: WIN32);_overlapped (not set: WIN32);_winapi (not set: WIN32);_bsddb (not set: DB_LIBRARIES);_dbm (not set: GDBM_COMPAT_LIBRARY);_gdbm (not set: GDBM_COMPAT_LIBRARY);_hashlib (not set: OPENSSL_INCLUDE_DIR);_ssl (not set: OPENSSL_INCLUDE_DIR);_tkinter (not set: X11_INCLUDE_DIR X11_LIBRARIES);
-extensions_enabled:INTERNAL=array;audioop;_bisect;cmath;_codecs_cn;_codecs_hk;_codecs_iso2022;_codecs_jp;_codecs_kr;_codecs_tw;_collections;_csv;_ctypes_test;_datetime;_functools;_heapq;_io;itertools;_json;_locale;_lsprof;math;mmap;_multibytecodec;parser;_random;_struct;_testcapi;_thread;time;unicodedata;atexit;_codecs;faulthandler;_opcode;_operator;_pickle;_sre;_stat;_symtable;_testbuffer;_testimportmultiple;_testmultiphase;_tracemalloc;_weakref;xxlimited;xxsubtype;zipimport;fcntl;grp;posix;pwd;resource;syslog;termios;errno;_posixsubprocess;_scproxy;_multiprocessing;select;_socket;_ctypes;_decimal;pyexpat;_elementtree;_md5;_sha1;_sha256;_sha512;binascii;_bz2;_curses_panel;_curses;readline;_sqlite3;zlib;
+extensions_disabled:INTERNAL=cPickle (not set: IS_PY2);_crypt (not set: HAVE_LIBCRYPT);cStringIO (not set: IS_PY2);future_builtins (not set: IS_PY2);_hotshot (not set: IS_PY2);operator (not set: IS_PY2);strop (not set: IS_PY2);atexit (not set: IS_PY3);_codecs (not set: IS_PY3);faulthandler (not set: IS_PY3);_opcode (not set: IS_PY3);_operator (not set: IS_PY3);_pickle (not set: IS_PY3);_sre (not set: IS_PY3);_stat (not set: IS_PY3);_symtable (not set: IS_PY3);_testbuffer (not set: IS_PY3);_testimportmultiple (not set: IS_PY3);_testmultiphase (not set: IS_PY3);_tracemalloc (not set: IS_PY3);_weakref (not set: IS_PY3);xxlimited (not set: IS_PY3);xxsubtype (not set: IS_PY3);zipimport (not set: IS_PY3);nis (not set: HAVE_LIBNSL);spwd (not set: HAVE_GETSPNAM HAVE_GETSPENT);errno (not set: IS_PY3);_posixsubprocess (not set: IS_PY3);linuxaudiodev (not set: LINUX IS_PY2);ossaudiodev (not set: LINUX);_msi (not set: WIN32);msvcrt (not set: MSVC);nt (not set: WIN32);_subprocess (not set: WIN32 IS_PY2);winreg (not set: WIN32);_overlapped (not set: WIN32 IS_PY3);_winapi (not set: WIN32 IS_PY3);_bsddb (not set: DB_LIBRARIES);dbm (not set: GDBM_COMPAT_LIBRARY);gdbm (not set: GDBM_COMPAT_LIBRARY);_hashlib (not set: OPENSSL_INCLUDE_DIR);_ssl (not set: OPENSSL_INCLUDE_DIR);_tkinter (not set: X11_INCLUDE_DIR X11_LIBRARIES);
+extensions_enabled:INTERNAL=array;audioop;_bisect;cmath;_codecs_cn;_codecs_hk;_codecs_iso2022;_codecs_jp;_codecs_kr;_codecs_tw;_collections;_csv;_ctypes_test;_datetime;_functools;_heapq;_io;itertools;_json;_locale;_lsprof;math;mmap;_multibytecodec;parser;_random;_struct;_testcapi;_thread;time;unicodedata;fcntl;grp;posix;pwd;resource;syslog;termios;_scproxy;_multiprocessing;select;_socket;_ctypes;pyexpat;_elementtree;_md5;_sha1;_sha256;_sha512;binascii;_bz2;_curses_panel;_curses;readline;_sqlite3;zlib;
 //Test have_O2
 have_O2:INTERNAL=1
 //Test signed_WORKS
