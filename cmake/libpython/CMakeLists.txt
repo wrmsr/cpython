@@ -344,6 +344,8 @@ endforeach()
 # Collect builtin extension definitions
 set(builtin_compile_definitions_without_py_limited_api)
 foreach(name ${builtin_extensions})
+    set_property(SOURCE ${extension_${name}_sources}
+        APPEND PROPERTY COMPILE_DEFINITIONS Py_BUILD_CORE)
     get_property(extension_${name}_definitions GLOBAL PROPERTY extension_${name}_definitions)
     if(extension_${name}_definitions)
         set_property(SOURCE ${extension_${name}_sources}
@@ -408,6 +410,7 @@ add_executable(_freeze_importlib
   ${LIBPYTHON_OMIT_FROZEN_SOURCES}
   )
 target_link_libraries(_freeze_importlib ${LIBPYTHON_TARGET_LIBRARIES})
+target_compile_definitions(_freeze_importlib PUBLIC Py_BUILD_CORE)
 if(builtin_compile_definitions_without_py_limited_api)
   target_compile_definitions(_freeze_importlib PUBLIC ${builtin_compile_definitions_without_py_limited_api})
 endif()
@@ -457,6 +460,7 @@ add_executable(pgen
     ${SRC_DIR}/Parser/printgrammar.c
     ${SRC_DIR}/Parser/pgenmain.c
 )
+target_compile_definitions(pgen PUBLIC Py_BUILD_CORE)
 if(builtin_compile_definitions_without_py_limited_api)
   target_compile_definitions(pgen PUBLIC ${builtin_compile_definitions_without_py_limited_api})
 endif()
@@ -476,6 +480,7 @@ endif()
 function(add_libpython name type install component)
     add_library(${name} ${type} ${LIBPYTHON_SOURCES})
     target_link_libraries(${name} ${LIBPYTHON_TARGET_LIBRARIES})
+    target_compile_definitions(${name} PUBLIC Py_BUILD_CORE)
 
     if(MSVC)
         # Explicitly disable COMDAT folding. Note that this was not required

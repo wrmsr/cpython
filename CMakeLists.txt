@@ -16,6 +16,8 @@ if(APPLE)
   message(STATUS "${_msg} - ${MACOSX_DEPLOYMENT_TARGET}")
 endif()
 
+# add_compile_definitions(Py_BUILD_CORE)
+
 project(Python C ASM)
 
 if(POLICY CMP0042)

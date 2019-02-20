@@ -1,8 +1,5 @@
-set(subdir_2  Modules)
-set(subdir_3  Programs)
-
 set(PYTHON_SOURCES
-    ${SRC_DIR}/${subdir_${PY_VERSION_MAJOR}}/python.c
+    ${SRC_DIR}/Programs/python.c
 )
 
 add_executable(python ${PYTHON_SOURCES})
@@ -48,7 +45,7 @@ if(WIN32)
         )
 endif()
 
-if(UNIX AND PY_VERSION VERSION_GREATER "2.7.4")
+if(UNIX)
     # Setup landmark allowing to run the interpreter from a build tree. See 'getpath.c' for details.
     set(_sysconfigdata_py "_sysconfigdata.py")
     if("${PY_VERSION}" VERSION_EQUAL "3.6.0" OR "${PY_VERSION}" VERSION_GREATER "3.6.0")
