@@ -32,6 +32,9 @@
 #include "pydtrace.h"
 #include "pytime.h"             /* for _PyTime_GetMonotonicClock() */
 
+#define SHARING_LOCK() PyThread_acquire_lock(_PyRuntime.gc.sharing_mutex, WAIT_LOCK)
+#define SHARING_UNLOCK() PyThread_release_lock(_PyRuntime.gc.sharing_mutex)
+
 /*[clinic input]
 module gc
 [clinic start generated code]*/
@@ -146,6 +149,8 @@ _PyGC_Initialize(struct _gc_runtime_state *state)
            (uintptr_t)&state->permanent_generation.head}, 0, 0
     };
     state->permanent_generation = permanent_generation;
+
+    state->sharing_mutex = PyThread_allocate_lock();
 }
 
 /*
@@ -1912,6 +1917,15 @@ _PyGC_Fini(_PyRuntimeState *runtime)
     struct _gc_runtime_state *state = &runtime->gc;
     Py_CLEAR(state->garbage);
     Py_CLEAR(state->callbacks);
+}
+
+void
+PyGC_ShareObject(PyObject *obj)
+{
+       SHARING_LOCK();
+       _PyRuntime.
+
+       SHARING_UNLOCK();
 }
 
 /* for debugging */

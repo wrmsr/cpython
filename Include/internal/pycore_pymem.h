@@ -111,6 +111,11 @@ struct gc_generation_stats {
     Py_ssize_t uncollectable;
 };
 
+struct _gc_shared_refcnt {
+    PyObject *obj;
+    Py_ssize_t refcnt;
+};
+
 struct _gc_runtime_state {
     /* List of objects that still need to be cleaned up, singly linked
      * via their gc headers' gc_prev pointers.  */
@@ -143,9 +148,16 @@ struct _gc_runtime_state {
        collections, and are awaiting to undergo a full collection for
        the first time. */
     Py_ssize_t long_lived_pending;
+
+    PyThread_type_lock sharing_mutex;
+    struct _gc_shared_refcnt *shared_refcnts;
+    struct _gc_shared_refcnt *free_shared_refcnt;
 };
 
 PyAPI_FUNC(void) _PyGC_Initialize(struct _gc_runtime_state *);
+
+
+PyAPI_FUNC(void) PyGC_ShareObject(PyObject *obj);
 
 
 /* Set the memory allocator of the specified domain to the default.

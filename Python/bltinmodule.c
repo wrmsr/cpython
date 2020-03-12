@@ -2245,6 +2245,24 @@ builtin_sorted(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject
 }
 
 
+static PyObject *
+builtin_share(PyObject *self, PyObject *arg)
+{
+    if (arg == NULL) {
+        PyErr_SetString(PyExc_TypeError,
+            "share() must be called with an object argument");
+        return NULL;
+    }
+    Py_INCREF(arg);
+    return arg;
+}
+
+PyDoc_STRVAR(share_doc,
+"share(object) -> object\n\
+\n\
+Shares object with other threads.");
+
+
 /* AC: cannot convert yet, as needs PEP 457 group support in inspect */
 static PyObject *
 builtin_vars(PyObject *self, PyObject *args)
@@ -2741,6 +2759,7 @@ static PyMethodDef builtin_methods[] = {
     BUILTIN_REPR_METHODDEF
     BUILTIN_ROUND_METHODDEF
     BUILTIN_SETATTR_METHODDEF
+    {"share",           builtin_share,      METH_O, share_doc},
     BUILTIN_SORTED_METHODDEF
     BUILTIN_SUM_METHODDEF
     {"vars",            builtin_vars,       METH_VARARGS, vars_doc},

@@ -52,6 +52,11 @@ pymain_init(const _PyArgv *args)
     fedisableexcept(FE_OVERFLOW);
 #endif
 
+    if (getenv("PYMAIN_INIT_PAUSE")) {
+        fprintf(stderr, "%d\n", getpid());
+        getchar();
+    }
+
     PyPreConfig preconfig;
     PyPreConfig_InitPythonConfig(&preconfig);
 

@@ -47,6 +47,42 @@ typedef struct _err_stackitem {
 } _PyErr_StackItem;
 
 
+typedef uint64_t Py_ownership_block;
+
+#define _Py_OWNERSHIP_BLOCK_REFCNT_MASK      (~(0xFFFFL << 48L))
+#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_REFCNT_MASK)))
+#define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
+#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_REFCNT_MASK))
+
+#ifdef Py_BUILD_CORE
+extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
+// Weave into things like ceval but must refresh after every instr that calls out
+#define Py_LOCAL_THREAD_STATE \
+    Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#define Py_LOCAL_THREAD_STATE_REFRESH \
+    _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#else
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
+#endif
+
+#define _Py_THREADSTATE_OWNERSHIP_ID (Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+#define _Py_THREADSTATE_REFCNTS      (Py_OWNERSHIP_BLOCK_REFCNTS(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+
+extern int _Py_Freethreaded;
+
+Py_ownership_block PyThreadState_OwnershipBlock(void);
+Py_owner_id_t PyThreadState_OwnershipId(void);
+Py_refcnt_t *PyThreadState_refcnts(void);
+
+typedef struct _obj_list_page {
+    struct _obj_list_page *next;
+    Py_ssize_t capacity;
+    Py_ssize_t count;
+    PyObject *contents[0];
+} _PyObject_ListPage;
+
+
 // The PyThreadState typedef is in Include/pystate.h.
 struct _ts {
     /* See Python/ceval.c for comments explaining most fields */
@@ -132,6 +168,12 @@ struct _ts {
     PyObject *context;
     uint64_t context_ver;
 
+    /* Freethreading. */
+    Py_owner_id_t ownership_id;
+    Py_refcnt_t *refcnts;
+    struct _obj_list_page *unshared_increfs;
+    struct _obj_list_page *unshared_decrefs;
+
     /* Unique thread state id. */
     uint64_t id;
 
@@ -150,6 +192,12 @@ PyAPI_FUNC(PyInterpreterState *) _PyInterpreterState_Get(void);
 PyAPI_FUNC(int) _PyState_AddModule(PyObject*, struct PyModuleDef*);
 PyAPI_FUNC(void) _PyState_ClearModules(void);
 PyAPI_FUNC(PyThreadState *) _PyThreadState_Prealloc(PyInterpreterState *);
+
+#if !defined(Py_LIMITED_API)
+void _PyThreadState_PrepareFreethreading(void);
+void _PyThreadState_AppendUnsharedIncref(PyObject *ob);
+void _PyThreadState_AppendUnsharedDecref(PyObject *ob);
+#endif
 
 /* Similar to PyThreadState_Get(), but don't issue a fatal error
  * if it is NULL. */

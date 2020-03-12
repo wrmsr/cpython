@@ -34,12 +34,32 @@ extern "C" {
 #define _PyRuntimeGILState_GetThreadState(gilstate) \
     ((PyThreadState*)_Py_atomic_load_relaxed(&(gilstate)->tstate_current))
 #define _PyRuntimeGILState_SetThreadState(gilstate, value) \
-    _Py_atomic_store_relaxed(&(gilstate)->tstate_current, \
-                             (uintptr_t)(value))
+    { _Py_atomic_store_relaxed(&_PyThreadState_Current, (uintptr_t)(value)); \
+      _PyThreadState_OwnershipBlock = (value == NULL) ? 0 : \
+        Py_OWNERSHIP_BLOCK(((PyThreadState*)value)->ownership_id, ((PyThreadState*)value)->refcnts); }
 
 /* Forward declarations */
 static PyThreadState *_PyGILState_GetThisThreadState(struct _gilstate_runtime_state *gilstate);
 static void _PyThreadState_Delete(_PyRuntimeState *runtime, PyThreadState *tstate);
+
+int _Py_Freethreaded = 0;
+__thread Py_ownership_block _PyThreadState_OwnershipBlock;
+
+Py_ownership_block
+PyThreadState_OwnershipBlock(void)
+{
+    return _PyThreadState_OwnershipBlock;
+}
+
+Py_owner_id_t PyThreadState_OwnershipId(void)
+{
+    return Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_PyThreadState_OwnershipBlock);
+}
+
+Py_refcnt_t *PyThreadState_refcnts(void)
+{
+    return Py_OWNERSHIP_BLOCK_REFCNTS(_PyThreadState_OwnershipBlock);
+}
 
 
 static PyStatus
@@ -543,6 +563,87 @@ PyInterpreterState_GetDict(PyInterpreterState *interp)
     return interp->dict;
 }
 
+static _PyObject_ListPage *
+pyobject_listpage_new(void) {
+    _PyObject_ListPage *page;
+    page = PyMem_RawMalloc(1024 * 1024);
+    page->capacity = ((1024 * 1024) - sizeof(_PyObject_ListPage)) / sizeof(PyObject *);
+    return page;
+}
+
+void
+_PyThreadState_PrepareFreethreading(void)
+{
+    PyInterpreterState *interp;
+    PyThreadState *tstate;
+    assert(_Py_Freethreaded);
+
+    HEAD_LOCK();
+    for (interp = _PyRuntime.interpreters.head; interp != NULL; interp = interp->next) {
+        for (tstate = interp->tstate_head; tstate != NULL; tstate = tstate->next) {
+            // FIXME:
+            if (tstate->ownership_id == 0)
+                tstate->ownership_id = (Py_owner_id_t) tstate->id;
+            if (tstate->refcnts == NULL)
+                tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
+
+            if (tstate->unshared_increfs == NULL)
+                tstate->unshared_increfs = pyobject_listpage_new();
+            if (tstate->unshared_decrefs == NULL)
+                tstate->unshared_decrefs = pyobject_listpage_new();
+        }
+    }
+    HEAD_UNLOCK();
+}
+
+void
+_PyThreadState_AppendUnsharedIncref(PyObject *ob)
+{
+    _PyObject_ListPage *page;
+    PyThreadState *tstate = PyThreadState_Get();
+    assert(tstate != NULL);
+    assert(_Py_Freethreaded);
+    if (_Py_IsFinalizing())
+        return;
+
+    page = tstate->unshared_increfs;
+    assert(page != NULL);
+    assert(page->count <= page->capacity);
+
+    if (page->count == page->capacity) {
+        page = pyobject_listpage_new();
+        page->next = tstate->unshared_increfs;
+        tstate->unshared_increfs = page;
+    }
+
+    page->contents[page->count] = ob;
+    page->count++;
+}
+
+void
+_PyThreadState_AppendUnsharedDecref(PyObject *ob)
+{
+    _PyObject_ListPage *page;
+    PyThreadState *tstate = PyThreadState_Get();
+    assert(tstate != NULL);
+    assert(_Py_Freethreaded);
+    if (_Py_IsFinalizing())
+        return;
+
+    page = tstate->unshared_decrefs;
+    assert(page != NULL);
+    assert(page->count <= page->capacity);
+
+    if (page->count == page->capacity) {
+        page = pyobject_listpage_new();
+        page->next = tstate->unshared_decrefs;
+        tstate->unshared_decrefs = page;
+    }
+
+    page->contents[page->count] = ob;
+    page->count++;
+}
+
 /* Default implementation for _PyThreadState_GetFrame */
 static struct _frame *
 threadstate_getframe(PyThreadState *self)
@@ -607,6 +708,15 @@ new_threadstate(PyInterpreterState *interp, int init)
     tstate->context_ver = 1;
 
     tstate->id = ++interp->tstate_next_unique_id;
+
+    if (_Py_Freethreaded) {
+        // FIXME
+        tstate->ownership_id = (Py_owner_id_t) tstate->id;
+        tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
+
+        tstate->unshared_increfs = pyobject_listpage_new();
+        tstate->unshared_decrefs = pyobject_listpage_new();
+    }
 
     if (init) {
         _PyThreadState_Init(runtime, tstate);
@@ -795,6 +905,23 @@ PyThreadState_Clear(PyThreadState *tstate)
     Py_CLEAR(tstate->async_gen_finalizer);
 
     Py_CLEAR(tstate->context);
+
+    // FIXME: should apply or explode if any present
+    //  NO: should add to list of orphans
+
+    if (tstate->refcnts != NULL)
+        PyMem_RawFree(tstate->refcnts);
+    while (tstate->unshared_increfs != NULL) {
+        _PyObject_ListPage *cur = tstate->unshared_increfs;
+        tstate->unshared_increfs = cur->next;
+        PyMem_RawFree(cur);
+    }
+
+    while (tstate->unshared_decrefs != NULL) {
+        _PyObject_ListPage *cur = tstate->unshared_decrefs;
+        tstate->unshared_decrefs = cur->next;
+        PyMem_RawFree(cur);
+    }
 }
 
 

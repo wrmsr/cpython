@@ -250,12 +250,30 @@ Py_DecRef(PyObject *o)
     Py_XDECREF(o);
 }
 
+void _Py_NO_INLINE
+Py_IncUnsharedRef(PyObject *o)
+{
+    assert(_Py_Freethreaded);
+    _PyThreadState_AppendUnsharedIncref(o);
+    // Py_FatalError("Py_IncUnsharedRef");
+}
+
+void _Py_NO_INLINE
+Py_DecUnsharedRef(PyObject *o)
+{
+    assert(_Py_Freethreaded);
+    _PyThreadState_AppendUnsharedDecref(o);
+    // Py_FatalError("Py_DecUnsharedRef");
+}
+
 PyObject *
 PyObject_Init(PyObject *op, PyTypeObject *tp)
 {
     if (op == NULL)
         return PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT (objimpl.h) */
+    if (_Py_Freethreaded)
+        Py_TREFCNT(op)->owned.owner_id = PyThreadState_OwnershipId();
     Py_TYPE(op) = tp;
     if (PyType_GetFlags(tp) & Py_TPFLAGS_HEAPTYPE) {
         Py_INCREF(tp);
@@ -270,6 +288,8 @@ PyObject_InitVar(PyVarObject *op, PyTypeObject *tp, Py_ssize_t size)
     if (op == NULL)
         return (PyVarObject *) PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT_VAR */
+    if (_Py_Freethreaded)
+        Py_TREFCNT(op)->owned.owner_id = PyThreadState_OwnershipId();
     Py_SIZE(op) = size;
     PyObject_Init((PyObject *)op, tp);
     return op;
