@@ -481,13 +481,39 @@ static inline void _Py_ForgetReference(PyObject *op)
 
 PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
+
+typedef uint64_t Py_ownership_block;
+
+#define _Py_OWNERSHIP_BLOCK_REFCNT_MASK      (~(0xFFFFL << 48L))
+#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_REFCNT_MASK)))
+#define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
+#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_REFCNT_MASK))
+
+#ifdef Py_BUILD_CORE
+extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
+// Weave into things like ceval but must refresh after every instr that calls out
+#define Py_LOCAL_THREAD_STATE \
+    Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#define Py_LOCAL_THREAD_STATE_REFRESH \
+    _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#else
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
+#endif
+
+#define _Py_THREADSTATE_OWNERSHIP_ID (Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+#define _Py_THREADSTATE_REFCNTS      (Py_OWNERSHIP_BLOCK_REFCNTS(_Py_THREADSTATE_OWNERSHIP_BLOCK))
+
+extern int _Py_Freethreaded;
+
+
+PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
+PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
+
+
 static inline void _Py_INCREF(PyObject *op)
 {
     _Py_INC_REFTOTAL;
-
-    /*
-    op->ob_refcnt++;
-    */
 
     if (!_Py_Freethreaded) {
         Py_REFCNT(op)++;
@@ -514,23 +540,14 @@ static inline void _Py_DECREF(const char *filename, int lineno,
     (void)lineno; /* may be unused, shut up -Wunused-parameter */
     _Py_DEC_REFTOTAL;
 
-    /*
-    if (--op->ob_refcnt != 0) {
-#ifdef Py_REF_DEBUG
-        if (op->ob_refcnt < 0) {
-            _Py_NegativeRefcount(filename, lineno, op);
-        }
-#endif
-    }
-    else {
-        _Py_Dealloc(op);
-    }
-    */
-
     PyObject *_py_decref_tmp = (PyObject *)(op);
     if (!_Py_Freethreaded) {
         if (--Py_REFCNT(_py_decref_tmp) != 0) {
-            _Py_CHECK_REFCNT(_py_decref_tmp);
+#ifdef Py_REF_DEBUG
+            if (op->ob_refcnt < 0) {
+                _Py_NegativeRefcount(filename, lineno, op);
+            }
+#endif
         } else {
             _Py_Dealloc(_py_decref_tmp);
         }
@@ -619,8 +636,6 @@ they can have object code that is not dependent on Python compilation flags.
 */
 PyAPI_FUNC(void) Py_IncRef(PyObject *);
 PyAPI_FUNC(void) Py_DecRef(PyObject *);
-PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
-PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
 
 /*
 _Py_NoneStruct is an object of undefined type which can be used in contexts
