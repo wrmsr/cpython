@@ -1540,7 +1540,7 @@ pymalloc_alloc(void *pctx, size_t nbytes)
             goto failed;
         }
 #endif
-        ctx->usable_arenas = new_arena();
+        ctx->usable_arenas = new_arena(ctx);
         if (ctx->usable_arenas == NULL) {
             goto failed;
         }
@@ -1724,7 +1724,7 @@ pymalloc_free(void *pctx, void *p)
 #endif
 
     pool = POOL_ADDR(p);
-    if (!address_in_range(p, pool)) {
+    if (!address_in_range(ctx, p, pool)) {
         return 0;
     }
     /* We allocated this address. */
