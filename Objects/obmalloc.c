@@ -1109,48 +1109,48 @@ the prevpool member.
 #if NB_SMALL_SIZE_CLASSES > 8
 #define INITIALIZE_USEDPOOLS1(ctx) \
     , PT(ctx, 8), PT(ctx, 9), PT(ctx, 10), PT(ctx, 11), PT(ctx, 12), PT(ctx, 13), PT(ctx, 14), PT(ctx, 15)
+#else
+    #define INITIALIZE_USEDPOOLS1(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 16
 #define INITIALIZE_USEDPOOLS2(ctx) \
     , PT(ctx, 16), PT(ctx, 17), PT(ctx, 18), PT(ctx, 19), PT(ctx, 20), PT(ctx, 21), PT(ctx, 22), PT(ctx, 23)
+#else
+#define INITIALIZE_USEDPOOLS2(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 24
 #define INITIALIZE_USEDPOOLS3(ctx) \
     , PT(ctx, 24), PT(ctx, 25), PT(ctx, 26), PT(ctx, 27), PT(ctx, 28), PT(ctx, 29), PT(ctx, 30), PT(ctx, 31)
+#else
+#define INITIALIZE_USEDPOOLS3(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 32
 #define INITIALIZE_USEDPOOLS4(ctx) \
     , PT(ctx, 32), PT(ctx, 33), PT(ctx, 34), PT(ctx, 35), PT(ctx, 36), PT(ctx, 37), PT(ctx, 38), PT(ctx, 39)
+#else
+#define INITIALIZE_USEDPOOLS4(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 40
 #define INITIALIZE_USEDPOOLS5(ctx) \
     , PT(ctx, 40), PT(ctx, 41), PT(ctx, 42), PT(ctx, 43), PT(ctx, 44), PT(ctx, 45), PT(ctx, 46), PT(ctx, 47)
+#else
+#define INITIALIZE_USEDPOOLS5(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 48
 #define INITIALIZE_USEDPOOLS6(ctx) \
     , PT(ctx, 48), PT(ctx, 49), PT(ctx, 50), PT(ctx, 51), PT(ctx, 52), PT(ctx, 53), PT(ctx, 54), PT(ctx, 55)
+#else
+#define INITIALIZE_USEDPOOLS6(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 56
 #define INITIALIZE_USEDPOOLS7(ctx) \
     , PT(ctx, 56), PT(ctx, 57), PT(ctx, 58), PT(ctx, 59), PT(ctx, 60), PT(ctx, 61), PT(ctx, 62), PT(ctx, 63)
+#else
+#define INITIALIZE_USEDPOOLS7(ctx)
+#endif
 #if NB_SMALL_SIZE_CLASSES > 64
 #error "NB_SMALL_SIZE_CLASSES should be less than 64"
 #endif /* NB_SMALL_SIZE_CLASSES > 64 */
-#else
-#define INITIALIZE_USEDPOOLS7(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES > 56 */
-#else
-#define INITIALIZE_USEDPOOLS6(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES > 48 */
-#else
-#define INITIALIZE_USEDPOOLS5(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES > 40 */
-#else
-#define INITIALIZE_USEDPOOLS4(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES > 32 */
-#else
-#define INITIALIZE_USEDPOOLS3(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES > 24 */
-#else
-#define INITIALIZE_USEDPOOLS2(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES > 16 */
-#else
-#define INITIALIZE_USEDPOOLS1(ctx)
-#endif /* NB_SMALL_SIZE_CLASSES >  8 */
 
 #define INITIALIZE_USEDPOOLS(ctx) \
     INITIALIZE_USEDPOOLS0(ctx) \
