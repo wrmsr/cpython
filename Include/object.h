@@ -489,7 +489,7 @@ typedef uint64_t Py_ownership_block;
 #define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
 #define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_REFCNT_MASK))
 
-#ifdef Py_BUILD_CORE
+#if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
 extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
 // Weave into things like ceval but must refresh after every instr that calls out
@@ -498,6 +498,7 @@ extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
 #define Py_LOCAL_THREAD_STATE_REFRESH \
     _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
 #else
+PyAPI_FUNC(Py_ownership_block) PyThreadState_OwnershipBlock(void);
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
 #endif
 

@@ -712,13 +712,17 @@ new_threadstate(PyInterpreterState *interp, int init)
 
     tstate->id = ++interp->tstate_next_unique_id;
 
-    if (_Py_Freethreaded) {
-        // FIXME
-        tstate->ownership_id = (Py_owner_id_t) tstate->id;
-        tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
+    tstate->ownership_id = (Py_owner_id_t) tstate->id;
 
+    if (_Py_Freethreaded) {
+        tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
         tstate->unshared_increfs = pyobject_listpage_new();
         tstate->unshared_decrefs = pyobject_listpage_new();
+    }
+    else {
+        tstate->refcnts = NULL;
+        tstate->unshared_increfs = NULL;
+        tstate->unshared_decrefs = NULL;
     }
 
     if (init) {
@@ -914,6 +918,7 @@ PyThreadState_Clear(PyThreadState *tstate)
 
     if (tstate->refcnts != NULL)
         PyMem_RawFree(tstate->refcnts);
+
     while (tstate->unshared_increfs != NULL) {
         _PyObject_ListPage *cur = tstate->unshared_increfs;
         tstate->unshared_increfs = cur->next;
