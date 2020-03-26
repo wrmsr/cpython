@@ -118,3 +118,9 @@ Tools/ssl/win32
 # Ignore ./python binary on Unix but still look into ./Python/ directory.
 /python
 !/Python/
+
+.autotools
+.cproject
+.project
+.settings/
+compile_commands.json
