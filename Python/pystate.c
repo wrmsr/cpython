@@ -574,10 +574,10 @@ _PyThreadState_PrepareFreethreading(void)
     for (interp = _PyRuntime.interpreters.head; interp != NULL; interp = interp->next) {
         for (tstate = interp->tstate_head; tstate != NULL; tstate = tstate->next) {
             // FIXME:
-            if (tstate->ownership_id == 0)
-                tstate->ownership_id = (Py_owner_id_t) tstate->id;
-            if (tstate->refcnts == NULL)
-                tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
+            if (tstate->ownership.owner_id == 0)
+                tstate->ownership.owner_id = (Py_owner_id_t) tstate->id;
+            if (tstate->ownership.shared_refcnts == NULL)
+                tstate->ownership.shared_refcnts = PyMem_RawMalloc(1024 * 1024);
 
             if (tstate->unshared_increfs == NULL)
                 tstate->unshared_increfs = pyobject_listpage_new();
@@ -701,15 +701,15 @@ new_threadstate(PyInterpreterState *interp, int init)
 
     tstate->id = ++interp->tstate_next_unique_id;
 
-    tstate->ownership_id = (Py_owner_id_t) tstate->id;
+    tstate->ownership.owner_id = (Py_owner_id_t) tstate->id;
 
     if (_Py_Freethreaded) {
-        tstate->refcnts = PyMem_RawMalloc(1024 * 1024);
+        tstate->ownership.shared_refcnts = PyMem_RawMalloc(1024 * 1024);
         tstate->unshared_increfs = pyobject_listpage_new();
         tstate->unshared_decrefs = pyobject_listpage_new();
     }
     else {
-        tstate->refcnts = NULL;
+        tstate->ownership.shared_refcnts = NULL;
         tstate->unshared_increfs = NULL;
         tstate->unshared_decrefs = NULL;
     }
@@ -905,8 +905,8 @@ PyThreadState_Clear(PyThreadState *tstate)
     // FIXME: should apply or explode if any present
     //  NO: should add to list of orphans
 
-    if (tstate->refcnts != NULL)
-        PyMem_RawFree(tstate->refcnts);
+    if (tstate->ownership.shared_refcnts != NULL)
+        PyMem_RawFree(tstate->ownership.shared_refcnts);
 
     while (tstate->unshared_increfs != NULL) {
         _PyObject_ListPage *cur = tstate->unshared_increfs;
@@ -1367,7 +1367,6 @@ PyGILState_GetThisThreadState(void)
 int
 PyGILState_Check(void)
 {
-
     if (!_PyGILState_check_enabled) {
         return 1;
     }

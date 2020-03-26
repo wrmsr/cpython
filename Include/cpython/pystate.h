@@ -143,8 +143,7 @@ struct _ts {
     uint64_t context_ver;
 
     /* Freethreading. */
-    Py_owner_id_t ownership_id;
-    Py_refcnt_t *refcnts;
+    PyObjectOwnershipBlock ownership;
     struct _obj_list_page *unshared_increfs;
     struct _obj_list_page *unshared_decrefs;
 
