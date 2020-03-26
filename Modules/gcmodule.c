@@ -1922,10 +1922,12 @@ _PyGC_Fini(_PyRuntimeState *runtime)
 void
 PyGC_ShareObject(PyObject *obj)
 {
-       SHARING_LOCK();
-       _PyRuntime.
+   SHARING_LOCK();
 
-       SHARING_UNLOCK();
+   // FIXME lols
+   // _PyRuntime.
+
+   SHARING_UNLOCK();
 }
 
 /* for debugging */

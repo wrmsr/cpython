@@ -1285,7 +1285,7 @@ freethread_enable_proc(void)
     for (int i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
         PyGC_Head *gc_list = GEN_HEAD(i);
-        for (gc = gc_list->gc.gc_next; gc != gc_list; gc = gc->gc.gc_next) {
+        for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
             PyObject *op = FROM_GC(gc);
             Py_TREFCNT(op)->owned.owner_id = owner_id;
             Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, owner_id);
