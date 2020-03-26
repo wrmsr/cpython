@@ -496,7 +496,7 @@ extern __thread PyObjectOwnershipBlock *_PyThreadState_OwnershipBlock;
 #define Py_LOCAL_THREAD_STATE Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
 #define Py_LOCAL_THREAD_STATE_REFRESH _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
 #else
-PyAPI_FUNC(Py_ownership_block) PyThreadState_OwnershipBlock(void);
+PyAPI_FUNC(PyObjectOwnershipBlock *) PyThreadState_OwnershipBlock(void);
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
 #endif
 
