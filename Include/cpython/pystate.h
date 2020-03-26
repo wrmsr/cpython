@@ -47,9 +47,7 @@ typedef struct _err_stackitem {
 } _PyErr_StackItem;
 
 
-Py_ownership_block PyThreadState_OwnershipBlock(void);
-Py_owner_id_t PyThreadState_OwnershipId(void);
-Py_refcnt_t *PyThreadState_refcnts(void);
+PyObjectOwnershipBlock * PyThreadState_OwnershipBlock(void);
 
 typedef struct _obj_list_page {
     struct _obj_list_page *next;

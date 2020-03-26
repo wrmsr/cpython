@@ -45,24 +45,13 @@ static PyThreadState *_PyGILState_GetThisThreadState(struct _gilstate_runtime_st
 static void _PyThreadState_Delete(_PyRuntimeState *runtime, PyThreadState *tstate);
 
 int _Py_Freethreaded = 0;
-__thread Py_ownership_block _PyThreadState_OwnershipBlock;
+__thread PyObjectOwnershipBlock *_PyThreadState_OwnershipBlock;
 
-Py_ownership_block
+PyObjectOwnershipBlock *
 PyThreadState_OwnershipBlock(void)
 {
     return _PyThreadState_OwnershipBlock;
 }
-
-Py_owner_id_t PyThreadState_OwnershipId(void)
-{
-    return Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_PyThreadState_OwnershipBlock);
-}
-
-Py_refcnt_t *PyThreadState_refcnts(void)
-{
-    return Py_OWNERSHIP_BLOCK_REFCNTS(_PyThreadState_OwnershipBlock);
-}
-
 
 static PyStatus
 _PyRuntimeState_Init_impl(_PyRuntimeState *runtime)

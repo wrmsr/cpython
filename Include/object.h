@@ -120,6 +120,11 @@ typedef union {
     } shared;
 } PyObject_TRefCnt;
 
+typedef struct _object_ownership_block {
+    Py_owner_id_t owner_id;
+    Py_refcnt_t *shared_refcnts;
+} PyObjectOwnershipBlock;
+
 /* Nothing is actually declared to be a PyObject, but every pointer to
  * a Python object can be cast to a PyObject*.  This is inheritance built
  * by hand.  Similarly every pointer to a variable-size Python object can,
@@ -482,15 +487,10 @@ static inline void _Py_ForgetReference(PyObject *op)
 PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 
-typedef uint64_t Py_ownership_block;
-
-#define _Py_OWNERSHIP_BLOCK_REFCNT_MASK      (~(0xFFFFL << 48L))
-#define Py_OWNERSHIP_BLOCK(oid, rcs)         ((Py_ownership_block)((((uint64_t)oid) << 48L) | (((Py_ssize_t)rcs) & _Py_OWNERSHIP_BLOCK_REFCNT_MASK)))
-#define Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(blk) ((Py_owner_id_t)((blk >> 48L) & 0xFFFF))
-#define Py_OWNERSHIP_BLOCK_REFCNTS(blk)      ((Py_refcnt_t*)(blk & _Py_OWNERSHIP_BLOCK_REFCNT_MASK))
+extern int _Py_Freethreaded;
 
 #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
-extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
+extern __thread PyObjectOwnershipBlock *_PyThreadState_OwnershipBlock;
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
 // Weave into things like ceval but must refresh after every instr that calls out
 #define Py_LOCAL_THREAD_STATE Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
@@ -499,11 +499,6 @@ extern __thread Py_ownership_block _PyThreadState_OwnershipBlock;
 PyAPI_FUNC(Py_ownership_block) PyThreadState_OwnershipBlock(void);
 #define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
 #endif
-
-#define _Py_THREADSTATE_OWNERSHIP_ID (Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_Py_THREADSTATE_OWNERSHIP_BLOCK))
-#define _Py_THREADSTATE_REFCNTS      (Py_OWNERSHIP_BLOCK_REFCNTS(_Py_THREADSTATE_OWNERSHIP_BLOCK))
-
-extern int _Py_Freethreaded;
 
 
 PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
@@ -517,12 +512,12 @@ static inline void _Py_INCREF(PyObject *op)
     if (!_Py_Freethreaded) {
         Py_REFCNT(op)++;
     } else {
-        Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
+        PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(op)->owned.owner_id;
-        if (_py_owner_id == Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk)) {
+        if (_py_owner_id == _py_ownership_blk->owner_id) {
             Py_TREFCNT(op)->owned.refcnt++;
         } else if (_py_owner_id == Py_SHARED_OWNER_ID) {
-            Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)[Py_TREFCNT(op)->shared.refcnt_idx]++;
+            _py_ownership_blk->shared_refcnts[Py_TREFCNT(op)->shared.refcnt_idx]++;
         } else if (_py_owner_id == Py_PINNED_OWNER_ID) {
         } else {
             Py_IncUnsharedRef((PyObject*)op);
@@ -551,12 +546,12 @@ static inline void _Py_DECREF(const char *filename, int lineno,
             _Py_Dealloc(_py_decref_tmp);
         }
     } else {
-        Py_ownership_block _py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
+        PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id;
-        if (_py_owner_id == Py_OWNERSHIP_BLOCK_OWNERSHIP_ID(_py_ownership_blk)) {
+        if (_py_owner_id == _py_ownership_blk->owner_id) {
             Py_TREFCNT(_py_decref_tmp)->owned.refcnt--;
         } else if (_py_owner_id == Py_SHARED_OWNER_ID) {
-            Py_OWNERSHIP_BLOCK_REFCNTS(_py_ownership_blk)[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--;
+            _py_ownership_blk->shared_refcnts[Py_TREFCNT(_py_decref_tmp)->shared.refcnt_idx]--;
         } else if (_py_owner_id == Py_PINNED_OWNER_ID) {
         } else {
             Py_DecUnsharedRef(_py_decref_tmp);
