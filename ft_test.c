@@ -67,4 +67,5 @@ main(int argc, char *argv[])
     if (Py_FinalizeEx() < 0) {
         return 120;
     }
-    return 0;}
+    return 0;
+}
