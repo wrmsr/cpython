@@ -168,24 +168,34 @@ class CmakeGen:
             ]
         }.items()]
 
+    def core_static_lib(self,
+            name: str,
+            source_files: ta.Sequence[str],
+            **kwargs
+    ) -> StaticLibrary:
+        return StaticLibrary(
+            name,
+            source_files,
+            include_directories=[
+                '${CPYTHON_CORE_INCLUDE}'
+            ] + kwargs.get('include_directories', []),
+            compile_options=[
+                '${CPYTHON_CFLAGS}',
+                '-DPy_BUILD_CORE',
+            ] + kwargs.get('include_directories', []),
+        )
+
     @property
     def targets(self) -> ta.List[Target]:
         return [
-            StaticLibrary(
+            self.core_static_lib(
                 '_programs',
                 [
                     'Programs/python.c',
                 ],
-                include_directories=[
-                    '${CPYTHON_CORE_INCLUDE}',
-                ],
-                compile_options=[
-                    '${CPYTHON_CFLAGS}',
-                    '-DPy_BUILD_CORE',
-                ]
             ),
 
-            StaticLibrary(
+            self.core_static_lib(
                 '_builtin_modules',
                 [
                     'Modules/_abc.c',
@@ -211,13 +221,6 @@ class CmakeGen:
                     'Modules/timemodule.c',
                     'Modules/xxsubtype.c',
                 ],
-                include_directories=[
-                    '${CPYTHON_CORE_INCLUDE}',
-                ],
-                compile_options=[
-                    '${CPYTHON_CFLAGS}',
-                    '-DPy_BUILD_CORE',
-                ]
             ),
         ]
 
