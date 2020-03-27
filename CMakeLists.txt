@@ -25,23 +25,23 @@ set(CPYTHON_CFLAGS
         )
 
 set(CPYTHON_INCLUDE
-        ./Include/internal
+        Include/internal
         .
-        ./Include
+        Include
         )
 
 
 ### Programs
 
-add_library(programs STATIC
+add_library(_programs STATIC
         Programs/python.c
         )
 
-target_include_directories(programs PRIVATE
+target_include_directories(_programs PRIVATE
         ${CPYTHON_INCLUDE}
         )
 
-target_compile_options(programs PRIVATE
+target_compile_options(_programs PRIVATE
         ${CPYTHON_CFLAGS}
         -DPy_BUILD_CORE
         )
@@ -49,7 +49,7 @@ target_compile_options(programs PRIVATE
 
 ### Parser
 
-add_library(parser STATIC
+add_library(_parser STATIC
         Parser/acceler.c
         Parser/grammar1.c
         Parser/listnode.c
@@ -61,11 +61,11 @@ add_library(parser STATIC
         Parser/tokenizer.c
         )
 
-target_include_directories(parser PRIVATE
+target_include_directories(_parser PRIVATE
         ${CPYTHON_INCLUDE}
         )
 
-target_compile_options(parser PRIVATE
+target_compile_options(_parser PRIVATE
         ${CPYTHON_CFLAGS}
         -DPy_BUILD_CORE
         )
@@ -73,7 +73,7 @@ target_compile_options(parser PRIVATE
 
 ### Objects
 
-add_library(objects STATIC
+add_library(_objects STATIC
         Objects/abstract.c
         Objects/accu.c
         Objects/boolobject.c
@@ -118,11 +118,11 @@ add_library(objects STATIC
         Objects/weakrefobject.c
         )
 
-target_include_directories(objects PRIVATE
+target_include_directories(_objects PRIVATE
         ${CPYTHON_INCLUDE}
         )
 
-target_compile_options(objects PRIVATE
+target_compile_options(_objects PRIVATE
         ${CPYTHON_CFLAGS}
         -DPy_BUILD_CORE
         )
@@ -130,7 +130,7 @@ target_compile_options(objects PRIVATE
 
 ### Python
 
-add_library(python STATIC
+add_library(_python STATIC
         Python/_warnings.c
         Python/Python-ast.c
         Python/asdl.c
@@ -188,11 +188,11 @@ add_library(python STATIC
         Python/dynload_shlib.c
         )
 
-target_include_directories(python PRIVATE
+target_include_directories(_python PRIVATE
         ${CPYTHON_INCLUDE}
         )
 
-target_compile_options(python PRIVATE
+target_compile_options(_python PRIVATE
         ${CPYTHON_CFLAGS}
         -DPy_BUILD_CORE
         )
@@ -214,44 +214,83 @@ set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
         )
 
 
+### Modules
 
-# gcc -o Modules/config.o Modules/config.c
-# gcc -DPYTHONPATH='""' -DPREFIX='"/usr/local"' -DEXEC_PREFIX='"/usr/local"' -DVERSION='"3.8"' -DVPATH='""' -o Modules/getpath.o ./Modules/getpath.c
-# gcc -o Modules/main.o Modules/main.c
-# gcc -o Modules/gcmodule.o Modules/gcmodule.c
+add_library(_modules STATIC
+        Modules/config.c
+        Modules/getpath.c
+        Modules/main.c
+        Modules/gcmodule.c
+        )
 
-# ! -DPy_BUILD_CORE_BUILTIN
-# gcc -c ./Modules/posixmodule.c -o Modules/posixmodule.o
-# gcc -c ./Modules/errnomodule.c -o Modules/errnomodule.o
-# gcc -c ./Modules/pwdmodule.c -o Modules/pwdmodule.o
-# gcc -c ./Modules/_sre.c -o Modules/_sre.o
-# gcc -c ./Modules/_codecsmodule.c -o Modules/_codecsmodule.o
-# gcc -c ./Modules/_weakref.c -o Modules/_weakref.o
-# gcc -c ./Modules/_functoolsmodule.c -o Modules/_functoolsmodule.o
-# gcc -c ./Modules/_operator.c -o Modules/_operator.o
-# gcc -c ./Modules/_collectionsmodule.c -o Modules/_collectionsmodule.o
-# gcc -c ./Modules/_abc.c -o Modules/_abc.o
-# gcc -c ./Modules/itertoolsmodule.c -o Modules/itertoolsmodule.o
-# gcc -c ./Modules/atexitmodule.c -o Modules/atexitmodule.o
-# gcc -c ./Modules/signalmodule.c -o Modules/signalmodule.o
-# gcc -c ./Modules/_stat.c -o Modules/_stat.o
-# gcc -c ./Modules/timemodule.c -o Modules/timemodule.o
-# gcc -c ./Modules/_threadmodule.c -o Modules/_threadmodule.o
-# gcc -c ./Modules/_localemodule.c -o Modules/_localemodule.o
+target_include_directories(_modules PRIVATE
+        ${CPYTHON_INCLUDE}
+        )
 
-# gcc -c -I./Modules/_io ./Modules/_io/_iomodule.c -o Modules/_iomodule.o
-# gcc -c -I./Modules/_io ./Modules/_io/iobase.c -o Modules/iobase.o
-# gcc -c -I./Modules/_io ./Modules/_io/fileio.c -o Modules/fileio.o
-# gcc -c -I./Modules/_io ./Modules/_io/bytesio.c -o Modules/bytesio.o
-# gcc -c -I./Modules/_io ./Modules/_io/bufferedio.c -o Modules/bufferedio.o
-# gcc -c -I./Modules/_io ./Modules/_io/textio.c -o Modules/textio.o
-# gcc -c -I./Modules/_io ./Modules/_io/stringio.c -o Modules/stringio.o
+target_compile_options(_modules PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
 
-# gcc -c ./Modules/faulthandler.c -o Modules/faulthandler.o
-# gcc -c ./Modules/_tracemalloc.c -o Modules/_tracemalloc.o
-# gcc -c ./Modules/hashtable.c -o Modules/hashtable.o
-# gcc -c ./Modules/symtablemodule.c -o Modules/symtablemodule.o
-# gcc -c ./Modules/xxsubtype.c -o Modules/xxsubtype.o
+set_source_files_properties(Modules/getpath.c PROPERTIES COMPILE_FLAGS
+        "-DPYTHONPATH='\"\"' -DPREFIX='\"/usr/local\"' -DEXEC_PREFIX='\"/usr/local\"' -DVERSION='\"3.8\"' -DVPATH='\"\"'"
+        )
+
+
+### Builtin Modules
+
+add_library(_builtin_modules STATIC
+        Modules/posixmodule.c
+        Modules/errnomodule.c
+        Modules/pwdmodule.c
+        Modules/_sre.c
+        Modules/_codecsmodule.c
+        Modules/_weakref.c
+        Modules/_functoolsmodule.c
+        Modules/_operator.c
+        Modules/_collectionsmodule.c
+        Modules/_abc.c
+        Modules/itertoolsmodule.c
+        Modules/atexitmodule.c
+        Modules/signalmodule.c
+        Modules/_stat.c
+        Modules/timemodule.c
+        Modules/_threadmodule.c
+        Modules/_localemodule.c
+        )
+
+target_include_directories(_builtin_modules PRIVATE
+        ${CPYTHON_INCLUDE}
+        )
+
+target_compile_options(_builtin_modules PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_BUILTIN
+        )
+
+
+### IO Module
+
+add_library(_io_module STATIC
+        Modules/_io/_iomodule.c
+        Modules/_io/iobase.c
+        Modules/_io/fileio.c
+        Modules/_io/bytesio.c
+        Modules/_io/bufferedio.c
+        Modules/_io/textio.c
+        Modules/_io/stringio.c
+        )
+
+target_include_directories(_io_module PRIVATE
+        ${CPYTHON_INCLUDE}
+        Modules/_io
+        )
+
+target_compile_options(_io_module PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_BUILTIN
+        )
+
 
 # ! -DPy_BUILD_CORE
 # gcc -o Python/frozen.o Python/frozen.c
