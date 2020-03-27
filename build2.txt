@@ -1,4 +1,5 @@
 !! -Wno-unused-result -Wsign-compare -g -O0 -Wall -std=c99 -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration -I./Include/internal -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c
+!!L -bundle -undefined dynamic_lookup build/temp.macosx-10.14-x86_64-3.8-pydebug/Users/spinlock/src/wrmsr/cpython-new/
 
 gcc /Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.c -o build/temp.macosx-10.14-x86_64-3.8-pydebug/Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.o
 gcc Modules/_struct.o -L/usr/local/lib -o build/lib.macosx-10.14-x86_64-3.8-pydebug/_struct.cpython-38d-darwin.so
