@@ -599,3 +599,155 @@ target_compile_options(unicodedata PRIVATE
 target_link_options(unicodedata PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         )
+
+
+# _opcode
+
+add_library(_opcode MODULE
+        Modules/_opcode.c
+        )
+
+target_include_directories(_opcode PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_opcode PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_opcode PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _queue
+
+add_library(_queue MODULE
+        Modules/_queuemodule.c
+        )
+
+target_include_directories(_queue PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_queue PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_queue PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _statistics
+
+add_library(_statistics MODULE
+        Modules/_statisticsmodule.c
+        )
+
+target_include_directories(_statistics PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_statistics PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_statistics PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# fcntl
+
+add_library(fcntl MODULE
+        Modules/fcntlmodule.c
+        )
+
+target_include_directories(fcntl PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(fcntl PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(fcntl PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# grp
+
+add_library(grp MODULE
+        Modules/grpmodule.c
+        )
+
+target_include_directories(grp PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(grp PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(grp PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# select
+
+add_library(select MODULE
+        Modules/selectmodule.c
+        )
+
+target_include_directories(select PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(select PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(select PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# parser
+
+add_library(parser MODULE
+        Modules/parsermodule.c
+        )
+
+target_include_directories(parser PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(parser PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(parser PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# mmap
+
+add_library(mmap MODULE
+        Modules/mmapmodule.c
+        )
+
+target_include_directories(mmap PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(mmap PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(mmap PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
