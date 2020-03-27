@@ -1126,28 +1126,35 @@ class CmakeGen:
                 ],
             ),
 
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/_ctypes.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/callbacks.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/callproc.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/stgdict.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/cfield.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/malloc_closure.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/darwin/dlfcn_simple.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/ffi.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/x86/darwin64.S
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/x86/x86-darwin.S
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/x86/x86-ffi_darwin.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/x86/x86-ffi64.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/powerpc/ppc-darwin.S
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/powerpc/ppc-darwin_closure.S
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/powerpc/ppc-ffi_darwin.c
-            # gcc -I./Include/internal -I_ctypes/darwin -IModules/_ctypes/libffi_osx/include -IModules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -IInclude -I. -c Modules/_ctypes/libffi_osx/powerpc/ppc64-darwin_closure.S
-
-            # self.new_module(
-            #     '_ctypes',
-            #     [
-            #     ],
-            # ),
+            self.new_module(
+                '_ctypes',
+                [
+                    'Modules/_ctypes/_ctypes.c',
+                    'Modules/_ctypes/callbacks.c',
+                    'Modules/_ctypes/callproc.c',
+                    'Modules/_ctypes/stgdict.c',
+                    'Modules/_ctypes/cfield.c',
+                    'Modules/_ctypes/malloc_closure.c',
+                    'Modules/_ctypes/darwin/dlfcn_simple.c',
+                    'Modules/_ctypes/libffi_osx/ffi.c',
+                    'Modules/_ctypes/libffi_osx/x86/darwin64.S',
+                    'Modules/_ctypes/libffi_osx/x86/x86-darwin.S',
+                    'Modules/_ctypes/libffi_osx/x86/x86-ffi_darwin.c',
+                    'Modules/_ctypes/libffi_osx/x86/x86-ffi64.c',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc-darwin.S',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc-darwin_closure.S',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc-ffi_darwin.c',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc64-darwin_closure.S',
+                ],
+                include_directories=[
+                    'Modules/_ctypes/darwin',
+                    'Modules/_ctypes/libffi_osx/include',
+                    'Modules/_ctypes/libffi_osx/powerpc',
+                ],
+                compile_options=[
+                    '-DMACOSX',
+                ],
+            ),
 
         ]
 

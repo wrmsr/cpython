@@ -1744,3 +1744,41 @@ target_link_options(_uuid PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         )
 
+
+### _ctypes
+
+add_library(_ctypes MODULE
+        Modules/_ctypes/_ctypes.c
+        Modules/_ctypes/callbacks.c
+        Modules/_ctypes/callproc.c
+        Modules/_ctypes/stgdict.c
+        Modules/_ctypes/cfield.c
+        Modules/_ctypes/malloc_closure.c
+        Modules/_ctypes/darwin/dlfcn_simple.c
+        Modules/_ctypes/libffi_osx/ffi.c
+        Modules/_ctypes/libffi_osx/x86/darwin64.S
+        Modules/_ctypes/libffi_osx/x86/x86-darwin.S
+        Modules/_ctypes/libffi_osx/x86/x86-ffi_darwin.c
+        Modules/_ctypes/libffi_osx/x86/x86-ffi64.c
+        Modules/_ctypes/libffi_osx/powerpc/ppc-darwin.S
+        Modules/_ctypes/libffi_osx/powerpc/ppc-darwin_closure.S
+        Modules/_ctypes/libffi_osx/powerpc/ppc-ffi_darwin.c
+        Modules/_ctypes/libffi_osx/powerpc/ppc64-darwin_closure.S
+        )
+
+target_include_directories(_ctypes PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_ctypes/darwin
+        Modules/_ctypes/libffi_osx/include
+        Modules/_ctypes/libffi_osx/powerpc
+        )
+
+target_compile_options(_ctypes PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DMACOSX
+        )
+
+target_link_options(_ctypes PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
