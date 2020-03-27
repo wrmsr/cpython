@@ -125,3 +125,4 @@ Tools/ssl/win32
 .settings/
 compile_commands.json
 _ft_test
+cmake/

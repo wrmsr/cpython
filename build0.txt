@@ -2,6 +2,7 @@
 
 ! -DPy_BUILD_CORE
 gcc -o Programs/python.o ./Programs/python.c
+
 gcc -o Parser/acceler.o Parser/acceler.c
 gcc -o Parser/grammar1.o Parser/grammar1.c
 gcc -o Parser/listnode.o Parser/listnode.c
