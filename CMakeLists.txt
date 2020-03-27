@@ -463,3 +463,139 @@ target_link_options(_datetime PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         -lm
         )
+
+
+# _random
+
+add_library(_random MODULE
+        Modules/_randommodule.c
+        )
+
+target_include_directories(_random PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_random PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_random PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _bisect
+
+add_library(_bisect MODULE
+        Modules/_bisectmodule.c
+        )
+
+target_include_directories(_bisect PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_bisect PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_bisect PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _heapq
+
+add_library(_heapq MODULE
+        Modules/_heapqmodule.c
+        )
+
+target_include_directories(_heapq PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_heapq PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_heapq PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _pickle
+
+add_library(_pickle MODULE
+        Modules/_pickle.c
+        )
+
+target_include_directories(_pickle PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_pickle PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_MODULE
+        )
+
+target_link_options(_pickle PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _json
+
+add_library(_json MODULE
+        Modules/_json.c
+        )
+
+target_include_directories(_json PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_json PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_MODULE
+        )
+
+target_link_options(_json PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _lsprof
+
+add_library(_lsprof MODULE
+        Modules/_lsprof.c
+        Modules/rotatingtree.c
+        )
+
+target_include_directories(_lsprof PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_lsprof PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_lsprof PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# unicodedata
+
+add_library(unicodedata MODULE
+        Modules/unicodedata.c
+        )
+
+target_include_directories(unicodedata PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(unicodedata PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(unicodedata PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
