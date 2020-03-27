@@ -573,9 +573,6 @@ _PyThreadState_PrepareFreethreading(void)
     HEAD_LOCK(runtime);
     for (interp = _PyRuntime.interpreters.head; interp != NULL; interp = interp->next) {
         for (tstate = interp->tstate_head; tstate != NULL; tstate = tstate->next) {
-            // FIXME:
-            if (tstate->ownership.owner_id == 0)
-                tstate->ownership.owner_id = (Py_owner_id_t) tstate->id;
             if (tstate->ownership.shared_refcnts == NULL)
                 tstate->ownership.shared_refcnts = PyMem_RawMalloc(1024 * 1024);
 
