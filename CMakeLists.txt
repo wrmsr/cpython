@@ -1445,3 +1445,186 @@ target_link_options(_lzma PRIVATE
         -llzma
         )
 
+
+### pyexpat
+
+add_library(pyexpat MODULE
+        Modules/expat/xmlparse.c
+        Modules/expat/xmlrole.c
+        Modules/expat/xmltok.c
+        Modules/pyexpat.c
+        )
+
+target_include_directories(pyexpat PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/expat
+        )
+
+target_compile_options(pyexpat PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_EXPAT_CONFIG_H=1
+        -DXML_POOR_ENTROPY=1
+        -DUSE_PYEXPAT_CAPI
+        -Wno-unreachable-code
+        )
+
+target_link_options(pyexpat PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _elementtree
+
+add_library(_elementtree MODULE
+        Modules/_elementtree.c
+        )
+
+target_include_directories(_elementtree PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/expat
+        )
+
+target_compile_options(_elementtree PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_EXPAT_CONFIG_H=1
+        -DXML_POOR_ENTROPY=1
+        -DUSE_PYEXPAT_CAPI
+        )
+
+target_link_options(_elementtree PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _multibytecodec
+
+add_library(_multibytecodec MODULE
+        Modules/cjkcodecs/multibytecodec.c
+        )
+
+target_include_directories(_multibytecodec PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_multibytecodec PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_multibytecodec PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_kr
+
+add_library(_codecs_kr MODULE
+        Modules/cjkcodecs/_codecs_kr.c
+        )
+
+target_include_directories(_codecs_kr PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_kr PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_kr PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_jp
+
+add_library(_codecs_jp MODULE
+        Modules/cjkcodecs/_codecs_jp.c
+        )
+
+target_include_directories(_codecs_jp PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_jp PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_jp PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_cn
+
+add_library(_codecs_cn MODULE
+        Modules/cjkcodecs/_codecs_cn.c
+        )
+
+target_include_directories(_codecs_cn PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_cn PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_cn PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_tw
+
+add_library(_codecs_tw MODULE
+        Modules/cjkcodecs/_codecs_tw.c
+        )
+
+target_include_directories(_codecs_tw PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_tw PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_tw PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_hk
+
+add_library(_codecs_hk MODULE
+        Modules/cjkcodecs/_codecs_hk.c
+        )
+
+target_include_directories(_codecs_hk PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_hk PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_hk PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_iso2022
+
+add_library(_codecs_iso2022 MODULE
+        Modules/cjkcodecs/_codecs_iso2022.c
+        )
+
+target_include_directories(_codecs_iso2022 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_iso2022 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_iso2022 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+

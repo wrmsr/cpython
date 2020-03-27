@@ -973,6 +973,98 @@ class CmakeGen:
                 ],
             ),
 
+            ###
+
+            self.new_module(
+                'pyexpat',
+                [
+                    'Modules/expat/xmlparse.c',
+                    'Modules/expat/xmlrole.c',
+                    'Modules/expat/xmltok.c',
+                    'Modules/pyexpat.c',
+                ],
+                include_directories=[
+                    'Modules/expat',
+                ],
+                compile_options=[
+                    '-DHAVE_EXPAT_CONFIG_H=1',
+                    '-DXML_POOR_ENTROPY=1',
+                    '-DUSE_PYEXPAT_CAPI',
+                    '-Wno-unreachable-code',
+                ],
+            ),
+
+            self.new_module(
+                '_elementtree',
+                [
+                    'Modules/_elementtree.c',
+                ],
+                include_directories=[
+                    'Modules/expat',
+                ],
+                compile_options=[
+                    '-DHAVE_EXPAT_CONFIG_H=1',
+                    '-DXML_POOR_ENTROPY=1',
+                    '-DUSE_PYEXPAT_CAPI',
+                ],
+            ),
+
+            self.new_module(
+                '_multibytecodec',
+                [
+                    'Modules/cjkcodecs/multibytecodec.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_kr',
+                [
+                    'Modules/cjkcodecs/_codecs_kr.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_jp',
+                [
+                    'Modules/cjkcodecs/_codecs_jp.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_cn',
+                [
+                    'Modules/cjkcodecs/_codecs_cn.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_tw',
+                [
+                    'Modules/cjkcodecs/_codecs_tw.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_hk',
+                [
+                    'Modules/cjkcodecs/_codecs_hk.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_iso2022',
+                [
+                    'Modules/cjkcodecs/_codecs_iso2022.c',
+                ],
+            ),
+
+            # self.new_module(
+            #     'nis',
+            #     [
+            #         'Modules/nismodule.c',
+            #     ],
+            # ),
+
         ]
 
     def write(self) -> None:
