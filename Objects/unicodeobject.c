@@ -1031,7 +1031,7 @@ resize_inplace(PyObject *unicode, Py_ssize_t length)
     wchar_t *wstr;
     Py_ssize_t new_size;
     assert(!PyUnicode_IS_COMPACT(unicode));
-    assert(Py_REFCNT(unicode) == 1);
+    assert(_Py_Freethreaded || Py_REFCNT(unicode) == 1);
 
     if (PyUnicode_IS_READY(unicode)) {
         Py_ssize_t char_size;
@@ -1854,7 +1854,7 @@ unicode_dealloc(PyObject *unicode)
 
     case SSTATE_INTERNED_MORTAL:
         /* revive dead object temporarily for DelItem */
-        Py_REFCNT(unicode) = 3;
+        Py_SETREFCNT(unicode, 3);
         if (PyDict_DelItem(interned, unicode) != 0)
             Py_FatalError(
                 "deletion of interned string failed");
@@ -14216,7 +14216,7 @@ _PyUnicode_FormatLong(PyObject *val, int alt, int prec, int type)
     assert(PyUnicode_IS_ASCII(result));
 
     /* To modify the string in-place, there can only be one reference. */
-    if (Py_REFCNT(result) != 1) {
+    if (!_Py_Freethreaded && Py_REFCNT(result) != 1) {
         Py_DECREF(result);
         PyErr_BadInternalCall();
         return NULL;
@@ -15299,7 +15299,8 @@ PyUnicode_InternInPlace(PyObject **p)
     }
     /* The two references in interned are not counted by refcnt.
        The deallocator will take care of this */
-    Py_REFCNT(s) -= 2;
+    Py_DECREF(s);
+    Py_DECREF(s);
     _PyUnicode_STATE(s).interned = SSTATE_INTERNED_MORTAL;
 }
 

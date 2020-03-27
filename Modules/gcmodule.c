@@ -2021,6 +2021,13 @@ PyGC_PinObject(PyObject *obj)
     pin_obj(state, obj);
 }
 
+void
+_Py_AssertObjectOwned(PyObject *obj)
+{
+    if (_Py_Freethreaded)
+        assert(Py_TREFCNT(obj)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id);
+}
+
 
 /* for debugging */
 void
