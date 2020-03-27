@@ -162,7 +162,8 @@ PyAPI_FUNC(PyObjectOwnershipBlock *) PyThreadState_OwnershipBlock(void);
 #endif
 
 
-#define Py_SETREFCNT(ob, c)     _Py_SETREFCNT((PyObject *)ob, c)
+#define Py_TRYSETREFCNT(ob, c)     _Py_TrySetRefcnt((PyObject *)ob, c)
+#define Py_DEFSETREFCNT(ob, c)     _Py_DefSetRefcnt((PyObject *)ob, c)
 #define Py_REFCNT(ob)           ((Py_refcnt_t) _PyObject_CAST(ob)->ob_refcnt)
 #define Py_TYPE(ob)             (_PyObject_CAST(ob)->ob_type)
 #define Py_SIZE(ob)             (_PyVarObject_CAST(ob)->ob_size)
@@ -173,12 +174,26 @@ PyAPI_FUNC(PyObjectOwnershipBlock *) PyThreadState_OwnershipBlock(void);
 
 PyAPI_FUNC(void) _Py_AssertObjectOwned(PyObject *ob);
 
+PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
+PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
+PyAPI_FUNC(Py_refcnt_idx_t) PyGC_ShareObject(PyObject *obj);
+PyAPI_FUNC(void) PyGC_PinObject(PyObject *obj);
+
+
 static inline Py_refcnt_t
-_Py_SETREFCNT(PyObject *ob, Py_refcnt_t c)
+_Py_TrySetRefcnt(PyObject *ob, Py_refcnt_t c)
 {
-    if (_Py_Freethreaded) {
+    if (_Py_Freethreaded)
         _Py_AssertObjectOwned(ob);
-    }
+    Py_TREFCNT(ob)->owned.refcnt = c;
+    return c;
+}
+
+static inline Py_refcnt_t
+_Py_DefSetRefcnt(PyObject *ob, Py_refcnt_t c)
+{
+    if (_Py_Freethreaded)
+        PyGC_PinObject(ob);
     Py_TREFCNT(ob)->owned.refcnt = c;
     return c;
 }
@@ -517,12 +532,6 @@ static inline void _Py_ForgetReference(PyObject *op)
 
 
 PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
-
-
-PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
-PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
-PyAPI_FUNC(Py_refcnt_idx_t) PyGC_ShareObject(PyObject *obj);
-PyAPI_FUNC(void) PyGC_PinObject(PyObject *obj);
 
 
 static inline void _Py_INCREF(PyObject *op)

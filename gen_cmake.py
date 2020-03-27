@@ -3,6 +3,8 @@
 cd .. ; rm -rf cmake ; mkcd cmake ; cmake .. && make -j13 VERBOSE=1
 for f in $(find . -name 'lib*.so' -maxdepth 1) ; do n=$(echo $f | cut -c6- | rev | cut -c4- | rev) ; echo $n ; cp $f "../build/lib.macosx-10.14-x86_64-3.8-pydebug/$n.cpython-38d-darwin.so" ; done
 ls -al ../build/lib.macosx-10.14-x86_64-3.8-pydebug/
+
+import sys; sys.freethread_enable(); import gc
 """
 import abc
 import dataclasses as dc

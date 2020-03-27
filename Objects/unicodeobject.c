@@ -1854,7 +1854,7 @@ unicode_dealloc(PyObject *unicode)
 
     case SSTATE_INTERNED_MORTAL:
         /* revive dead object temporarily for DelItem */
-        Py_SETREFCNT(unicode, 3);
+        Py_TRYSETREFCNT(unicode, 3);
         if (PyDict_DelItem(interned, unicode) != 0)
             Py_FatalError(
                 "deletion of interned string failed");
@@ -1899,7 +1899,7 @@ static int
 unicode_modifiable(PyObject *unicode)
 {
     assert(_PyUnicode_CHECK(unicode));
-    if (Py_REFCNT(unicode) != 1)
+    if (!_Py_Freethreaded && Py_REFCNT(unicode) != 1)
         return 0;
     if (_PyUnicode_HASH(unicode) != -1)
         return 0;

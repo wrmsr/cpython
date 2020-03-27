@@ -4516,7 +4516,7 @@ check_pyobject_uninitialized_is_freed(PyObject *self, PyObject *Py_UNUSED(args))
         return NULL;
     }
     /* Initialize reference count to avoid early crash in ceval or GC */
-    Py_SETREFCNT(op, 1);
+    Py_TRYSETREFCNT(op, 1);
     /* object fields like ob_type are uninitialized! */
     return test_pyobject_is_freed("check_pyobject_uninitialized_is_freed", op);
 }
@@ -4531,7 +4531,7 @@ check_pyobject_forbidden_bytes_is_freed(PyObject *self, PyObject *Py_UNUSED(args
         return NULL;
     }
     /* Initialize reference count to avoid early crash in ceval or GC */
-    Py_SETREFCNT(op, 1);
+    Py_TRYSETREFCNT(op, 1);
     /* ob_type field is after the memory block: part of "forbidden bytes"
        when using debug hooks on memory allocators! */
     return test_pyobject_is_freed("check_pyobject_forbidden_bytes_is_freed", op);
@@ -4547,7 +4547,7 @@ check_pyobject_freed_is_freed(PyObject *self, PyObject *Py_UNUSED(args))
     }
     Py_TYPE(op)->tp_dealloc(op);
     /* Reset reference count to avoid early crash in ceval or GC */
-    Py_SETREFCNT(op, 1);
+    Py_TRYSETREFCNT(op, 1);
     /* object memory is freed! */
     return test_pyobject_is_freed("check_pyobject_freed_is_freed", op);
 }
@@ -5029,7 +5029,7 @@ negative_refcount(PyObject *self, PyObject *Py_UNUSED(args))
     }
     assert(Py_REFCNT(obj) == 1);
 
-    Py_SETREFCNT(obj, 0);
+    Py_TRYSETREFCNT(obj, 0);
     /* Py_DECREF() must call _Py_NegativeRefcount() and abort Python */
     Py_DECREF(obj);
 
