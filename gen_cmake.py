@@ -171,9 +171,12 @@ class CmakeGen:
 
         }.items()]
 
-    def core_static_lib(self,
+    def core_static_lib(
+            self,
             name: str,
             source_files: ta.Sequence[str],
+            *,
+            builtin: bool = False,
             **kwargs
     ) -> StaticLibrary:
         return StaticLibrary(
@@ -185,7 +188,7 @@ class CmakeGen:
             ] + kwargs.get('include_directories', []),
             compile_options=[
                 '${CPYTHON_CFLAGS}',
-                '-DPy_BUILD_CORE',
+                '-DPy_BUILD_CORE' + ('_BUILTIN' if builtin else ''),
             ] + kwargs.get('include_directories', []),
         )
 
@@ -364,6 +367,49 @@ class CmakeGen:
                         '-DPYTHONPATH=\'""\' -DPREFIX=\'"/usr/local"\' -DEXEC_PREFIX=\'"/usr/local"\' -DVERSION=\'"3.8"\' -DVPATH=\'""\'',
                     ],
                 },
+            ),
+
+            self.core_static_lib(
+                '_builtin_modules',
+                [
+                    'Modules/_abc.c',
+                    'Modules/_codecsmodule.c',
+                    'Modules/_collectionsmodule.c',
+                    'Modules/_functoolsmodule.c',
+                    'Modules/_localemodule.c',
+                    'Modules/_operator.c',
+                    'Modules/_sre.c',
+                    'Modules/_stat.c',
+                    'Modules/_threadmodule.c',
+                    'Modules/_tracemalloc.c',
+                    'Modules/_weakref.c',
+                    'Modules/atexitmodule.c',
+                    'Modules/errnomodule.c',
+                    'Modules/faulthandler.c',
+                    'Modules/hashtable.c',
+                    'Modules/itertoolsmodule.c',
+                    'Modules/posixmodule.c',
+                    'Modules/pwdmodule.c',
+                    'Modules/signalmodule.c',
+                    'Modules/symtablemodule.c',
+                    'Modules/timemodule.c',
+                    'Modules/xxsubtype.c',
+                ],
+                builtin=True,
+            ),
+
+            self.core_static_lib(
+                '_io_module',
+                [
+                    'Modules/_io/_iomodule.c',
+                    'Modules/_io/bufferedio.c',
+                    'Modules/_io/bytesio.c',
+                    'Modules/_io/fileio.c',
+                    'Modules/_io/iobase.c',
+                    'Modules/_io/stringio.c',
+                    'Modules/_io/textio.c',
+                ],
+                builtin=True,
             ),
 
         ]
