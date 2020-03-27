@@ -1,0 +1,81 @@
+gcc
+ -bundle
+ -undefined dynamic_lookup
+ build/temp.macosx-10.14-x86_64-3.8-pydebug/Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.o
+ -L/usr/local/lib
+ -o build/lib.macosx-10.14-x86_64-3.8-pydebug/_struct.cpython-38d-darwin.so
+
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+ -isysroot
+ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
+ -dynamiclib
+ -Wl,-headerpad_max_install_names
+
+ -bundle
+ -undefined dynamic_lookup
+
+ -o lib_struct.dylib
+ -install_name @rpath/lib_struct.dylib
+ CMakeFiles/_struct.dir/Modules/_struct.c.o
+
+
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+ -bundle
+ -undefined dynamic_lookup
+ build/temp.macosx-10.14-x86_64-3.8-pydebug/Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.o
+ -L/usr/local/lib
+ -o build/lib.macosx-10.14-x86_64-3.8-pydebug/_struct.cpython-38d-darwin.so
+
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cccc -bundle -undefined dynamic_lookup build/temp.macosx-10.14-x86_64-3.8-pydebug/Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.o -L/usr/local/lib -o build/lib.macosx-10.14-x86_64-3.8-pydebug/_struct.cpython-38d-darwin.so
+
+
+
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-D_struct_EXPORTS
+-I/Users/spinlock/src/wrmsr/cpython-new/Include/internal
+-I/Users/spinlock/src/wrmsr/cpython-new/Include
+-I/Users/spinlock/src/wrmsr/cpython-new/.
+-I/Users/spinlock/src/wrmsr/cpython-new/usr/local/include
+ -isysroot
+ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
+ -fPIC
+ -Wno-unused-result
+ -Wsign-compare
+ -g
+ -O0
+ -Wall
+ -std=c99
+ -Wextra
+ -Wno-unused-parameter
+ -Wno-missing-field-initializers
+ -Wstrict-prototypes
+ -Werror=implicit-function-declaration
+ -o CMakeFiles/_struct.dir/Modules/_struct.c.o
+ -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.c
+
+
+
+########################
+
+
+gcc
+ -bundle
+ -undefined dynamic_lookup
+ build/temp.macosx-10.14-x86_64-3.8-pydebug/Users/spinlock/src/wrmsr/cpython-new/Modules/_struct.o
+ -L/usr/local/lib
+ -o build/lib.macosx-10.14-x86_64-3.8-pydebug/_struct.cpython-38d-darwin.so
+
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+ -isysroot
+ /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
+ -bundle
+ -Wl,-headerpad_max_install_names
+ -bundle
+ -undefined dynamic_lookup
+ -o lib_struct.so
+ CMakeFiles/_struct.dir/Modules/_struct.c.o

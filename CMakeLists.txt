@@ -343,7 +343,7 @@ target_link_libraries(python.exe PRIVATE
 
 # _struct
 
-add_library(_struct SHARED
+add_library(_struct MODULE
         Modules/_struct.c
         )
 
