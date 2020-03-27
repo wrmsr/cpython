@@ -1,5 +1,61 @@
+import abc
 import dataclasses as dc
 import typing as ta
+
+
+@dc.dataclass(frozen=True)
+class Command:
+    name: str
+    args: ta.Union[str, ta.Sequence[str]]
+    lines: ta.Sequence[str] = None
+
+
+@dc.dataclass(frozen=True)
+class Var:
+    name: str
+    value: ta.Union[str, ta.Sequence[str]]
+
+
+@dc.dataclass(frozen=True)
+class Target(abc.ABC):
+    name: str
+    source_files: ta.Sequence[str]
+    include_directories: ta.Sequence[str] = None
+    compile_options: ta.Sequence[str] = None
+    link_options: ta.Sequence[str] = None
+    compile_flags_by_source_file: ta.Mapping[str, ta.Sequence[str]] = None
+
+    @abc.abstractproperty
+    def command_name(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def command_extra(self) -> ta.Sequence[str]:
+        return []
+
+
+@dc.dataclass(frozen=True)
+class Library(Target):
+
+    @property
+    def command_name(self) -> str:
+        return 'add_library'
+
+
+@dc.dataclass(frozen=True)
+class StaticLibrary(Library):
+
+    @property
+    def command_extra(self) -> ta.Sequence[str]:
+        return ['STATIC']
+
+
+@dc.dataclass(frozen=True)
+class ModuleLibrary(Library):
+
+    @property
+    def command_extra(self) -> ta.Sequence[str]:
+        return ['MODULE']
 
 
 class CmakeGen:
@@ -22,26 +78,37 @@ class CmakeGen:
             spacing = '\n' * spacing
         if isinstance(indent, int):
             indent = ' ' * indent
-        for i, line in enumerate(obj):
-            if i > 0 and spacing is not None:
-                self._out.write(spacing)
+        for line in obj:
             if indent is not None:
                 line = indent + line
             self._out.write(line)
             self._out.write('\n')
+            if spacing is not None:
+                self._out.write(spacing)
 
     def _write_section(self, label: str) -> None:
-        self._write(['', '', f'### {label}', ''])
+        self._write(['', f'### {label}', ''])
 
-    def _write_set(self, first: ta.Union[str, ta.Sequence[str]], rest: ta.Sequence[str] = None) -> None:
-        if not isinstance(first, str):
-            first = ' '.join(first)
-        if not rest:
-            self._write(f'set({first})')
+    def _write_cmd(self, cmd: Command) -> None:
+        args = cmd.args
+        if not isinstance(args, str):
+            args = ' '.join(args)
+        if not cmd.lines:
+            self._write(f'{cmd.name}({args})')
         else:
-            self._write(f'set({first}')
-            self._write(rest, indent=8)
+            if isinstance(cmd.lines, str):
+                raise TypeError(cmd.lines)
+            self._write(f'{cmd.name}({args}')
+            self._write(cmd.lines, indent=8)
+            self._write(')', indent=8)
             self._write()
+
+    def _write_var(self, var: Var) -> None:
+        return self._write_cmd(Command('set', var.name, [var.value] if isinstance(var.value, str) else var.value))
+
+    def _write_target(self, target: Target) -> None:
+        self._write_section(target.name)
+        self._write_cmd(Command(target.command_name, [target.name] + target.command_extra, target.source_files))
 
     @property
     def preamble(self) -> ta.List[str]:
@@ -52,47 +119,92 @@ class CmakeGen:
         ]
 
     @property
-    def common_sets(self) -> ta.Dict[str, ta.List[str]]:
-        """
-set(CPYTHON_CFLAGS
-        -Wno-unused-result
-        -Wsign-compare
-        -g
-        -O0
-        -Wall
-        -std=c99
-        -Wextra
-        -Wno-unused-result
-        -Wno-unused-parameter
-        -Wno-missing-field-initializers
-        -Wstrict-prototypes
-        -Werror=implicit-function-declaration
-        )
+    def common_vars(self) -> ta.List[Var]:
+        return [Var(k, v) for k, v in {
+            'CPYTHON_CFLAGS': [
+                '-Wno-unused-result',
+                '-Wsign-compare',
+                '-g',
+                '-O0',
+                '-Wall',
+                '-std=c99',
+                '-Wextra',
+                '-Wno-unused-result',
+                '-Wno-unused-parameter',
+                '-Wno-missing-field-initializers',
+                '-Wstrict-prototypes',
+                '-Werror=implicit-function-declaration',
+            ],
 
-set(CPYTHON_CORE_INCLUDE
-        Include/internal
-        .
-        Include
-        )
+            'CPYTHON_CORE_INCLUDE': [
+                'Include/internal',
+                '.',
+                'Include',
+            ],
 
-# FIXME: cc -isysroot /Applications/Xcode.app/.../SDKs/MacOSX10.14.sdk -bundle -Wl,-headerpad_max_install_names
-set(CPYTHON_MODULE_LDFLAGS
-        -bundle
-        -undefined dynamic_lookup
-        -L/usr/local/lib
-        )
+            # FIXME: cc -isysroot /Applications/Xcode.app/.../SDKs/MacOSX10.14.sdk -bundle -Wl,-headerpad_max_install_names
+            'CPYTHON_MODULE_LDFLAGS': [
+                '-bundle',
+                '-undefined dynamic_lookup',
+                '-L/usr/local/lib',
+            ],
 
-set(CPYTHON_MODULE_INCLUDE
-        Include/internal
-        Include
-        .
-        usr/local/include
-        )
-        """
+            'CPYTHON_MODULE_INCLUDE': [
+                'Include/internal',
+                'Include',
+                '.',
+                'usr/local/include',
+            ]
+        }.items()]
+
+    @property
+    def targets(self) -> ta.List[Target]:
+        return [
+            StaticLibrary(
+                '_programs',
+                [
+                    'Programs/python.c',
+                ]
+            ),
+
+            StaticLibrary(
+                '_builtin_modules',
+                [
+                    'Modules/_abc.c',
+                    'Modules/_codecsmodule.c',
+                    'Modules/_collectionsmodule.c',
+                    'Modules/_functoolsmodule.c',
+                    'Modules/_localemodule.c',
+                    'Modules/_operator.c',
+                    'Modules/_sre.c',
+                    'Modules/_stat.c',
+                    'Modules/_threadmodule.c',
+                    'Modules/_tracemalloc.c',
+                    'Modules/_weakref.c',
+                    'Modules/atexitmodule.c',
+                    'Modules/errnomodule.c',
+                    'Modules/faulthandler.c',
+                    'Modules/hashtable.c',
+                    'Modules/itertoolsmodule.c',
+                    'Modules/posixmodule.c',
+                    'Modules/pwdmodule.c',
+                    'Modules/signalmodule.c',
+                    'Modules/symtablemodule.c',
+                    'Modules/timemodule.c',
+                    'Modules/xxsubtype.c',
+                ]
+            ),
+        ]
 
     def write(self) -> None:
         self._write(self.preamble, spacing=1)
+
         self._write_section('Common')
+        for var in self.common_vars:
+            self._write_var(var)
+
+        for target in self.targets:
+            self._write_target(target)
 
 
 def main():

@@ -7,3 +7,72 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
 
 ### Common
 
+set(CPYTHON_CFLAGS
+        -Wno-unused-result
+        -Wsign-compare
+        -g
+        -O0
+        -Wall
+        -std=c99
+        -Wextra
+        -Wno-unused-result
+        -Wno-unused-parameter
+        -Wno-missing-field-initializers
+        -Wstrict-prototypes
+        -Werror=implicit-function-declaration
+        )
+
+set(CPYTHON_CORE_INCLUDE
+        Include/internal
+        .
+        Include
+        )
+
+set(CPYTHON_MODULE_LDFLAGS
+        -bundle
+        -undefined dynamic_lookup
+        -L/usr/local/lib
+        )
+
+set(CPYTHON_MODULE_INCLUDE
+        Include/internal
+        Include
+        .
+        usr/local/include
+        )
+
+
+### _programs
+
+add_library(_programs STATIC
+        Programs/python.c
+        )
+
+
+### _builtin_modules
+
+add_library(_builtin_modules STATIC
+        Modules/_abc.c
+        Modules/_codecsmodule.c
+        Modules/_collectionsmodule.c
+        Modules/_functoolsmodule.c
+        Modules/_localemodule.c
+        Modules/_operator.c
+        Modules/_sre.c
+        Modules/_stat.c
+        Modules/_threadmodule.c
+        Modules/_tracemalloc.c
+        Modules/_weakref.c
+        Modules/atexitmodule.c
+        Modules/errnomodule.c
+        Modules/faulthandler.c
+        Modules/hashtable.c
+        Modules/itertoolsmodule.c
+        Modules/posixmodule.c
+        Modules/pwdmodule.c
+        Modules/signalmodule.c
+        Modules/symtablemodule.c
+        Modules/timemodule.c
+        Modules/xxsubtype.c
+        )
+
