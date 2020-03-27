@@ -98,10 +98,10 @@ whose size is determined when the object is allocated.
 
 typedef int16_t Py_owner_id_t;
 typedef int64_t Py_refcnt_t;
-typedef int32_t Py_refcnt_idx_t;
+typedef int64_t Py_refcnt_idx_t;
 
 #define Py_REFCNT_MAX       ((1L << 40L)-1)
-#define Py_REFCNT_MIDPOINT  (1L << 48L)
+#define Py_REFCNT_MIDPOINT  (1L << 24L)
 
 #define Py_INVALID_OWNER_ID ((Py_owner_id_t)-1)
 #define Py_SHARED_OWNER_ID  ((Py_owner_id_t)-2)
@@ -110,13 +110,12 @@ typedef int32_t Py_refcnt_idx_t;
 typedef union {
     Py_refcnt_t refcnt;
     struct {
-        int reserved: 16;
         Py_owner_id_t owner_id: 16;
-        Py_refcnt_t refcnt: 32;
+        Py_refcnt_t refcnt: 48;
     } owned;
     struct {
-        int reserved: 32;
-        Py_refcnt_idx_t refcnt_idx: 32;
+        int reserved: 16;
+        Py_refcnt_idx_t refcnt_idx: 48;
     } shared;
 } PyObject_TRefCnt;
 
@@ -169,7 +168,6 @@ PyAPI_FUNC(PyObjectOwnershipBlock *) PyThreadState_OwnershipBlock(void);
 #define Py_SIZE(ob)             (_PyVarObject_CAST(ob)->ob_size)
 
 #define Py_TREFCNT(ob)          ((PyObject_TRefCnt*)&((PyObject*)(ob))->ob_refcnt)
-#define Py_IS_SHARED(ob)        ((Py_TREFCNT(ob))->owned.owner_id == Py_SHARED_OWNER_ID)
 #define Py_NAIVE_REFCNT(ob)     (!_Py_Freethreaded ? Py_REFCNT(ob) : Py_TREFCNT(ob)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_ID ? Py_TREFCNT(ob)->owned.refcnt : Py_REFCNT_MIDPOINT)
 
 PyAPI_FUNC(void) _Py_AssertObjectOwned(PyObject *ob);
