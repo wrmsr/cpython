@@ -403,3 +403,63 @@ target_compile_options(_contextvars PRIVATE
 target_link_options(_contextvars PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         )
+
+
+# math
+
+add_library(math MODULE
+        Modules/mathmodule.c
+        )
+
+target_include_directories(math PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(math PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(math PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+# cmath
+
+add_library(cmath MODULE
+        Modules/cmathmodule.c
+        )
+
+target_include_directories(cmath PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(cmath PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(cmath PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+# _datetime
+
+add_library(_datetime MODULE
+        Modules/_datetimemodule.c
+        )
+
+target_include_directories(_datetime PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_datetime PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_datetime PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
