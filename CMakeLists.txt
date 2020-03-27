@@ -42,7 +42,7 @@ set(CPYTHON_MODULE_INCLUDE
         )
 
 
-### Programs
+### _programs
 
 add_library(_programs STATIC
         Programs/python.c
@@ -58,7 +58,7 @@ target_compile_options(_programs PRIVATE
         )
 
 
-### Parser
+### _parser
 
 add_library(_parser STATIC
         Parser/acceler.c
@@ -82,7 +82,7 @@ target_compile_options(_parser PRIVATE
         )
 
 
-### Objects
+### _objects
 
 add_library(_objects STATIC
         Objects/abstract.c
@@ -139,7 +139,7 @@ target_compile_options(_objects PRIVATE
         )
 
 
-### Python
+### _python
 
 add_library(_python STATIC
         Python/_warnings.c
@@ -217,7 +217,7 @@ set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
         )
 
 set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
-        -DPLATFORM='"darwin"'
+        "-DPLATFORM='\"darwin\"'"
         )
 
 set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
@@ -225,7 +225,7 @@ set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
         )
 
 
-### Modules
+### _modules
 
 add_library(_modules STATIC
         Modules/config.c
@@ -248,7 +248,7 @@ set_source_files_properties(Modules/getpath.c PROPERTIES COMPILE_FLAGS
         )
 
 
-### Builtin Modules
+### _builtin_modules
 
 add_library(_builtin_modules STATIC
         Modules/_abc.c
@@ -285,7 +285,7 @@ target_compile_options(_builtin_modules PRIVATE
         )
 
 
-### IO Module
+### _io_module
 
 add_library(_io_module STATIC
         Modules/_io/_iomodule.c
@@ -308,7 +308,7 @@ target_compile_options(_io_module PRIVATE
         )
 
 
-# Executable
+### python.exe
 
 add_executable(python.exe
         Modules/_math.c
@@ -346,465 +346,3 @@ target_link_libraries(python.exe PRIVATE
         _io_module
         )
 
-
-# _struct
-
-add_library(_struct MODULE
-        Modules/_struct.c
-        )
-
-target_include_directories(_struct PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_struct PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_struct PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# array
-
-add_library(array MODULE
-        Modules/arraymodule.c
-        )
-
-target_include_directories(array PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(array PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(array PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _contextvars
-
-add_library(_contextvars MODULE
-        Modules/_contextvarsmodule.c
-        )
-
-target_include_directories(_contextvars PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_contextvars PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_contextvars PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# math
-
-add_library(math MODULE
-        Modules/mathmodule.c
-        )
-
-target_include_directories(math PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(math PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(math PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        -lm
-        )
-
-
-# cmath
-
-add_library(cmath MODULE
-        Modules/cmathmodule.c
-        )
-
-target_include_directories(cmath PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(cmath PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(cmath PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        -lm
-        )
-
-
-# _datetime
-
-add_library(_datetime MODULE
-        Modules/_datetimemodule.c
-        )
-
-target_include_directories(_datetime PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_datetime PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_datetime PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        -lm
-        )
-
-
-# _random
-
-add_library(_random MODULE
-        Modules/_randommodule.c
-        )
-
-target_include_directories(_random PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_random PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_random PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _bisect
-
-add_library(_bisect MODULE
-        Modules/_bisectmodule.c
-        )
-
-target_include_directories(_bisect PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_bisect PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_bisect PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _heapq
-
-add_library(_heapq MODULE
-        Modules/_heapqmodule.c
-        )
-
-target_include_directories(_heapq PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_heapq PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_heapq PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _pickle
-
-add_library(_pickle MODULE
-        Modules/_pickle.c
-        )
-
-target_include_directories(_pickle PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_pickle PRIVATE
-        ${CPYTHON_CFLAGS}
-        -DPy_BUILD_CORE_MODULE
-        )
-
-target_link_options(_pickle PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _json
-
-add_library(_json MODULE
-        Modules/_json.c
-        )
-
-target_include_directories(_json PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_json PRIVATE
-        ${CPYTHON_CFLAGS}
-        -DPy_BUILD_CORE_MODULE
-        )
-
-target_link_options(_json PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _lsprof
-
-add_library(_lsprof MODULE
-        Modules/_lsprof.c
-        Modules/rotatingtree.c
-        )
-
-target_include_directories(_lsprof PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_lsprof PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_lsprof PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# unicodedata
-
-add_library(unicodedata MODULE
-        Modules/unicodedata.c
-        )
-
-target_include_directories(unicodedata PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(unicodedata PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(unicodedata PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _opcode
-
-add_library(_opcode MODULE
-        Modules/_opcode.c
-        )
-
-target_include_directories(_opcode PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_opcode PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_opcode PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _queue
-
-add_library(_queue MODULE
-        Modules/_queuemodule.c
-        )
-
-target_include_directories(_queue PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_queue PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_queue PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _statistics
-
-add_library(_statistics MODULE
-        Modules/_statisticsmodule.c
-        )
-
-target_include_directories(_statistics PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_statistics PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_statistics PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# fcntl
-
-add_library(fcntl MODULE
-        Modules/fcntlmodule.c
-        )
-
-target_include_directories(fcntl PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(fcntl PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(fcntl PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# grp
-
-add_library(grp MODULE
-        Modules/grpmodule.c
-        )
-
-target_include_directories(grp PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(grp PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(grp PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# select
-
-add_library(select MODULE
-        Modules/selectmodule.c
-        )
-
-target_include_directories(select PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(select PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(select PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# parser
-
-add_library(parser MODULE
-        Modules/parsermodule.c
-        )
-
-target_include_directories(parser PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(parser PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(parser PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# mmap
-
-add_library(mmap MODULE
-        Modules/mmapmodule.c
-        )
-
-target_include_directories(mmap PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(mmap PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(mmap PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# syslog
-
-add_library(syslog MODULE
-        Modules/syslogmodule.c
-        )
-
-target_include_directories(syslog PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(syslog PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(syslog PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# _xxsubinterpreters
-
-add_library(_xxsubinterpreters MODULE
-        Modules/_xxsubinterpretersmodule.c
-        )
-
-target_include_directories(_xxsubinterpreters PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(_xxsubinterpreters PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(_xxsubinterpreters PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        )
-
-
-# audioop
-
-add_library(audioop MODULE
-        Modules/audioop.c
-        )
-
-target_include_directories(audioop PRIVATE
-        ${CPYTHON_MODULE_INCLUDE}
-        )
-
-target_compile_options(audioop PRIVATE
-        ${CPYTHON_CFLAGS}
-        )
-
-target_link_options(audioop PRIVATE
-        ${CPYTHON_MODULE_LDFLAGS}
-        -lm
-        )

@@ -466,7 +466,7 @@ class CmakeGen:
 
 
 def main():
-    with open('CMakeLists_.txt', 'w') as f:
+    with open('CMakeLists.txt', 'w') as f:
         CmakeGen(f).write()
 
 
