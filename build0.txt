@@ -11,6 +11,7 @@ gcc -o Parser/token.o Parser/token.c
 gcc -o Parser/myreadline.o Parser/myreadline.c
 gcc -o Parser/parsetok.o Parser/parsetok.c
 gcc -o Parser/tokenizer.o Parser/tokenizer.c
+
 gcc -o Objects/abstract.o Objects/abstract.c
 gcc -o Objects/accu.o Objects/accu.c
 gcc -o Objects/boolobject.o Objects/boolobject.c
@@ -53,6 +54,7 @@ gcc -o Objects/typeobject.o Objects/typeobject.c
 gcc -o Objects/unicodeobject.o Objects/unicodeobject.c
 gcc -o Objects/unicodectype.o Objects/unicodectype.c
 gcc -o Objects/weakrefobject.o Objects/weakrefobject.c
+
 gcc -o Python/_warnings.o Python/_warnings.c
 gcc -o Python/Python-ast.o Python/Python-ast.c
 gcc -o Python/asdl.o Python/asdl.c
@@ -108,6 +110,7 @@ gcc -fno-strict-aliasing -o Python/dtoa.o Python/dtoa.c
 gcc -o Python/formatter_unicode.o Python/formatter_unicode.c
 gcc -o Python/fileutils.o Python/fileutils.c
 gcc -DSOABI='"cpython-38d-darwin"' -o Python/dynload_shlib.o ./Python/dynload_shlib.c
+
 gcc -o Modules/config.o Modules/config.c
 gcc -DPYTHONPATH='""' -DPREFIX='"/usr/local"' -DEXEC_PREFIX='"/usr/local"' -DVERSION='"3.8"' -DVPATH='""' -o Modules/getpath.o ./Modules/getpath.c
 gcc -o Modules/main.o Modules/main.c
@@ -131,6 +134,7 @@ gcc -c ./Modules/_stat.c -o Modules/_stat.o
 gcc -c ./Modules/timemodule.c -o Modules/timemodule.o
 gcc -c ./Modules/_threadmodule.c -o Modules/_threadmodule.o
 gcc -c ./Modules/_localemodule.c -o Modules/_localemodule.o
+
 gcc -c -I./Modules/_io ./Modules/_io/_iomodule.c -o Modules/_iomodule.o
 gcc -c -I./Modules/_io ./Modules/_io/iobase.c -o Modules/iobase.o
 gcc -c -I./Modules/_io ./Modules/_io/fileio.c -o Modules/fileio.o
@@ -138,6 +142,7 @@ gcc -c -I./Modules/_io ./Modules/_io/bytesio.c -o Modules/bytesio.o
 gcc -c -I./Modules/_io ./Modules/_io/bufferedio.c -o Modules/bufferedio.o
 gcc -c -I./Modules/_io ./Modules/_io/textio.c -o Modules/textio.o
 gcc -c -I./Modules/_io ./Modules/_io/stringio.c -o Modules/stringio.o
+
 gcc -c ./Modules/faulthandler.c -o Modules/faulthandler.o
 gcc -c ./Modules/_tracemalloc.c -o Modules/_tracemalloc.o
 gcc -c ./Modules/hashtable.c -o Modules/hashtable.o
@@ -149,6 +154,7 @@ gcc -o Python/frozen.o Python/frozen.c
 gcc -o Modules/_math.o Modules/_math.c
 gcc -o Programs/_testembed.o ./Programs/_testembed.c
 gcc -DGITVERSION="\"`LC_ALL=C git --git-dir ./.git rev-parse --short HEAD`\"" -DGITTAG="\"`LC_ALL=C git --git-dir ./.git describe --all --always --dirty`\"" -DGITBRANCH="\"`LC_ALL=C git --git-dir ./.git name-rev --name-only HEAD`\"" -o Modules/getbuildinfo.o ./Modules/getbuildinfo.c
+# gcc -DGITVERSION="fa7e2a5240" -DGITTAG="heads/freethreading3" -DGITBRANCH="freethreading3" -o Modules/getbuildinfo.o ./Modules/getbuildinfo.c
 
 rm -f libpython3.8d.a
 ar
