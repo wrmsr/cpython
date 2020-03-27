@@ -202,7 +202,7 @@ set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
         )
 
 set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
-        "-DABIFLAGS='\"d\"' -DMULTIARCH=\"darwin\""
+        "-DABIFLAGS='\"d\"' -DMULTIARCH='\"darwin\"'"
         )
 
 set_source_files_properties(Python/dtoa.c PROPERTIES COMPILE_FLAGS
@@ -212,3 +212,50 @@ set_source_files_properties(Python/dtoa.c PROPERTIES COMPILE_FLAGS
 set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
         "-DSOABI='\"cpython-38d-darwin\"'"
         )
+
+
+
+# gcc -o Modules/config.o Modules/config.c
+# gcc -DPYTHONPATH='""' -DPREFIX='"/usr/local"' -DEXEC_PREFIX='"/usr/local"' -DVERSION='"3.8"' -DVPATH='""' -o Modules/getpath.o ./Modules/getpath.c
+# gcc -o Modules/main.o Modules/main.c
+# gcc -o Modules/gcmodule.o Modules/gcmodule.c
+
+# ! -DPy_BUILD_CORE_BUILTIN
+# gcc -c ./Modules/posixmodule.c -o Modules/posixmodule.o
+# gcc -c ./Modules/errnomodule.c -o Modules/errnomodule.o
+# gcc -c ./Modules/pwdmodule.c -o Modules/pwdmodule.o
+# gcc -c ./Modules/_sre.c -o Modules/_sre.o
+# gcc -c ./Modules/_codecsmodule.c -o Modules/_codecsmodule.o
+# gcc -c ./Modules/_weakref.c -o Modules/_weakref.o
+# gcc -c ./Modules/_functoolsmodule.c -o Modules/_functoolsmodule.o
+# gcc -c ./Modules/_operator.c -o Modules/_operator.o
+# gcc -c ./Modules/_collectionsmodule.c -o Modules/_collectionsmodule.o
+# gcc -c ./Modules/_abc.c -o Modules/_abc.o
+# gcc -c ./Modules/itertoolsmodule.c -o Modules/itertoolsmodule.o
+# gcc -c ./Modules/atexitmodule.c -o Modules/atexitmodule.o
+# gcc -c ./Modules/signalmodule.c -o Modules/signalmodule.o
+# gcc -c ./Modules/_stat.c -o Modules/_stat.o
+# gcc -c ./Modules/timemodule.c -o Modules/timemodule.o
+# gcc -c ./Modules/_threadmodule.c -o Modules/_threadmodule.o
+# gcc -c ./Modules/_localemodule.c -o Modules/_localemodule.o
+
+# gcc -c -I./Modules/_io ./Modules/_io/_iomodule.c -o Modules/_iomodule.o
+# gcc -c -I./Modules/_io ./Modules/_io/iobase.c -o Modules/iobase.o
+# gcc -c -I./Modules/_io ./Modules/_io/fileio.c -o Modules/fileio.o
+# gcc -c -I./Modules/_io ./Modules/_io/bytesio.c -o Modules/bytesio.o
+# gcc -c -I./Modules/_io ./Modules/_io/bufferedio.c -o Modules/bufferedio.o
+# gcc -c -I./Modules/_io ./Modules/_io/textio.c -o Modules/textio.o
+# gcc -c -I./Modules/_io ./Modules/_io/stringio.c -o Modules/stringio.o
+
+# gcc -c ./Modules/faulthandler.c -o Modules/faulthandler.o
+# gcc -c ./Modules/_tracemalloc.c -o Modules/_tracemalloc.o
+# gcc -c ./Modules/hashtable.c -o Modules/hashtable.o
+# gcc -c ./Modules/symtablemodule.c -o Modules/symtablemodule.o
+# gcc -c ./Modules/xxsubtype.c -o Modules/xxsubtype.o
+
+# ! -DPy_BUILD_CORE
+# gcc -o Python/frozen.o Python/frozen.c
+# gcc -o Modules/_math.o Modules/_math.c
+# gcc -o Programs/_testembed.o ./Programs/_testembed.c
+# gcc -DGITVERSION="\"`LC_ALL=C git --git-dir ./.git rev-parse --short HEAD`\"" -DGITTAG="\"`LC_ALL=C git --git-dir ./.git describe --all --always --dirty`\"" -DGITBRANCH="\"`LC_ALL=C git --git-dir ./.git name-rev --name-only HEAD`\"" -o Modules/getbuildinfo.o ./Modules/getbuildinfo.c
+# # gcc -DGITVERSION="fa7e2a5240" -DGITTAG="heads/freethreading3" -DGITBRANCH="freethreading3" -o Modules/getbuildinfo.o ./Modules/getbuildinfo.c
