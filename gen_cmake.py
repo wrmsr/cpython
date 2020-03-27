@@ -178,7 +178,7 @@ class CmakeGen:
                 'Include/internal',
                 'Include',
                 '.',
-                'usr/local/include',
+                '/usr/local/include',
             ]
 
         }.items()]
@@ -830,6 +830,148 @@ class CmakeGen:
                 '_sha1',
                 [
                     'Modules/sha1module.c',
+                ],
+            ),
+
+            ###
+
+            self.new_module(
+                '_blake2',
+                [
+                    'Modules/_blake2/blake2b_impl.c',
+                    'Modules/_blake2/blake2module.c',
+                    'Modules/_blake2/blake2s_impl.c',
+                ],
+            ),
+
+            self.new_module(
+                '_sha3',
+                [
+                    'Modules/_sha3/sha3module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_dbm',
+                [
+                    'Modules/_dbmmodule.c',
+                ],
+                compile_options=[
+                    '-DHAVE_NDBM_H',
+                ],
+            ),
+
+            self.new_module(
+                '_gdbm',
+                [
+                    'Modules/_gdbmmodule.c',
+                ],
+                link_options=[
+                    '-lgdbm',
+                ]
+            ),
+
+            self.new_module(
+                '_sqlite3',
+                [
+                    'Modules/_sqlite/cache.c',
+                    'Modules/_sqlite/connection.c',
+                    'Modules/_sqlite/cursor.c',
+                    'Modules/_sqlite/microprotocols.c',
+                    'Modules/_sqlite/module.c',
+                    'Modules/_sqlite/prepare_protocol.c',
+                    'Modules/_sqlite/row.c',
+                    'Modules/_sqlite/statement.c',
+                    'Modules/_sqlite/util.c',
+                ],
+                include_directories=[
+                    'Modules/_sqlite',
+                    '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include',
+                ],
+                compile_options=[
+                    '-DMODULE_NAME="sqlite3"',
+                    '-DSQLITE_OMIT_LOAD_EXTENSION=1',
+                ],
+                link_options=[
+                    '-L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib',
+                    '-lsqlite3',
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                'termios',
+                [
+                    'Modules/termios.c',
+                ],
+            ),
+
+            self.new_module(
+                'resource',
+                [
+                    'Modules/resource.c',
+                ],
+            ),
+
+            self.new_module(
+                '_scproxy',
+                [
+                    'Modules/_scproxy.c',
+                ],
+                link_options=[
+                    '-framework SystemConfiguration',
+                    '-framework CoreFoundation',
+                ],
+            ),
+
+            self.new_module(
+                'nis',
+                [
+                    'Modules/nismodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'zlib',
+                [
+                    'Modules/zlibmodule.c',
+                ],
+                link_options=[
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                'binascii',
+                [
+                    'Modules/binascii.c',
+                ],
+                compile_options=[
+                    '-DUSE_ZLIB_CRC32',
+                ],
+                link_options=[
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                '_bz2',
+                [
+                    'Modules/_bz2module.c',
+                ],
+                link_options=[
+                    '-lbz2',
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                '_lzma',
+                [
+                    'Modules/_lzmamodule.c',
+                ],
+                link_options=[
+                    '-llzma',
                 ],
             ),
 

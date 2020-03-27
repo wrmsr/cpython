@@ -38,7 +38,7 @@ set(CPYTHON_MODULE_INCLUDE
         Include/internal
         Include
         .
-        usr/local/include
+        /usr/local/include
         )
 
 
@@ -1169,5 +1169,279 @@ target_compile_options(_sha1 PRIVATE
 
 target_link_options(_sha1 PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _blake2
+
+add_library(_blake2 MODULE
+        Modules/_blake2/blake2b_impl.c
+        Modules/_blake2/blake2module.c
+        Modules/_blake2/blake2s_impl.c
+        )
+
+target_include_directories(_blake2 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_blake2 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_blake2 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _sha3
+
+add_library(_sha3 MODULE
+        Modules/_sha3/sha3module.c
+        )
+
+target_include_directories(_sha3 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha3 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha3 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _dbm
+
+add_library(_dbm MODULE
+        Modules/_dbmmodule.c
+        )
+
+target_include_directories(_dbm PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_dbm PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_NDBM_H
+        )
+
+target_link_options(_dbm PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _gdbm
+
+add_library(_gdbm MODULE
+        Modules/_gdbmmodule.c
+        )
+
+target_include_directories(_gdbm PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_gdbm PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_gdbm PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lgdbm
+        )
+
+
+### _sqlite3
+
+add_library(_sqlite3 MODULE
+        Modules/_sqlite/cache.c
+        Modules/_sqlite/connection.c
+        Modules/_sqlite/cursor.c
+        Modules/_sqlite/microprotocols.c
+        Modules/_sqlite/module.c
+        Modules/_sqlite/prepare_protocol.c
+        Modules/_sqlite/row.c
+        Modules/_sqlite/statement.c
+        Modules/_sqlite/util.c
+        )
+
+target_include_directories(_sqlite3 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_sqlite
+        /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include
+        )
+
+target_compile_options(_sqlite3 PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DMODULE_NAME="sqlite3"
+        -DSQLITE_OMIT_LOAD_EXTENSION=1
+        )
+
+target_link_options(_sqlite3 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib
+        -lsqlite3
+        -Wl,-search_paths_first
+        )
+
+
+### termios
+
+add_library(termios MODULE
+        Modules/termios.c
+        )
+
+target_include_directories(termios PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(termios PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(termios PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### resource
+
+add_library(resource MODULE
+        Modules/resource.c
+        )
+
+target_include_directories(resource PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(resource PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(resource PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _scproxy
+
+add_library(_scproxy MODULE
+        Modules/_scproxy.c
+        )
+
+target_include_directories(_scproxy PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_scproxy PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_scproxy PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -framework SystemConfiguration
+        -framework CoreFoundation
+        )
+
+
+### nis
+
+add_library(nis MODULE
+        Modules/nismodule.c
+        )
+
+target_include_directories(nis PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(nis PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(nis PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### zlib
+
+add_library(zlib MODULE
+        Modules/zlibmodule.c
+        )
+
+target_include_directories(zlib PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(zlib PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(zlib PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -Wl,-search_paths_first
+        )
+
+
+### binascii
+
+add_library(binascii MODULE
+        Modules/binascii.c
+        )
+
+target_include_directories(binascii PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(binascii PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DUSE_ZLIB_CRC32
+        )
+
+target_link_options(binascii PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -Wl,-search_paths_first
+        )
+
+
+### _bz2
+
+add_library(_bz2 MODULE
+        Modules/_bz2module.c
+        )
+
+target_include_directories(_bz2 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_bz2 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_bz2 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lbz2
+        -Wl,-search_paths_first
+        )
+
+
+### _lzma
+
+add_library(_lzma MODULE
+        Modules/_lzmamodule.c
+        )
+
+target_include_directories(_lzma PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_lzma PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_lzma PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -llzma
         )
 
