@@ -365,3 +365,41 @@ target_compile_options(_struct PRIVATE
 target_link_options(_struct PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         )
+
+
+# array
+
+add_library(array MODULE
+        Modules/arraymodule.c
+        )
+
+target_include_directories(array PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(array PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(array PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _contextvars
+
+add_library(_contextvars MODULE
+        Modules/_contextvarsmodule.c
+        )
+
+target_include_directories(_contextvars PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_contextvars PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_contextvars PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
