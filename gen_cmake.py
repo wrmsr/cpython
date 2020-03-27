@@ -582,8 +582,6 @@ class CmakeGen:
                 ],
             ),
 
-            ####
-
             self.new_module(
                 'unicodedata',
                 [
@@ -668,6 +666,170 @@ class CmakeGen:
                 ],
                 link_options=[
                     '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_csv',
+                [
+                    'Modules/_csv.c',
+                ],
+            ),
+
+            self.new_module(
+                '_posixsubprocess',
+                [
+                    'Modules/_posixsubprocess.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testcapi',
+                [
+                    'Modules/_testcapimodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testinternalcapi',
+                [
+                    'Modules/_testinternalcapi.c',
+                ],
+                core=True,
+            ),
+
+            self.new_module(
+                '_testbuffer',
+                [
+                    'Modules/_testbuffer.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testimportmultiple',
+                [
+                    'Modules/_testimportmultiple.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testmultiphase',
+                [
+                    'Modules/_testmultiphase.c',
+                ],
+            ),
+
+            self.new_module(
+                '_xxtestfuzz',
+                [
+                    'Modules/_xxtestfuzz/_xxtestfuzz.c',
+                    'Modules/_xxtestfuzz/fuzzer.c',
+                ],
+            ),
+
+            self.new_module(
+                'readline',
+                [
+                    'Modules/readline.c',
+                ],
+                link_options=[
+                    '-L/usr/lib/termcap',
+                    '-lreadline',
+                    '-lncurses',
+                ],
+            ),
+
+            self.new_module(
+                '_curses',
+                [
+                    'Modules/_cursesmodule.c',
+                ],
+                compile_options=[
+                    '-DHAVE_NCURSESW=1',
+                    '-D_XOPEN_SOURCE_EXTENDED=1',
+                ],
+                link_options=[
+                    '-lncurses',
+                ],
+            ),
+
+            self.new_module(
+                '_curses_panel',
+                [
+                    'Modules/_curses_panel.c',
+                ],
+                compile_options=[
+                    '-DHAVE_NCURSESW=1',
+                    '-D_XOPEN_SOURCE_EXTENDED=1',
+                ],
+                link_options=[
+                    '-lpanel',
+                    '-lncurses',
+                ],
+            ),
+
+            self.new_module(
+                '_crypt',
+                [
+                    'Modules/_cryptmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_ssl',
+                [
+                    'Modules/_ssl.c',
+                ],
+                include_directories=[
+                    '/usr/local/opt/openssl@1.1/include',
+                ],
+                link_options=[
+                    '-L/usr/local/opt/openssl@1.1/lib',
+                    '-lssl',
+                    '-lcrypto',
+                ],
+            ),
+
+            self.new_module(
+                '_hashlib',
+                [
+                    'Modules/_hashopenssl.c',
+                ],
+                include_directories=[
+                    '/usr/local/opt/openssl@1.1/include',
+                ],
+                link_options=[
+                    '-L/usr/local/opt/openssl@1.1/lib',
+                    '-lssl',
+                    '-lcrypto',
+                ],
+            ),
+
+            self.new_module(
+                '_sha256',
+                [
+                    'Modules/sha256module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_sha512',
+                [
+                    'Modules/sha512module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_md5',
+                [
+                    'Modules/md5module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_sha1',
+                [
+                    'Modules/sha1module.c',
                 ],
             ),
 

@@ -809,3 +809,365 @@ target_link_options(audioop PRIVATE
         -lm
         )
 
+
+### _csv
+
+add_library(_csv MODULE
+        Modules/_csv.c
+        )
+
+target_include_directories(_csv PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_csv PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_csv PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _posixsubprocess
+
+add_library(_posixsubprocess MODULE
+        Modules/_posixsubprocess.c
+        )
+
+target_include_directories(_posixsubprocess PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_posixsubprocess PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_posixsubprocess PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testcapi
+
+add_library(_testcapi MODULE
+        Modules/_testcapimodule.c
+        )
+
+target_include_directories(_testcapi PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testcapi PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testcapi PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testinternalcapi
+
+add_library(_testinternalcapi MODULE
+        Modules/_testinternalcapi.c
+        )
+
+target_include_directories(_testinternalcapi PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testinternalcapi PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_MODULE
+        )
+
+target_link_options(_testinternalcapi PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testbuffer
+
+add_library(_testbuffer MODULE
+        Modules/_testbuffer.c
+        )
+
+target_include_directories(_testbuffer PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testbuffer PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testbuffer PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testimportmultiple
+
+add_library(_testimportmultiple MODULE
+        Modules/_testimportmultiple.c
+        )
+
+target_include_directories(_testimportmultiple PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testimportmultiple PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testimportmultiple PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testmultiphase
+
+add_library(_testmultiphase MODULE
+        Modules/_testmultiphase.c
+        )
+
+target_include_directories(_testmultiphase PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testmultiphase PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testmultiphase PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _xxtestfuzz
+
+add_library(_xxtestfuzz MODULE
+        Modules/_xxtestfuzz/_xxtestfuzz.c
+        Modules/_xxtestfuzz/fuzzer.c
+        )
+
+target_include_directories(_xxtestfuzz PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_xxtestfuzz PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_xxtestfuzz PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### readline
+
+add_library(readline MODULE
+        Modules/readline.c
+        )
+
+target_include_directories(readline PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(readline PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(readline PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/usr/lib/termcap
+        -lreadline
+        -lncurses
+        )
+
+
+### _curses
+
+add_library(_curses MODULE
+        Modules/_cursesmodule.c
+        )
+
+target_include_directories(_curses PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_curses PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_NCURSESW=1
+        -D_XOPEN_SOURCE_EXTENDED=1
+        )
+
+target_link_options(_curses PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lncurses
+        )
+
+
+### _curses_panel
+
+add_library(_curses_panel MODULE
+        Modules/_curses_panel.c
+        )
+
+target_include_directories(_curses_panel PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_curses_panel PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_NCURSESW=1
+        -D_XOPEN_SOURCE_EXTENDED=1
+        )
+
+target_link_options(_curses_panel PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lpanel
+        -lncurses
+        )
+
+
+### _crypt
+
+add_library(_crypt MODULE
+        Modules/_cryptmodule.c
+        )
+
+target_include_directories(_crypt PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_crypt PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_crypt PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _ssl
+
+add_library(_ssl MODULE
+        Modules/_ssl.c
+        )
+
+target_include_directories(_ssl PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        /usr/local/opt/openssl@1.1/include
+        )
+
+target_compile_options(_ssl PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_ssl PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/usr/local/opt/openssl@1.1/lib
+        -lssl
+        -lcrypto
+        )
+
+
+### _hashlib
+
+add_library(_hashlib MODULE
+        Modules/_hashopenssl.c
+        )
+
+target_include_directories(_hashlib PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        /usr/local/opt/openssl@1.1/include
+        )
+
+target_compile_options(_hashlib PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_hashlib PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/usr/local/opt/openssl@1.1/lib
+        -lssl
+        -lcrypto
+        )
+
+
+### _sha256
+
+add_library(_sha256 MODULE
+        Modules/sha256module.c
+        )
+
+target_include_directories(_sha256 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha256 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha256 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _sha512
+
+add_library(_sha512 MODULE
+        Modules/sha512module.c
+        )
+
+target_include_directories(_sha512 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha512 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha512 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _md5
+
+add_library(_md5 MODULE
+        Modules/md5module.c
+        )
+
+target_include_directories(_md5 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_md5 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_md5 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _sha1
+
+add_library(_sha1 MODULE
+        Modules/sha1module.c
+        )
+
+target_include_directories(_sha1 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha1 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha1 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
