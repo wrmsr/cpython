@@ -163,9 +163,13 @@ get_shared_refcnt_idx(struct _gc_runtime_state *state, struct _gc_shared_refcnt 
     return (Py_refcnt_idx_t) (shared - state->shared_refcnts);
 }
 
-static int
-freethread_enable_traverse(PyObject *op, struct _gc_runtime_state *state)
+static void
+share_obj(struct _gc_runtime_state *state, PyObject *op)
 {
+    if (Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID) {
+        return;
+    }
+
     struct _gc_shared_refcnt *shared = state->free_shared_refcnt;
     assert(shared->refcnt == 0);
 
@@ -174,7 +178,12 @@ freethread_enable_traverse(PyObject *op, struct _gc_runtime_state *state)
 
     Py_TREFCNT(op)->owned.owner_id = Py_SHARED_OWNER_ID;
     Py_TREFCNT(op)->shared.refcnt_idx = get_shared_refcnt_idx(state, shared);
+}
 
+static int
+freethread_enable_traverse(PyObject *op, struct _gc_runtime_state *state)
+{
+    share_obj(state, op);
     return 0;
 }
 
@@ -197,6 +206,7 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
         PyGC_Head *gc_list = GEN_HEAD(state, i);
         for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
             PyObject *op = FROM_GC(gc);
+            share_obj(state, op);
             Py_TREFCNT(op)->owned.owner_id = owner_id;
             Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, state);
         }
