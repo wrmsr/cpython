@@ -310,7 +310,7 @@ target_compile_options(python.exe PRIVATE
         )
 
 set_source_files_properties(Modules/getbuildinfo.c PROPERTIES COMPILE_FLAGS
-        \"-DGITVERSION=\"fa7e2a5240\" -DGITTAG=\"heads/freethreading3\" -DGITBRANCH=\"freethreading3\"\"
+        "-DGITVERSION='\"fa7e2a5240\"' -DGITTAG='\"heads/freethreading3\"' -DGITBRANCH='\"freethreading3\"'"
         )
 
 target_link_libraries(python.exe PRIVATE
