@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.1...3.16)
 
 project(cpython VERSION 3.8.2 LANGUAGES C)
 
-#add_library(MyLibExample simple_lib.cpp simple_lib.hpp)
-#add_executable(MyExample simple_example.cpp)
-#target_link_libraries(MyExample PRIVATE MyLibExample)
-
 
 ### Common
 
