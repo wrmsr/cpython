@@ -751,3 +751,61 @@ target_compile_options(mmap PRIVATE
 target_link_options(mmap PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         )
+
+
+# syslog
+
+add_library(syslog MODULE
+        Modules/syslogmodule.c
+        )
+
+target_include_directories(syslog PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(syslog PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(syslog PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# _xxsubinterpreters
+
+add_library(_xxsubinterpreters MODULE
+        Modules/_xxsubinterpretersmodule.c
+        )
+
+target_include_directories(_xxsubinterpreters PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_xxsubinterpreters PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_xxsubinterpreters PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+# audioop
+
+add_library(audioop MODULE
+        Modules/audioop.c
+        )
+
+target_include_directories(audioop PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(audioop PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(audioop PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
