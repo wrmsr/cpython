@@ -1280,7 +1280,6 @@ static void
 freethread_enable_proc(void)
 {
     _Py_Freethreaded = 1;
-    _PyThreadState_PrepareFreethreading();
     Py_owner_id_t owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
     for (int i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
@@ -1299,7 +1298,7 @@ sys_freethread_enable(PyObject *self, PyObject *args)
 {
     if (_Py_Freethreaded)
         Py_RETURN_NONE;
-    freethread_enable_proc();
+    _PyThreadState_EnableFreethreading();
     Py_RETURN_NONE;
 }
 

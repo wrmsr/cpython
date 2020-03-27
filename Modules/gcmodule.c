@@ -23,6 +23,7 @@
 
 */
 
+#include <Include/Python.h>
 #include "Python.h"
 #include "pycore_context.h"
 #include "pycore_object.h"
@@ -151,6 +152,55 @@ _PyGC_Initialize(struct _gc_runtime_state *state)
     state->permanent_generation = permanent_generation;
 
     state->sharing_mutex = PyThread_allocate_lock();
+    state->shared_refcnts = NULL;
+    state->free_shared_refcnt = NULL;
+    state->num_shared_refcnts = 0;
+}
+
+static Py_refcnt_idx_t
+get_shared_refcnt_idx(struct _gc_runtime_state *state, struct _gc_shared_refcnt *shared)
+{
+    return (Py_refcnt_idx_t) (shared - state->shared_refcnts);
+}
+
+static int
+freethread_enable_traverse(PyObject *op, struct _gc_runtime_state *state)
+{
+    struct _gc_shared_refcnt *shared = state->free_shared_refcnt;
+    assert(shared->refcnt == 0);
+
+    state->free_shared_refcnt = shared->obj;
+    shared->obj = op;
+
+    Py_TREFCNT(op)->owned.owner_id = Py_SHARED_OWNER_ID;
+    Py_TREFCNT(op)->shared.refcnt_idx = get_shared_refcnt_idx(state, shared);
+
+    return 0;
+}
+
+void
+_PyGC_EnableFreethreading(struct _gc_runtime_state *state)
+{
+    state->shared_refcnts = PyMem_RawMalloc(1024 * 1024);
+    const size_t num_shared_refcnts = (1024 * 1024) / sizeof(struct _gc_shared_refcnt);
+    state->num_shared_refcnts = num_shared_refcnts;
+    for (int i = 0; i < num_shared_refcnts; ++i) {
+        state->shared_refcnts[i].obj = &state->shared_refcnts[i+1].obj;
+        state->shared_refcnts[i].refcnt = 0;
+    }
+    state->shared_refcnts[num_shared_refcnts-1].obj = NULL;
+    state->free_shared_refcnt = state->shared_refcnts;
+
+    Py_owner_id_t owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
+    for (int i = 0; i < NUM_GENERATIONS; i++) {
+        PyGC_Head *gc;
+        PyGC_Head *gc_list = GEN_HEAD(state, i);
+        for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
+            PyObject *op = FROM_GC(gc);
+            Py_TREFCNT(op)->owned.owner_id = owner_id;
+            Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, state);
+        }
+    }
 }
 
 /*

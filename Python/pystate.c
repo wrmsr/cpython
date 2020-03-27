@@ -564,11 +564,13 @@ pyobject_listpage_new(void) {
 }
 
 void
-_PyThreadState_PrepareFreethreading(void)
+_PyThreadState_EnableFreethreading(void)
 {
     PyInterpreterState *interp;
     PyThreadState *tstate;
-    assert(_Py_Freethreaded);
+    assert(!_Py_Freethreaded);
+
+    _Py_Freethreaded = 1;
 
     _PyRuntimeState *runtime = &_PyRuntime;
     HEAD_LOCK(runtime);
@@ -576,7 +578,6 @@ _PyThreadState_PrepareFreethreading(void)
         for (tstate = interp->tstate_head; tstate != NULL; tstate = tstate->next) {
             if (tstate->ownership.shared_refcnts == NULL)
                 tstate->ownership.shared_refcnts = PyMem_RawMalloc(1024 * 1024);
-
             if (tstate->unshared_increfs == NULL)
                 tstate->unshared_increfs = pyobject_listpage_new();
             if (tstate->unshared_decrefs == NULL)
@@ -584,6 +585,8 @@ _PyThreadState_PrepareFreethreading(void)
         }
     }
     HEAD_UNLOCK(runtime);
+
+    _PyGC_EnableFreethreading(&runtime->gc);
 }
 
 void
