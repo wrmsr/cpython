@@ -126,3 +126,4 @@ Tools/ssl/win32
 compile_commands.json
 _ft_test
 cmake/
+cmake-build-debug/
