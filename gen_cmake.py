@@ -118,7 +118,8 @@ class CmakeGen:
         if target.link_options:
             self._write_cmd(Command('target_link_options', [target.name, 'PRIVATE'], target.link_options))
         if target.compile_flags_by_source_file:
-            pass
+            for sf, cf in target.compile_flags_by_source_file.items():
+                self._write_cmd(Command('set_source_files_properties', [sf, 'PROPERTIES', 'COMPILE_FLAGS'], cf))
 
     @property
     def preamble(self) -> ta.List[str]:
@@ -174,6 +175,13 @@ class CmakeGen:
                 '_programs',
                 [
                     'Programs/python.c',
+                ],
+                include_directories=[
+                    '${CPYTHON_CORE_INCLUDE}',
+                ],
+                compile_options=[
+                    '${CPYTHON_CFLAGS}',
+                    '-DPy_BUILD_CORE',
                 ]
             ),
 
@@ -202,6 +210,13 @@ class CmakeGen:
                     'Modules/symtablemodule.c',
                     'Modules/timemodule.c',
                     'Modules/xxsubtype.c',
+                ],
+                include_directories=[
+                    '${CPYTHON_CORE_INCLUDE}',
+                ],
+                compile_options=[
+                    '${CPYTHON_CFLAGS}',
+                    '-DPy_BUILD_CORE',
                 ]
             ),
         ]

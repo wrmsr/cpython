@@ -48,6 +48,15 @@ add_library(_programs STATIC
         Programs/python.c
         )
 
+target_include_directories(_programs PRIVATE
+        ${CPYTHON_CORE_INCLUDE}
+        )
+
+target_compile_options(_programs PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
 
 ### _builtin_modules
 
@@ -74,5 +83,14 @@ add_library(_builtin_modules STATIC
         Modules/symtablemodule.c
         Modules/timemodule.c
         Modules/xxsubtype.c
+        )
+
+target_include_directories(_builtin_modules PRIVATE
+        ${CPYTHON_CORE_INCLUDE}
+        )
+
+target_compile_options(_builtin_modules PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
         )
 
