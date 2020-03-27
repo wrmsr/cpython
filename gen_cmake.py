@@ -582,6 +582,95 @@ class CmakeGen:
                 ],
             ),
 
+            ####
+
+            self.new_module(
+                'unicodedata',
+                [
+                    'Modules/unicodedata.c',
+                ],
+            ),
+
+            self.new_module(
+                '_opcode',
+                [
+                    'Modules/_opcode.c',
+                ],
+            ),
+
+            self.new_module(
+                '_queue',
+                [
+                    'Modules/_queuemodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_statistics',
+                [
+                    'Modules/_statisticsmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'fcntl',
+                [
+                    'Modules/fcntlmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'grp',
+                [
+                    'Modules/grpmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'select',
+                [
+                    'Modules/selectmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'parser',
+                [
+                    'Modules/parsermodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'mmap',
+                [
+                    'Modules/mmapmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'syslog',
+                [
+                    'Modules/syslogmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_xxsubinterpreters',
+                [
+                    'Modules/_xxsubinterpretersmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'audioop',
+                [
+                    'Modules/audioop.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
         ]
 
     def write(self) -> None:
