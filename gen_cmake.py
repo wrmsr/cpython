@@ -351,6 +351,21 @@ class CmakeGen:
                 },
             ),
 
+            self.core_static_lib(
+                '_modules',
+                [
+                    'Modules/config.c',
+                    'Modules/gcmodule.c',
+                    'Modules/getpath.c',
+                    'Modules/main.c',
+                ],
+                compile_flags_by_source_file={
+                    'Modules/getpath.c': [
+                        '-DPYTHONPATH=\'""\' -DPREFIX=\'"/usr/local"\' -DEXEC_PREFIX=\'"/usr/local"\' -DVERSION=\'"3.8"\' -DVPATH=\'""\'',
+                    ],
+                },
+            ),
+
         ]
 
     def write(self) -> None:

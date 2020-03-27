@@ -237,3 +237,26 @@ set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
         "-DABIFLAGS='\"d\"' -DMULTIARCH='\"darwin\"'"
         )
 
+
+### _modules
+
+add_library(_modules STATIC
+        Modules/config.c
+        Modules/gcmodule.c
+        Modules/getpath.c
+        Modules/main.c
+        )
+
+target_include_directories(_modules PRIVATE
+        ${CPYTHON_CORE_INCLUDE}
+        )
+
+target_compile_options(_modules PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
+set_source_files_properties(Modules/getpath.c PROPERTIES COMPILE_FLAGS
+        "-DPYTHONPATH='\"\"' -DPREFIX='\"/usr/local\"' -DEXEC_PREFIX='\"/usr/local\"' -DVERSION='\"3.8\"' -DVPATH='\"\"'"
+        )
+
