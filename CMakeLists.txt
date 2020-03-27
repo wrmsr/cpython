@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1...3.16)
 
 project(cpython VERSION 3.8.2 LANGUAGES C)
 
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
+
 
 ### Common
 

@@ -123,7 +123,7 @@ Tools/ssl/win32
 .cproject
 .project
 .settings/
-compile_commands.json
 _ft_test
-cmake/
 cmake-build-debug/
+cmake/
+compile_commands.json
