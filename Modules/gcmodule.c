@@ -163,11 +163,11 @@ get_shared_refcnt_idx(struct _gc_runtime_state *state, struct _gc_shared_refcnt 
     return (Py_refcnt_idx_t) (shared - state->shared_refcnts);
 }
 
-static void
+static Py_refcnt_idx_t
 share_obj(struct _gc_runtime_state *state, PyObject *op)
 {
     if (Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID) {
-        return;
+        return Py_TREFCNT(op)->shared.refcnt_idx;
     }
 
     struct _gc_shared_refcnt *shared = state->free_shared_refcnt;
@@ -176,8 +176,10 @@ share_obj(struct _gc_runtime_state *state, PyObject *op)
     state->free_shared_refcnt = shared->obj;
     shared->obj = op;
 
+    Py_refcnt_idx_t idx = get_shared_refcnt_idx(state, shared);
     Py_TREFCNT(op)->owned.owner_id = Py_SHARED_OWNER_ID;
-    Py_TREFCNT(op)->shared.refcnt_idx = get_shared_refcnt_idx(state, shared);
+    Py_TREFCNT(op)->shared.refcnt_idx = idx;
+    return idx;
 }
 
 static int
@@ -193,6 +195,7 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
     state->shared_refcnts = PyMem_RawMalloc(1024 * 1024);
     const size_t num_shared_refcnts = (1024 * 1024) / sizeof(struct _gc_shared_refcnt);
     state->num_shared_refcnts = num_shared_refcnts;
+
     for (int i = 0; i < num_shared_refcnts; ++i) {
         state->shared_refcnts[i].obj = &state->shared_refcnts[i+1].obj;
         state->shared_refcnts[i].refcnt = 0;
@@ -1979,15 +1982,17 @@ _PyGC_Fini(_PyRuntimeState *runtime)
     Py_CLEAR(state->callbacks);
 }
 
-void
+Py_refcnt_idx_t
 PyGC_ShareObject(PyObject *obj)
 {
-   SHARING_LOCK();
+    SHARING_LOCK();
 
-   // FIXME lols
-   // _PyRuntime.
+    struct _gc_runtime_state *state = &_PyRuntime.gc;
+    Py_refcnt_idx_t idx = share_obj(state, obj);
 
-   SHARING_UNLOCK();
+    SHARING_UNLOCK();
+
+    return idx;
 }
 
 /* for debugging */
