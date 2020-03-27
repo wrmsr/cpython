@@ -128,3 +128,78 @@ target_compile_options(objects PRIVATE
         )
 
 
+### Python
+
+add_library(python STATIC
+        Python/_warnings.c
+        Python/Python-ast.c
+        Python/asdl.c
+        Python/ast.c
+        Python/ast_opt.c
+        Python/ast_unparse.c
+        Python/bltinmodule.c
+        Python/ceval.c
+        Python/codecs.c
+        Python/compile.c
+        Python/context.c
+        Python/dynamic_annotations.c
+        Python/errors.c
+        Python/frozenmain.c
+        Python/future.c
+        Python/getargs.c
+        Python/getcompiler.c
+        Python/getcopyright.c
+        Python/getplatform.c
+        Python/getversion.c
+        Python/graminit.c
+        Python/hamt.c
+        Python/import.c
+        Python/importdl.c
+        Python/initconfig.c
+        Python/marshal.c
+        Python/modsupport.c
+        Python/mysnprintf.c
+        Python/mystrtoul.c
+        Python/pathconfig.c
+        Python/peephole.c
+        Python/preconfig.c
+        Python/pyarena.c
+        Python/pyctype.c
+        Python/pyfpe.c
+        Python/pyhash.c
+        Python/pylifecycle.c
+        Python/pymath.c
+        Python/pystate.c
+        Python/pythonrun.c
+        Python/pytime.c
+        Python/bootstrap_hash.c
+        Python/structmember.c
+        Python/symtable.c
+        Python/sysmodule.c
+        Python/thread.c
+        Python/traceback.c
+        Python/getopt.c
+        Python/pystrcmp.c
+        Python/pystrtod.c
+        Python/pystrhex.c
+        Python/dtoa.c
+        Python/formatter_unicode.c
+        Python/fileutils.c
+        Python/dynload_shlib.c
+        )
+
+target_include_directories(python PRIVATE
+        ${CPYTHON_INCLUDE}
+        )
+
+target_compile_options(python PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
+
+# gcc -DPLATFORM='"darwin"' -o Python/getplatform.o ./Python/getplatform.c
+# gcc -DABIFLAGS='"d"' -DMULTIARCH=\"darwin\" -o Python/sysmodule.o ./Python/sysmodule.c
+# gcc -fno-strict-aliasing -o Python/dtoa.o Python/dtoa.c
+# gcc -DSOABI='"cpython-38d-darwin"' -o Python/dynload_shlib.o ./Python/dynload_shlib.c
+
