@@ -514,6 +514,7 @@ static inline void _Py_INCREF(PyObject *op)
     } else {
         PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(op)->owned.owner_id;
+        assert(_py_owner_id != 0);
         if (_py_owner_id == _py_ownership_blk->owner_id) {
             Py_TREFCNT(op)->owned.refcnt++;
         } else if (_py_owner_id == Py_SHARED_OWNER_ID) {
@@ -548,6 +549,7 @@ static inline void _Py_DECREF(const char *filename, int lineno,
     } else {
         PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id;
+        assert(_py_owner_id != 0);
         if (_py_owner_id == _py_ownership_blk->owner_id) {
             Py_TREFCNT(_py_decref_tmp)->owned.refcnt--;
         } else if (_py_owner_id == Py_SHARED_OWNER_ID) {
