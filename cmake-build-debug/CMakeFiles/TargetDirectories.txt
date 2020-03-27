@@ -1,0 +1,10 @@
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/python.exe.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_builtin_modules.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_python.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_io_module.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_objects.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_parser.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_modules.dir
+/Users/spinlock/src/wrmsr/cpython-new/cmake-build-debug/CMakeFiles/_programs.dir

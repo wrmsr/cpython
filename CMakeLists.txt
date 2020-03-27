@@ -310,6 +310,13 @@ target_compile_options(python.exe PRIVATE
         -DPy_BUILD_CORE
         )
 
+target_link_options(python.exe PRIVATE
+        -Wl,-stack_size,1000000
+        -framework CoreFoundation
+        -ldl
+        -framework CoreFoundation
+        )
+
 set_source_files_properties(Modules/getbuildinfo.c PROPERTIES COMPILE_FLAGS
         "-DGITVERSION='\"fa7e2a5240\"' -DGITTAG='\"heads/freethreading3\"' -DGITBRANCH='\"freethreading3\"'"
         )
