@@ -245,14 +245,19 @@ add_library(_builtin_modules STATIC
         Modules/_sre.c
         Modules/_stat.c
         Modules/_threadmodule.c
+        Modules/_tracemalloc.c
         Modules/_weakref.c
         Modules/atexitmodule.c
         Modules/errnomodule.c
+        Modules/faulthandler.c
+        Modules/hashtable.c
         Modules/itertoolsmodule.c
         Modules/posixmodule.c
         Modules/pwdmodule.c
         Modules/signalmodule.c
+        Modules/symtablemodule.c
         Modules/timemodule.c
+        Modules/xxsubtype.c
         )
 
 target_include_directories(_builtin_modules PRIVATE
