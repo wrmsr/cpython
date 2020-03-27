@@ -123,6 +123,7 @@ Tools/ssl/win32
 .cproject
 .project
 .settings/
+.venv/
 _ft_test
 cmake-build-debug/
 cmake/
