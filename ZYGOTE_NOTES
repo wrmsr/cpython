@@ -1,3 +1,151 @@
+lin: took 27751 us
+mac: took 61716 us
+
+➜  omnibus git:(wrmsr_working) ✗ cat a.c
+#include <sys/time.h>
+#include <stdio.h>
+
+__thread int x;
+
+void __attribute__ ((noinline)) f() {
+  x += 1;
+}
+
+void __attribute__ ((noinline)) g() {
+  x *= 2;
+}
+
+int main() {
+  struct timeval stop, start;
+  gettimeofday(&start, NULL);
+  for (int i = 9; i < 10000000; ++i) {
+    f();
+    g();
+  }
+  gettimeofday(&stop, NULL);
+  printf("took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
+}
+
+gcc -O3 -lpthread a.c -o a
+
+
+lin:
+
+00000000000007f0 <f>:
+ 7f0:   64 83 04 25 fc ff ff    add    DWORD PTR fs:0xfffffffffffffffc,0x1
+ 7f7:   ff 01
+ 7f9:   c3                      ret
+ 7fa:   66 0f 1f 44 00 00       nop    WORD PTR [rax+rax*1+0x0]
+
+0000000000000800 <g>:
+ 800:   64 d1 24 25 fc ff ff    shl    DWORD PTR fs:0xfffffffffffffffc,1
+ 807:   ff
+ 808:   c3                      ret
+ 809:   0f 1f 80 00 00 00 00    nop    DWORD PTR [rax+0x0]
+
+0000000000000650 <main>:
+ 650:   48 83 ec 38             sub    rsp,0x38
+ 654:   31 f6                   xor    esi,esi
+ 656:   48 8d 7c 24 10          lea    rdi,[rsp+0x10]
+ 65b:   64 48 8b 04 25 28 00    mov    rax,QWORD PTR fs:0x28
+ 662:   00 00
+ 664:   48 89 44 24 28          mov    QWORD PTR [rsp+0x28],rax
+ 669:   31 c0                   xor    eax,eax
+ 66b:   e8 b0 ff ff ff          call   620 <gettimeofday@plt>
+ 670:   ba 77 96 98 00          mov    edx,0x989677
+ 675:   0f 1f 00                nop    DWORD PTR [rax]
+ 678:   31 c0                   xor    eax,eax
+ 67a:   e8 71 01 00 00          call   7f0 <f>
+ 67f:   31 c0                   xor    eax,eax
+ 681:   e8 7a 01 00 00          call   800 <g>
+ 686:   83 ea 01                sub    edx,0x1
+ 689:   75 ed                   jne    678 <main+0x28>
+ 68b:   31 f6                   xor    esi,esi
+ 68d:   48 89 e7                mov    rdi,rsp
+ 690:   e8 8b ff ff ff          call   620 <gettimeofday@plt>
+ 695:   48 8b 14 24             mov    rdx,QWORD PTR [rsp]
+ 699:   48 2b 54 24 10          sub    rdx,QWORD PTR [rsp+0x10]
+ 69e:   48 8d 35 ef 01 00 00    lea    rsi,[rip+0x1ef]        # 894 <_IO_stdin_used+0x4>
+ 6a5:   31 c0                   xor    eax,eax
+ 6a7:   bf 01 00 00 00          mov    edi,0x1
+ 6ac:   48 69 d2 40 42 0f 00    imul   rdx,rdx,0xf4240
+ 6b3:   48 03 54 24 08          add    rdx,QWORD PTR [rsp+0x8]
+ 6b8:   48 2b 54 24 18          sub    rdx,QWORD PTR [rsp+0x18]
+ 6bd:   e8 6e ff ff ff          call   630 <__printf_chk@plt>
+ 6c2:   31 c0                   xor    eax,eax
+ 6c4:   48 8b 4c 24 28          mov    rcx,QWORD PTR [rsp+0x28]
+ 6c9:   64 48 33 0c 25 28 00    xor    rcx,QWORD PTR fs:0x28
+ 6d0:   00 00
+ 6d2:   75 05                   jne    6d9 <main+0x89>
+ 6d4:   48 83 c4 38             add    rsp,0x38
+ 6d8:   c3                      ret
+ 6d9:   e8 32 ff ff ff          call   610 <__stack_chk_fail@plt>
+ 6de:   66 90                   xchg   ax,ax
+
+
+mac:
+
+0000000100000ec0 <_f>:
+   100000ec0:   55                      push   rbp
+   100000ec1:   48 89 e5                mov    rbp,rsp
+   100000ec4:   48 8d 3d 55 01 00 00    lea    rdi,[rip+0x155]        # 100001020 <_x>
+   100000ecb:   ff 17                   call   QWORD PTR [rdi]
+   100000ecd:   ff 00                   inc    DWORD PTR [rax]
+   100000ecf:   5d                      pop    rbp
+   100000ed0:   c3                      ret
+   100000ed1:   66 2e 0f 1f 84 00 00    nop    WORD PTR cs:[rax+rax*1+0x0]
+   100000ed8:   00 00 00
+   100000edb:   0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
+
+0000000100000ee0 <_g>:
+   100000ee0:   55                      push   rbp
+   100000ee1:   48 89 e5                mov    rbp,rsp
+   100000ee4:   48 8d 3d 35 01 00 00    lea    rdi,[rip+0x135]        # 100001020 <_x>
+   100000eeb:   ff 17                   call   QWORD PTR [rdi]
+   100000eed:   d1 20                   shl    DWORD PTR [rax],1
+   100000eef:   5d                      pop    rbp
+   100000ef0:   c3                      ret
+   100000ef1:   66 2e 0f 1f 84 00 00    nop    WORD PTR cs:[rax+rax*1+0x0]
+   100000ef8:   00 00 00
+   100000efb:   0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
+
+0000000100000f00 <_main>:
+   100000f00:   55                      push   rbp
+   100000f01:   48 89 e5                mov    rbp,rsp
+   100000f04:   53                      push   rbx
+   100000f05:   48 83 ec 28             sub    rsp,0x28
+   100000f09:   48 8d 7d e8             lea    rdi,[rbp-0x18]
+   100000f0d:   31 f6                   xor    esi,esi
+   100000f0f:   e8 5a 00 00 00          call   100000f6e <_main+0x6e>
+   100000f14:   bb 77 96 98 00          mov    ebx,0x989677
+   100000f19:   0f 1f 80 00 00 00 00    nop    DWORD PTR [rax+0x0]
+   100000f20:   e8 9b ff ff ff          call   100000ec0 <_f>
+   100000f25:   e8 b6 ff ff ff          call   100000ee0 <_g>
+   100000f2a:   ff cb                   dec    ebx
+   100000f2c:   75 f2                   jne    100000f20 <_main+0x20>
+   100000f2e:   48 8d 7d d8             lea    rdi,[rbp-0x28]
+   100000f32:   31 f6                   xor    esi,esi
+   100000f34:   e8 35 00 00 00          call   100000f6e <_main+0x6e>
+   100000f39:   48 8b 45 d8             mov    rax,QWORD PTR [rbp-0x28]
+   100000f3d:   48 2b 45 e8             sub    rax,QWORD PTR [rbp-0x18]
+   100000f41:   48 69 c0 40 42 0f 00    imul   rax,rax,0xf4240
+   100000f48:   48 63 75 e0             movsxd rsi,DWORD PTR [rbp-0x20]
+   100000f4c:   48 01 c6                add    rsi,rax
+   100000f4f:   48 63 45 f0             movsxd rax,DWORD PTR [rbp-0x10]
+   100000f53:   48 29 c6                sub    rsi,rax
+   100000f56:   48 8d 3d 43 00 00 00    lea    rdi,[rip+0x43]        # 100000fa0 <_main+0xa0>
+   100000f5d:   31 c0                   xor    eax,eax
+   100000f5f:   e8 10 00 00 00          call   100000f74 <_main+0x74>
+   100000f64:   31 c0                   xor    eax,eax
+   100000f66:   48 83 c4 28             add    rsp,0x28
+   100000f6a:   5b                      pop    rbx
+   100000f6b:   5d                      pop    rbp
+   100000f6c:   c3                      ret
+
+
+## wb
+
+
 - compiler switchable branch liklihood bias
 - switchable deallocation modes: call dtor or dont
 - todo freelists
