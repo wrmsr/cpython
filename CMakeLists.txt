@@ -1340,8 +1340,8 @@ target_compile_options(_scproxy PRIVATE
 
 target_link_options(_scproxy PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
-        -framework SystemConfiguration
-        -framework CoreFoundation
+        "SHELL:-framework SystemConfiguration"
+        "SHELL:-framework CoreFoundation"
         )
 
 

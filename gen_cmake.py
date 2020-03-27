@@ -833,8 +833,6 @@ class CmakeGen:
                 ],
             ),
 
-            ###
-
             self.new_module(
                 '_blake2',
                 [
@@ -919,8 +917,8 @@ class CmakeGen:
                     'Modules/_scproxy.c',
                 ],
                 link_options=[
-                    '-framework SystemConfiguration',
-                    '-framework CoreFoundation',
+                    '"SHELL:-framework SystemConfiguration"',
+                    '"SHELL:-framework CoreFoundation"',
                 ],
             ),
 
