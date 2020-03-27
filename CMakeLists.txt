@@ -1632,6 +1632,7 @@ target_link_options(_codecs_iso2022 PRIVATE
 ### _decimal
 
 add_library(_decimal MODULE
+        Modules/_decimal/_decimal.c
         Modules/_decimal/libmpdec/basearith.c
         Modules/_decimal/libmpdec/constants.c
         Modules/_decimal/libmpdec/context.c
