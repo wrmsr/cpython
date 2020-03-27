@@ -183,7 +183,7 @@ class CmakeGen:
 
         }.items()]
 
-    def core_static_lib(
+    def new_core_static(
             self,
             name: str,
             source_files: ta.Sequence[str],
@@ -207,17 +207,17 @@ class CmakeGen:
         )
 
     @property
-    def targets(self) -> ta.List[Target]:
+    def executable_targets(self) -> ta.List[Target]:
         return [
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_programs',
                 [
                     'Programs/python.c',
                 ],
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_parser',
                 [
                     'Parser/acceler.c',
@@ -232,7 +232,7 @@ class CmakeGen:
                 ],
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_objects',
                 [
                     'Objects/abstract.c',
@@ -280,7 +280,7 @@ class CmakeGen:
                 ],
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_python',
                 [
                     'Python/_warnings.c',
@@ -355,7 +355,7 @@ class CmakeGen:
                 },
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_modules',
                 [
                     'Modules/config.c',
@@ -370,7 +370,7 @@ class CmakeGen:
                 },
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_builtin_modules',
                 [
                     'Modules/_abc.c',
@@ -399,7 +399,7 @@ class CmakeGen:
                 builtin=True,
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_io_module',
                 [
                     'Modules/_io/_iomodule.c',
@@ -454,6 +454,136 @@ class CmakeGen:
 
         ]
 
+    def new_module(
+            self,
+            name: str,
+            source_files: ta.Sequence[str],
+            *,
+            core: bool = False,
+            **kwargs
+    ) -> ModuleLibrary:
+        kwargs['include_directories'] = [
+            '${CPYTHON_MODULE_INCLUDE}',
+        ] + kwargs.get('include_directories', [])
+
+        kwargs['compile_options'] = [
+            '${CPYTHON_CFLAGS}',
+        ] + (
+            ['-DPy_BUILD_CORE_MODULE'] if core else []
+        ) + kwargs.get('compile_options', [])
+
+        kwargs['link_options'] = [
+            '${CPYTHON_MODULE_LDFLAGS}',
+        ] + kwargs.get('link_options', [])
+
+        return ModuleLibrary(
+            name,
+            source_files,
+            **kwargs,
+        )
+
+    @property
+    def module_targets(self) -> ta.List[Target]:
+        return [
+
+            self.new_module(
+                '_struct',
+                [
+                    'Modules/_struct.c',
+                ],
+            ),
+
+            self.new_module(
+                'array',
+                [
+                    'Modules/arraymodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_contextvars',
+                [
+                    'Modules/_contextvarsmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'math',
+                [
+                    'Modules/mathmodule.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                'cmath',
+                [
+                    'Modules/cmathmodule.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_datetime',
+                [
+                    'Modules/_datetimemodule.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_random',
+                [
+                    'Modules/_randommodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_bisect',
+                [
+                    'Modules/_bisectmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_heapq',
+                [
+                    'Modules/_heapqmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_pickle',
+                [
+                    'Modules/_pickle.c',
+                ],
+                core=True,
+            ),
+
+            self.new_module(
+                '_json',
+                [
+                    'Modules/_json.c',
+                ],
+                core=True,
+            ),
+
+            self.new_module(
+                '_lsprof',
+                [
+                    'Modules/_lsprof.c',
+                    'Modules/rotatingtree.c',
+                ],
+            ),
+
+        ]
+
     def write(self) -> None:
         self._write(self.preamble, spacing=1)
 
@@ -461,7 +591,10 @@ class CmakeGen:
         for var in self.common_vars:
             self._write_var(var)
 
-        for target in self.targets:
+        for target in self.executable_targets:
+            self._write_target(target)
+
+        for target in self.module_targets:
             self._write_target(target)
 
 

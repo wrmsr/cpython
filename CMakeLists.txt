@@ -346,3 +346,237 @@ target_link_libraries(python.exe PRIVATE
         _io_module
         )
 
+
+### _struct
+
+add_library(_struct MODULE
+        Modules/_struct.c
+        )
+
+target_include_directories(_struct PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_struct PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_struct PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### array
+
+add_library(array MODULE
+        Modules/arraymodule.c
+        )
+
+target_include_directories(array PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(array PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(array PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _contextvars
+
+add_library(_contextvars MODULE
+        Modules/_contextvarsmodule.c
+        )
+
+target_include_directories(_contextvars PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_contextvars PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_contextvars PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### math
+
+add_library(math MODULE
+        Modules/mathmodule.c
+        )
+
+target_include_directories(math PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(math PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(math PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### cmath
+
+add_library(cmath MODULE
+        Modules/cmathmodule.c
+        )
+
+target_include_directories(cmath PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(cmath PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(cmath PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### _datetime
+
+add_library(_datetime MODULE
+        Modules/_datetimemodule.c
+        )
+
+target_include_directories(_datetime PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_datetime PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_datetime PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### _random
+
+add_library(_random MODULE
+        Modules/_randommodule.c
+        )
+
+target_include_directories(_random PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_random PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_random PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _bisect
+
+add_library(_bisect MODULE
+        Modules/_bisectmodule.c
+        )
+
+target_include_directories(_bisect PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_bisect PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_bisect PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _heapq
+
+add_library(_heapq MODULE
+        Modules/_heapqmodule.c
+        )
+
+target_include_directories(_heapq PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_heapq PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_heapq PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _pickle
+
+add_library(_pickle MODULE
+        Modules/_pickle.c
+        )
+
+target_include_directories(_pickle PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_pickle PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_MODULE
+        )
+
+target_link_options(_pickle PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _json
+
+add_library(_json MODULE
+        Modules/_json.c
+        )
+
+target_include_directories(_json PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_json PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_MODULE
+        )
+
+target_link_options(_json PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _lsprof
+
+add_library(_lsprof MODULE
+        Modules/_lsprof.c
+        Modules/rotatingtree.c
+        )
+
+target_include_directories(_lsprof PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_lsprof PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_lsprof PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
