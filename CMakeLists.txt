@@ -202,14 +202,13 @@ set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
         )
 
 set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
-        -DABIFLAGS='"d"'
-        -DMULTIARCH=\"darwin\"
+        "-DABIFLAGS='\"d\"' -DMULTIARCH=\"darwin\""
         )
 
 set_source_files_properties(Python/dtoa.c PROPERTIES COMPILE_FLAGS
-        -fno-strict-aliasing
+        "-fno-strict-aliasing"
         )
 
 set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
-        -DSOABI='"cpython-38d-darwin"'
+        "-DSOABI='\"cpython-38d-darwin\"'"
         )
