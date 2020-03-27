@@ -166,9 +166,10 @@ get_shared_refcnt_idx(struct _gc_runtime_state *state, struct _gc_shared_refcnt 
 static Py_refcnt_idx_t
 share_obj(struct _gc_runtime_state *state, PyObject *op)
 {
-    if (Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID) {
+    if (Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID)
         return Py_TREFCNT(op)->shared.refcnt_idx;
-    }
+
+    assert(PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE);
 
     struct _gc_shared_refcnt *shared = state->free_shared_refcnt;
     assert(shared->refcnt == 0);
@@ -182,10 +183,30 @@ share_obj(struct _gc_runtime_state *state, PyObject *op)
     return idx;
 }
 
+static void
+pin_obj(struct _gc_runtime_state *state, PyObject *op)
+{
+    if (Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID)
+        return;
+
+    // FIXME: shared_idx -> freelist
+    assert(Py_TREFCNT(op)->owned.owner_id == 0);
+    Py_TREFCNT(op)->owned.owner_id = Py_PINNED_OWNER_ID;
+}
+
+static void
+share_or_pin_obj(struct _gc_runtime_state *state, PyObject *op)
+{
+    if (PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE)
+        share_obj(state, op);
+    else
+        pin_obj(state, op);
+}
+
 static int
 freethread_enable_traverse(PyObject *op, struct _gc_runtime_state *state)
 {
-    share_obj(state, op);
+    share_or_pin_obj(state, op);
     return 0;
 }
 
@@ -203,14 +224,12 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
     state->shared_refcnts[num_shared_refcnts-1].obj = NULL;
     state->free_shared_refcnt = state->shared_refcnts;
 
-    Py_owner_id_t owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
     for (int i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
         PyGC_Head *gc_list = GEN_HEAD(state, i);
         for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
             PyObject *op = FROM_GC(gc);
-            share_obj(state, op);
-            Py_TREFCNT(op)->owned.owner_id = owner_id;
+            share_or_pin_obj(state, op);
             Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, state);
         }
     }
@@ -1994,6 +2013,14 @@ PyGC_ShareObject(PyObject *obj)
 
     return idx;
 }
+
+void
+PyGC_PinObject(PyObject *obj)
+{
+    struct _gc_runtime_state *state = &_PyRuntime.gc;
+    pin_obj(state, obj);
+}
+
 
 /* for debugging */
 void

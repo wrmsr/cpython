@@ -1,3 +1,23 @@
+list_item(PyListObject *a, Py_ssize_t i):
+
+    Py_INCREF(a->ob_item[i]);
+    return a->ob_item[i];
+
+    ->
+
+    PyObject *ret = a->ob_item[i];
+    Py_INCREF(ret);
+    return ret;
+
+    ->
+
+    *ok* for global refs to temp zero, only reconciled by swapping at safepoints
+    *not ok* to inc/dec WRONG PTR. going to have to introduce lots of temps.
+
+
+###
+
+
 lin: took 27751 us
 mac: took 61716 us
 

@@ -1265,34 +1265,6 @@ sys_get_asyncgen_hooks_impl(PyObject *module)
 }
 
 
-#define GEN_HEAD(n) (&_PyRuntime.gc.generations[n].head)
-#define AS_GC(o) ((PyGC_Head *)(o)-1)
-#define FROM_GC(g) ((PyObject *)(((PyGC_Head *)g)+1))
-
-static int
-freethread_enable_traverse(PyObject *op, Py_owner_id_t owner_id)
-{
-    Py_TREFCNT(op)->owned.owner_id = owner_id;
-    return 0;
-}
-
-static void
-freethread_enable_proc(void)
-{
-    _Py_Freethreaded = 1;
-    Py_owner_id_t owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
-    for (int i = 0; i < NUM_GENERATIONS; i++) {
-        PyGC_Head *gc;
-        PyGC_Head *gc_list = GEN_HEAD(i);
-        for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
-            PyObject *op = FROM_GC(gc);
-            Py_TREFCNT(op)->owned.owner_id = owner_id;
-            Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, owner_id);
-        }
-    }
-
-}
-
 static PyObject *
 sys_freethread_enable(PyObject *self, PyObject *args)
 {

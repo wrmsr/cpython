@@ -452,6 +452,21 @@ PyAPI_FUNC(void) _Py_dec_count(struct _typeobject *);
 #define _Py_COUNT_ALLOCS_COMMA
 #endif /* COUNT_ALLOCS */
 
+
+extern int _Py_Freethreaded;
+
+#if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
+extern __thread PyObjectOwnershipBlock *_PyThreadState_OwnershipBlock;
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
+// Weave into things like ceval but must refresh after every instr that calls out
+#define Py_LOCAL_THREAD_STATE Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#define Py_LOCAL_THREAD_STATE_REFRESH _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
+#else
+PyAPI_FUNC(PyObjectOwnershipBlock *) PyThreadState_OwnershipBlock(void);
+#define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
+#endif
+
+
 /* Update the Python traceback of an object. This function must be called
    when a memory block is reused from a free list. */
 PyAPI_FUNC(int) _PyTraceMalloc_NewReference(PyObject *op);
@@ -474,6 +489,8 @@ static inline void _Py_NewReference(PyObject *op)
     _Py_INC_TPALLOCS(op);
     _Py_INC_REFTOTAL;
     Py_REFCNT(op) = 1;
+    if (_Py_Freethreaded)
+        Py_TREFCNT(op)->owned.owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
 }
 
 static inline void _Py_ForgetReference(PyObject *op)
@@ -487,23 +504,10 @@ static inline void _Py_ForgetReference(PyObject *op)
 PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
 
 
-extern int _Py_Freethreaded;
-
-#if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
-extern __thread PyObjectOwnershipBlock *_PyThreadState_OwnershipBlock;
-#define _Py_THREADSTATE_OWNERSHIP_BLOCK _PyThreadState_OwnershipBlock
-// Weave into things like ceval but must refresh after every instr that calls out
-#define Py_LOCAL_THREAD_STATE Py_ownership_block _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
-#define Py_LOCAL_THREAD_STATE_REFRESH _PyThreadState_OwnershipId = _PyThreadState_OwnershipBlock;
-#else
-PyAPI_FUNC(PyObjectOwnershipBlock *) PyThreadState_OwnershipBlock(void);
-#define _Py_THREADSTATE_OWNERSHIP_BLOCK PyThreadState_OwnershipBlock()
-#endif
-
-
 PyAPI_FUNC(void) Py_IncUnsharedRef(PyObject *o);
 PyAPI_FUNC(void) Py_DecUnsharedRef(PyObject *o);
 PyAPI_FUNC(Py_refcnt_idx_t) PyGC_ShareObject(PyObject *obj);
+PyAPI_FUNC(void) PyGC_PinObject(PyObject *obj);
 
 
 static inline void _Py_INCREF(PyObject *op)
@@ -516,8 +520,9 @@ static inline void _Py_INCREF(PyObject *op)
         PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(op)->owned.owner_id;
         if (_py_owner_id == 0) {
-            PyGC_ShareObject(op);
-            _py_owner_id = Py_SHARED_OWNER_ID;
+            assert(!(PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE));
+            PyGC_PinObject(op);
+            return;
         }
         if (_py_owner_id == _py_ownership_blk->owner_id) {
             Py_TREFCNT(op)->owned.refcnt++;
@@ -554,8 +559,9 @@ static inline void _Py_DECREF(const char *filename, int lineno,
         PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id;
         if (_py_owner_id == 0) {
-            PyGC_ShareObject(op);
-            _py_owner_id = Py_SHARED_OWNER_ID;
+            assert(!(PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE));
+            PyGC_PinObject(op);
+            return;
         }
         if (_py_owner_id == _py_ownership_blk->owner_id) {
             Py_TREFCNT(_py_decref_tmp)->owned.refcnt--;

@@ -160,6 +160,7 @@ PyAPI_FUNC(void) _PyGC_Initialize(struct _gc_runtime_state *);
 PyAPI_FUNC(void) _PyGC_EnableFreethreading(struct _gc_runtime_state *state);
 
 PyAPI_FUNC(Py_refcnt_idx_t) PyGC_ShareObject(PyObject *obj);
+PyAPI_FUNC(void) PyGC_PinObject(PyObject *obj);
 
 
 /* Set the memory allocator of the specified domain to the default.
