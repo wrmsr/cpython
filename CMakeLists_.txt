@@ -58,38 +58,25 @@ target_compile_options(_programs PRIVATE
         )
 
 
-### _builtin_modules
+### _parser
 
-add_library(_builtin_modules STATIC
-        Modules/_abc.c
-        Modules/_codecsmodule.c
-        Modules/_collectionsmodule.c
-        Modules/_functoolsmodule.c
-        Modules/_localemodule.c
-        Modules/_operator.c
-        Modules/_sre.c
-        Modules/_stat.c
-        Modules/_threadmodule.c
-        Modules/_tracemalloc.c
-        Modules/_weakref.c
-        Modules/atexitmodule.c
-        Modules/errnomodule.c
-        Modules/faulthandler.c
-        Modules/hashtable.c
-        Modules/itertoolsmodule.c
-        Modules/posixmodule.c
-        Modules/pwdmodule.c
-        Modules/signalmodule.c
-        Modules/symtablemodule.c
-        Modules/timemodule.c
-        Modules/xxsubtype.c
+add_library(_parser STATIC
+        Parser/acceler.c
+        Parser/grammar1.c
+        Parser/listnode.c
+        Parser/myreadline.c
+        Parser/node.c
+        Parser/parser.c
+        Parser/parsetok.c
+        Parser/token.c
+        Parser/tokenizer.c
         )
 
-target_include_directories(_builtin_modules PRIVATE
+target_include_directories(_parser PRIVATE
         ${CPYTHON_CORE_INCLUDE}
         )
 
-target_compile_options(_builtin_modules PRIVATE
+target_compile_options(_parser PRIVATE
         ${CPYTHON_CFLAGS}
         -DPy_BUILD_CORE
         )
