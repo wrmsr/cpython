@@ -94,3 +94,146 @@ target_compile_options(_builtin_modules PRIVATE
         -DPy_BUILD_CORE
         )
 
+
+### _objects
+
+add_library(_objects STATIC
+        Objects/abstract.c
+        Objects/accu.c
+        Objects/boolobject.c
+        Objects/bytearrayobject.c
+        Objects/bytes_methods.c
+        Objects/bytesobject.c
+        Objects/call.c
+        Objects/capsule.c
+        Objects/cellobject.c
+        Objects/classobject.c
+        Objects/codeobject.c
+        Objects/complexobject.c
+        Objects/descrobject.c
+        Objects/dictobject.c
+        Objects/enumobject.c
+        Objects/exceptions.c
+        Objects/fileobject.c
+        Objects/floatobject.c
+        Objects/frameobject.c
+        Objects/funcobject.c
+        Objects/genobject.c
+        Objects/interpreteridobject.c
+        Objects/iterobject.c
+        Objects/listobject.c
+        Objects/longobject.c
+        Objects/memoryobject.c
+        Objects/methodobject.c
+        Objects/moduleobject.c
+        Objects/namespaceobject.c
+        Objects/object.c
+        Objects/obmalloc.c
+        Objects/odictobject.c
+        Objects/picklebufobject.c
+        Objects/rangeobject.c
+        Objects/setobject.c
+        Objects/sliceobject.c
+        Objects/structseq.c
+        Objects/tupleobject.c
+        Objects/typeobject.c
+        Objects/unicodectype.c
+        Objects/unicodeobject.c
+        Objects/weakrefobject.c
+        )
+
+target_include_directories(_objects PRIVATE
+        ${CPYTHON_CORE_INCLUDE}
+        )
+
+target_compile_options(_objects PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
+
+### _python
+
+add_library(_python STATIC
+        Python/_warnings.c
+        Python/asdl.c
+        Python/ast.c
+        Python/ast_opt.c
+        Python/ast_unparse.c
+        Python/bltinmodule.c
+        Python/bootstrap_hash.c
+        Python/ceval.c
+        Python/codecs.c
+        Python/compile.c
+        Python/context.c
+        Python/dtoa.c
+        Python/dynamic_annotations.c
+        Python/dynload_shlib.c
+        Python/errors.c
+        Python/fileutils.c
+        Python/formatter_unicode.c
+        Python/frozenmain.c
+        Python/future.c
+        Python/getargs.c
+        Python/getcompiler.c
+        Python/getcopyright.c
+        Python/getopt.c
+        Python/getplatform.c
+        Python/getversion.c
+        Python/graminit.c
+        Python/hamt.c
+        Python/import.c
+        Python/importdl.c
+        Python/initconfig.c
+        Python/marshal.c
+        Python/modsupport.c
+        Python/mysnprintf.c
+        Python/mystrtoul.c
+        Python/pathconfig.c
+        Python/peephole.c
+        Python/preconfig.c
+        Python/pyarena.c
+        Python/pyctype.c
+        Python/pyfpe.c
+        Python/pyhash.c
+        Python/pylifecycle.c
+        Python/pymath.c
+        Python/pystate.c
+        Python/pystrcmp.c
+        Python/pystrhex.c
+        Python/pystrtod.c
+        Python/Python-ast.c
+        Python/pythonrun.c
+        Python/pytime.c
+        Python/structmember.c
+        Python/symtable.c
+        Python/sysmodule.c
+        Python/thread.c
+        Python/traceback.c
+        )
+
+target_include_directories(_python PRIVATE
+        ${CPYTHON_CORE_INCLUDE}
+        )
+
+target_compile_options(_python PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
+set_source_files_properties(Python/dtoa.c PROPERTIES COMPILE_FLAGS
+        "-fno-strict-aliasing"
+        )
+
+set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
+        "-DSOABI='\"cpython-38d-darwin\"'"
+        )
+
+set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
+        "-DPLATFORM='\"darwin\"'"
+        )
+
+set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
+        "-DABIFLAGS='\"d\"' -DMULTIARCH='\"darwin\"'"
+        )
+
