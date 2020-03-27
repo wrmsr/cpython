@@ -22,10 +22,17 @@ set(CPYTHON_CFLAGS
         -Werror=implicit-function-declaration
         )
 
-set(CPYTHON_INCLUDE
+set(CPYTHON_CORE_INCLUDE
         Include/internal
         .
         Include
+        )
+
+set(CPYTHON_MODULE_INCLUDE
+        Include/internal
+        Include
+        .
+        usr/local/include
         )
 
 
@@ -36,7 +43,7 @@ add_library(_programs STATIC
         )
 
 target_include_directories(_programs PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(_programs PRIVATE
@@ -60,7 +67,7 @@ add_library(_parser STATIC
         )
 
 target_include_directories(_parser PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(_parser PRIVATE
@@ -117,7 +124,7 @@ add_library(_objects STATIC
         )
 
 target_include_directories(_objects PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(_objects PRIVATE
@@ -187,7 +194,7 @@ add_library(_python STATIC
         )
 
 target_include_directories(_python PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(_python PRIVATE
@@ -222,7 +229,7 @@ add_library(_modules STATIC
         )
 
 target_include_directories(_modules PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(_modules PRIVATE
@@ -263,7 +270,7 @@ add_library(_builtin_modules STATIC
         )
 
 target_include_directories(_builtin_modules PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(_builtin_modules PRIVATE
@@ -285,7 +292,7 @@ add_library(_io_module STATIC
         )
 
 target_include_directories(_io_module PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         Modules/_io
         )
 
@@ -304,7 +311,7 @@ add_executable(python.exe
         )
 
 target_include_directories(python.exe PRIVATE
-        ${CPYTHON_INCLUDE}
+        ${CPYTHON_CORE_INCLUDE}
         )
 
 target_compile_options(python.exe PRIVATE
@@ -331,4 +338,24 @@ target_link_libraries(python.exe PRIVATE
         _modules
         _builtin_modules
         _io_module
+        )
+
+
+# _struct
+
+add_library(_struct SHARED
+        Modules/_struct.c
+        )
+
+target_include_directories(_struct PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_struct PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_struct PRIVATE
+        -bundle
+        -undefined dynamic_lookup
         )

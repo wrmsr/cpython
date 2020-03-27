@@ -6,7 +6,8 @@
 	fi
 
 gcc -c  -Wno-unused-result -Wsign-compare -g -O0 -Wall    -std=c99 -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-missing-field-initializers -Wstrict-prototypes -Werror=implicit-function-declaration  -I./Include/internal  -I. -I./Include    -DPy_BUILD_CORE -o Modules/_math.o Modules/_math.c
- CC='gcc' LDSHARED='gcc -bundle -undefined dynamic_lookup    ' OPT='-g -O0 -Wall' 	_TCLTK_INCLUDES='' _TCLTK_LIBS='' 	./python.exe -E ./setup.py  build
+
+CC='gcc' LDSHARED='gcc -bundle -undefined dynamic_lookup    ' OPT='-g -O0 -Wall' 	_TCLTK_INCLUDES='' _TCLTK_LIBS='' 	./python.exe -E ./setup.py  build
 
 running build
 running build_ext
