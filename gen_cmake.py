@@ -27,6 +27,8 @@ class Target(abc.ABC):
 
     compile_flags_by_source_file: ta.Mapping[str, ta.Sequence[str]] = None
 
+    link_libraries: ta.Sequence[str] = None
+
     @abc.abstractproperty
     def command_name(self) -> str:
         raise NotImplementedError
@@ -58,6 +60,14 @@ class ModuleLibrary(Library):
     @property
     def command_extra(self) -> ta.Sequence[str]:
         return ['MODULE']
+
+
+@dc.dataclass(frozen=True)
+class Executable(Target):
+
+    @property
+    def command_name(self) -> str:
+        return 'add_executable'
 
 
 class CmakeGen:
@@ -121,6 +131,8 @@ class CmakeGen:
             for sf, cf in target.compile_flags_by_source_file.items():
                 cf = ['"' + f.replace('"', '\\"') + '"' for f in cf]
                 self._write_cmd(Command('set_source_files_properties', [sf, 'PROPERTIES', 'COMPILE_FLAGS'], cf))
+        if target.link_libraries:
+            self._write_cmd(Command('target_link_libraries', [target.name, 'PRIVATE'], target.link_libraries))
 
     @property
     def preamble(self) -> ta.List[str]:
@@ -179,17 +191,19 @@ class CmakeGen:
             builtin: bool = False,
             **kwargs
     ) -> StaticLibrary:
+        kwargs['include_directories'] = [
+            '${CPYTHON_CORE_INCLUDE}',
+        ] + kwargs.get('include_directories', [])
+
+        kwargs['compile_options'] = [
+            '${CPYTHON_CFLAGS}',
+            '-DPy_BUILD_CORE' + ('_BUILTIN' if builtin else ''),
+        ] + kwargs.get('compile_options', [])
+
         return StaticLibrary(
             name,
             source_files,
             **kwargs,
-            include_directories=[
-                '${CPYTHON_CORE_INCLUDE}'
-            ] + kwargs.get('include_directories', []),
-            compile_options=[
-                '${CPYTHON_CFLAGS}',
-                '-DPy_BUILD_CORE' + ('_BUILTIN' if builtin else ''),
-            ] + kwargs.get('include_directories', []),
         )
 
     @property
@@ -396,7 +410,46 @@ class CmakeGen:
                     'Modules/_io/stringio.c',
                     'Modules/_io/textio.c',
                 ],
+                include_directories=[
+                    'Modules/_io',
+                ],
                 builtin=True,
+            ),
+
+            Executable(
+                'python.exe',
+                [
+                    'Modules/_math.c',
+                    'Modules/getbuildinfo.c',
+                    'Python/frozen.c',
+                ],
+                include_directories=[
+                    '${CPYTHON_CORE_INCLUDE}',
+                ],
+                compile_options=[
+                    '${CPYTHON_CFLAGS}',
+                    '-DPy_BUILD_CORE',
+                ],
+                link_options=[
+                    '-Wl,-stack_size,1000000',
+                    '-framework CoreFoundation',
+                    '-ldl',
+                    '-framework CoreFoundation',
+                ],
+                compile_flags_by_source_file={
+                    'Modules/getbuildinfo.c': [
+                        '-DGITVERSION=\'"fa7e2a5240"\' -DGITTAG=\'"heads/freethreading3"\' -DGITBRANCH=\'"freethreading3"\'',
+                    ],
+                },
+                link_libraries=[
+                    '_programs',
+                    '_parser',
+                    '_objects',
+                    '_python',
+                    '_modules',
+                    '_builtin_modules',
+                    '_io_module',
+                ],
             ),
 
         ]

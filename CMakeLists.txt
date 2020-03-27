@@ -28,7 +28,6 @@ set(CPYTHON_CORE_INCLUDE
         Include
         )
 
-# FIXME: cc -isysroot /Applications/Xcode.app/.../SDKs/MacOSX10.14.sdk -bundle -Wl,-headerpad_max_install_names
 set(CPYTHON_MODULE_LDFLAGS
         -bundle
         -undefined dynamic_lookup

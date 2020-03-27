@@ -299,10 +299,50 @@ add_library(_io_module STATIC
 
 target_include_directories(_io_module PRIVATE
         ${CPYTHON_CORE_INCLUDE}
+        Modules/_io
         )
 
 target_compile_options(_io_module PRIVATE
         ${CPYTHON_CFLAGS}
         -DPy_BUILD_CORE_BUILTIN
+        )
+
+
+### python.exe
+
+executable(python.exe
+        Modules/_math.c
+        Modules/getbuildinfo.c
+        Python/frozen.c
+        )
+
+target_include_directories(python.exe PRIVATE
+        ${CPYTHON_CORE_INCLUDE}
+        )
+
+target_compile_options(python.exe PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
+target_link_options(python.exe PRIVATE
+        -Wl,-stack_size,1000000
+        -framework CoreFoundation
+        -ldl
+        -framework CoreFoundation
+        )
+
+set_source_files_properties(Modules/getbuildinfo.c PROPERTIES COMPILE_FLAGS
+        "-DGITVERSION='\"fa7e2a5240\"' -DGITTAG='\"heads/freethreading3\"' -DGITBRANCH='\"freethreading3\"'"
+        )
+
+target_link_libraries(python.exe PRIVATE
+        _programs
+        _parser
+        _objects
+        _python
+        _modules
+        _builtin_modules
+        _io_module
         )
 
