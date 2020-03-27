@@ -714,6 +714,8 @@ new_threadstate(PyInterpreterState *interp, int init)
         tstate->unshared_decrefs = NULL;
     }
 
+    _PyThreadState_OwnershipBlock = &tstate->ownership;
+
     if (init) {
         _PyThreadState_Init(runtime, tstate);
     }

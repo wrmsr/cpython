@@ -1,2 +1,2 @@
 #!/bin/bash
-gcc -I. -I./include -L. -lpython3.8 ft_test.c -o _ft_test && ./_ft_test os getpid
+gcc -O0 -g3 -I. -I./include -L. -lpython3.8 ft_test.c -o _ft_test && ./_ft_test os getpid
