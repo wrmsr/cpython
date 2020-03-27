@@ -28,6 +28,12 @@ set(CPYTHON_CORE_INCLUDE
         Include
         )
 
+set(CPYTHON_MODULE_LDFLAGS
+        -bundle
+        -undefined dynamic_lookup
+        -L/usr/local/lib
+        )
+
 set(CPYTHON_MODULE_INCLUDE
         Include/internal
         Include
@@ -356,6 +362,5 @@ target_compile_options(_struct PRIVATE
         )
 
 target_link_options(_struct PRIVATE
-        -bundle
-        -undefined dynamic_lookup
+        ${CPYTHON_MODULE_LDFLAGS}
         )
