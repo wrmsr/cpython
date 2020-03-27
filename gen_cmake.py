@@ -20,9 +20,11 @@ class Var:
 class Target(abc.ABC):
     name: str
     source_files: ta.Sequence[str]
+
     include_directories: ta.Sequence[str] = None
     compile_options: ta.Sequence[str] = None
     link_options: ta.Sequence[str] = None
+
     compile_flags_by_source_file: ta.Mapping[str, ta.Sequence[str]] = None
 
     @abc.abstractproperty
@@ -109,6 +111,14 @@ class CmakeGen:
     def _write_target(self, target: Target) -> None:
         self._write_section(target.name)
         self._write_cmd(Command(target.command_name, [target.name] + target.command_extra, target.source_files))
+        if target.include_directories:
+            self._write_cmd(Command('target_include_directories', [target.name, 'PRIVATE'], target.include_directories))
+        if target.compile_options:
+            self._write_cmd(Command('target_compile_options', [target.name, 'PRIVATE'], target.compile_options))
+        if target.link_options:
+            self._write_cmd(Command('target_link_options', [target.name, 'PRIVATE'], target.link_options))
+        if target.compile_flags_by_source_file:
+            pass
 
     @property
     def preamble(self) -> ta.List[str]:
