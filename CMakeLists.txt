@@ -53,11 +53,11 @@ add_library(_parser STATIC
         Parser/acceler.c
         Parser/grammar1.c
         Parser/listnode.c
+        Parser/myreadline.c
         Parser/node.c
         Parser/parser.c
-        Parser/token.c
-        Parser/myreadline.c
         Parser/parsetok.c
+        Parser/token.c
         Parser/tokenizer.c
         )
 
@@ -77,8 +77,8 @@ add_library(_objects STATIC
         Objects/abstract.c
         Objects/accu.c
         Objects/boolobject.c
-        Objects/bytes_methods.c
         Objects/bytearrayobject.c
+        Objects/bytes_methods.c
         Objects/bytesobject.c
         Objects/call.c
         Objects/capsule.c
@@ -87,25 +87,25 @@ add_library(_objects STATIC
         Objects/codeobject.c
         Objects/complexobject.c
         Objects/descrobject.c
+        Objects/dictobject.c
         Objects/enumobject.c
         Objects/exceptions.c
-        Objects/genobject.c
         Objects/fileobject.c
         Objects/floatobject.c
         Objects/frameobject.c
         Objects/funcobject.c
+        Objects/genobject.c
         Objects/interpreteridobject.c
         Objects/iterobject.c
         Objects/listobject.c
         Objects/longobject.c
-        Objects/dictobject.c
-        Objects/odictobject.c
         Objects/memoryobject.c
         Objects/methodobject.c
         Objects/moduleobject.c
         Objects/namespaceobject.c
         Objects/object.c
         Objects/obmalloc.c
+        Objects/odictobject.c
         Objects/picklebufobject.c
         Objects/rangeobject.c
         Objects/setobject.c
@@ -113,8 +113,8 @@ add_library(_objects STATIC
         Objects/structseq.c
         Objects/tupleobject.c
         Objects/typeobject.c
-        Objects/unicodeobject.c
         Objects/unicodectype.c
+        Objects/unicodeobject.c
         Objects/weakrefobject.c
         )
 
@@ -132,23 +132,28 @@ target_compile_options(_objects PRIVATE
 
 add_library(_python STATIC
         Python/_warnings.c
-        Python/Python-ast.c
         Python/asdl.c
         Python/ast.c
         Python/ast_opt.c
         Python/ast_unparse.c
         Python/bltinmodule.c
+        Python/bootstrap_hash.c
         Python/ceval.c
         Python/codecs.c
         Python/compile.c
         Python/context.c
+        Python/dtoa.c
         Python/dynamic_annotations.c
+        Python/dynload_shlib.c
         Python/errors.c
+        Python/fileutils.c
+        Python/formatter_unicode.c
         Python/frozenmain.c
         Python/future.c
         Python/getargs.c
         Python/getcompiler.c
         Python/getcopyright.c
+        Python/getopt.c
         Python/getplatform.c
         Python/getversion.c
         Python/graminit.c
@@ -170,22 +175,17 @@ add_library(_python STATIC
         Python/pylifecycle.c
         Python/pymath.c
         Python/pystate.c
+        Python/pystrcmp.c
+        Python/pystrhex.c
+        Python/pystrtod.c
+        Python/Python-ast.c
         Python/pythonrun.c
         Python/pytime.c
-        Python/bootstrap_hash.c
         Python/structmember.c
         Python/symtable.c
         Python/sysmodule.c
         Python/thread.c
         Python/traceback.c
-        Python/getopt.c
-        Python/pystrcmp.c
-        Python/pystrtod.c
-        Python/pystrhex.c
-        Python/dtoa.c
-        Python/formatter_unicode.c
-        Python/fileutils.c
-        Python/dynload_shlib.c
         )
 
 target_include_directories(_python PRIVATE
@@ -197,14 +197,6 @@ target_compile_options(_python PRIVATE
         -DPy_BUILD_CORE
         )
 
-set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
-        -DPLATFORM='"darwin"'
-        )
-
-set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
-        "-DABIFLAGS='\"d\"' -DMULTIARCH='\"darwin\"'"
-        )
-
 set_source_files_properties(Python/dtoa.c PROPERTIES COMPILE_FLAGS
         "-fno-strict-aliasing"
         )
@@ -213,14 +205,22 @@ set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
         "-DSOABI='\"cpython-38d-darwin\"'"
         )
 
+set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
+        -DPLATFORM='"darwin"'
+        )
+
+set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
+        "-DABIFLAGS='\"d\"' -DMULTIARCH='\"darwin\"'"
+        )
+
 
 ### Modules
 
 add_library(_modules STATIC
         Modules/config.c
+        Modules/gcmodule.c
         Modules/getpath.c
         Modules/main.c
-        Modules/gcmodule.c
         )
 
 target_include_directories(_modules PRIVATE
@@ -240,23 +240,23 @@ set_source_files_properties(Modules/getpath.c PROPERTIES COMPILE_FLAGS
 ### Builtin Modules
 
 add_library(_builtin_modules STATIC
-        Modules/posixmodule.c
-        Modules/errnomodule.c
-        Modules/pwdmodule.c
-        Modules/_sre.c
-        Modules/_codecsmodule.c
-        Modules/_weakref.c
-        Modules/_functoolsmodule.c
-        Modules/_operator.c
-        Modules/_collectionsmodule.c
         Modules/_abc.c
-        Modules/itertoolsmodule.c
-        Modules/atexitmodule.c
-        Modules/signalmodule.c
-        Modules/_stat.c
-        Modules/timemodule.c
-        Modules/_threadmodule.c
+        Modules/_codecsmodule.c
+        Modules/_collectionsmodule.c
+        Modules/_functoolsmodule.c
         Modules/_localemodule.c
+        Modules/_operator.c
+        Modules/_sre.c
+        Modules/_stat.c
+        Modules/_threadmodule.c
+        Modules/_weakref.c
+        Modules/atexitmodule.c
+        Modules/errnomodule.c
+        Modules/itertoolsmodule.c
+        Modules/posixmodule.c
+        Modules/pwdmodule.c
+        Modules/signalmodule.c
+        Modules/timemodule.c
         )
 
 target_include_directories(_builtin_modules PRIVATE
@@ -273,12 +273,12 @@ target_compile_options(_builtin_modules PRIVATE
 
 add_library(_io_module STATIC
         Modules/_io/_iomodule.c
-        Modules/_io/iobase.c
-        Modules/_io/fileio.c
-        Modules/_io/bytesio.c
         Modules/_io/bufferedio.c
-        Modules/_io/textio.c
+        Modules/_io/bytesio.c
+        Modules/_io/fileio.c
+        Modules/_io/iobase.c
         Modules/_io/stringio.c
+        Modules/_io/textio.c
         )
 
 target_include_directories(_io_module PRIVATE
@@ -295,9 +295,9 @@ target_compile_options(_io_module PRIVATE
 # Executable
 
 add_executable(python.exe
-        Python/frozen.c
         Modules/_math.c
         Modules/getbuildinfo.c
+        Python/frozen.c
         )
 
 target_include_directories(python.exe PRIVATE
