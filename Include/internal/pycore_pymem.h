@@ -112,7 +112,7 @@ struct gc_generation_stats {
 };
 
 struct _gc_shared_refcnt {
-    PyObject *obj;
+    void *obj;
     Py_ssize_t refcnt;
 };
 
@@ -152,12 +152,17 @@ struct _gc_runtime_state {
     PyThread_type_lock sharing_mutex;
     struct _gc_shared_refcnt *shared_refcnts;
     struct _gc_shared_refcnt *free_shared_refcnt;
+    Py_ssize_t num_shared_refcnts;
 };
 
 PyAPI_FUNC(void) _PyGC_Initialize(struct _gc_runtime_state *);
 
+PyAPI_FUNC(void) _PyGC_ApplySharedRefcnts(struct _gc_runtime_state *state, Py_refcnt_t *shared_refcnts);
 
-PyAPI_FUNC(void) PyGC_ShareObject(PyObject *obj);
+PyAPI_FUNC(void) _PyGC_EnableFreethreading(struct _gc_runtime_state *state);
+
+PyAPI_FUNC(Py_refcnt_idx_t) PyGC_ShareObject(PyObject *obj);
+PyAPI_FUNC(void) PyGC_PinObject(PyObject *obj);
 
 
 /* Set the memory allocator of the specified domain to the default.

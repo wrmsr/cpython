@@ -178,12 +178,12 @@ class CmakeGen:
                 'Include/internal',
                 'Include',
                 '.',
-                'usr/local/include',
+                '/usr/local/include',
             ]
 
         }.items()]
 
-    def core_static_lib(
+    def new_core_static(
             self,
             name: str,
             source_files: ta.Sequence[str],
@@ -207,17 +207,17 @@ class CmakeGen:
         )
 
     @property
-    def targets(self) -> ta.List[Target]:
+    def executable_targets(self) -> ta.List[Target]:
         return [
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_programs',
                 [
                     'Programs/python.c',
                 ],
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_parser',
                 [
                     'Parser/acceler.c',
@@ -232,7 +232,7 @@ class CmakeGen:
                 ],
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_objects',
                 [
                     'Objects/abstract.c',
@@ -280,7 +280,7 @@ class CmakeGen:
                 ],
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_python',
                 [
                     'Python/_warnings.c',
@@ -355,7 +355,7 @@ class CmakeGen:
                 },
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_modules',
                 [
                     'Modules/config.c',
@@ -370,7 +370,7 @@ class CmakeGen:
                 },
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_builtin_modules',
                 [
                     'Modules/_abc.c',
@@ -399,7 +399,7 @@ class CmakeGen:
                 builtin=True,
             ),
 
-            self.core_static_lib(
+            self.new_core_static(
                 '_io_module',
                 [
                     'Modules/_io/_iomodule.c',
@@ -454,6 +454,711 @@ class CmakeGen:
 
         ]
 
+    def new_module(
+            self,
+            name: str,
+            source_files: ta.Sequence[str],
+            *,
+            core: bool = False,
+            **kwargs
+    ) -> ModuleLibrary:
+        kwargs['include_directories'] = [
+            '${CPYTHON_MODULE_INCLUDE}',
+        ] + kwargs.get('include_directories', [])
+
+        kwargs['compile_options'] = [
+            '${CPYTHON_CFLAGS}',
+        ] + (
+            ['-DPy_BUILD_CORE_MODULE'] if core else []
+        ) + kwargs.get('compile_options', [])
+
+        kwargs['link_options'] = [
+            '${CPYTHON_MODULE_LDFLAGS}',
+        ] + kwargs.get('link_options', [])
+
+        return ModuleLibrary(
+            name,
+            source_files,
+            **kwargs,
+        )
+
+    @property
+    def module_targets(self) -> ta.List[Target]:
+        return [
+
+            self.new_module(
+                '_struct',
+                [
+                    'Modules/_struct.c',
+                ],
+            ),
+
+            self.new_module(
+                'array',
+                [
+                    'Modules/arraymodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_contextvars',
+                [
+                    'Modules/_contextvarsmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'math',
+                [
+                    'Modules/mathmodule.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                'cmath',
+                [
+                    'Modules/cmathmodule.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_datetime',
+                [
+                    'Modules/_datetimemodule.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_random',
+                [
+                    'Modules/_randommodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_bisect',
+                [
+                    'Modules/_bisectmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_heapq',
+                [
+                    'Modules/_heapqmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_pickle',
+                [
+                    'Modules/_pickle.c',
+                ],
+                core=True,
+            ),
+
+            self.new_module(
+                '_json',
+                [
+                    'Modules/_json.c',
+                ],
+                core=True,
+            ),
+
+            self.new_module(
+                '_lsprof',
+                [
+                    'Modules/_lsprof.c',
+                    'Modules/rotatingtree.c',
+                ],
+            ),
+
+            self.new_module(
+                'unicodedata',
+                [
+                    'Modules/unicodedata.c',
+                ],
+            ),
+
+            self.new_module(
+                '_opcode',
+                [
+                    'Modules/_opcode.c',
+                ],
+            ),
+
+            self.new_module(
+                '_queue',
+                [
+                    'Modules/_queuemodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_statistics',
+                [
+                    'Modules/_statisticsmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'fcntl',
+                [
+                    'Modules/fcntlmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'grp',
+                [
+                    'Modules/grpmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'select',
+                [
+                    'Modules/selectmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'parser',
+                [
+                    'Modules/parsermodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'mmap',
+                [
+                    'Modules/mmapmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'syslog',
+                [
+                    'Modules/syslogmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_xxsubinterpreters',
+                [
+                    'Modules/_xxsubinterpretersmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'audioop',
+                [
+                    'Modules/audioop.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_csv',
+                [
+                    'Modules/_csv.c',
+                ],
+            ),
+
+            self.new_module(
+                '_posixsubprocess',
+                [
+                    'Modules/_posixsubprocess.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testcapi',
+                [
+                    'Modules/_testcapimodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testinternalcapi',
+                [
+                    'Modules/_testinternalcapi.c',
+                ],
+                core=True,
+            ),
+
+            self.new_module(
+                '_testbuffer',
+                [
+                    'Modules/_testbuffer.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testimportmultiple',
+                [
+                    'Modules/_testimportmultiple.c',
+                ],
+            ),
+
+            self.new_module(
+                '_testmultiphase',
+                [
+                    'Modules/_testmultiphase.c',
+                ],
+            ),
+
+            self.new_module(
+                '_xxtestfuzz',
+                [
+                    'Modules/_xxtestfuzz/_xxtestfuzz.c',
+                    'Modules/_xxtestfuzz/fuzzer.c',
+                ],
+            ),
+
+            self.new_module(
+                'readline',
+                [
+                    'Modules/readline.c',
+                ],
+                link_options=[
+                    '-L/usr/lib/termcap',
+                    '-lreadline',
+                    '-lncurses',
+                ],
+            ),
+
+            self.new_module(
+                '_curses',
+                [
+                    'Modules/_cursesmodule.c',
+                ],
+                compile_options=[
+                    '-DHAVE_NCURSESW=1',
+                    '-D_XOPEN_SOURCE_EXTENDED=1',
+                ],
+                link_options=[
+                    '-lncurses',
+                ],
+            ),
+
+            self.new_module(
+                '_curses_panel',
+                [
+                    'Modules/_curses_panel.c',
+                ],
+                compile_options=[
+                    '-DHAVE_NCURSESW=1',
+                    '-D_XOPEN_SOURCE_EXTENDED=1',
+                ],
+                link_options=[
+                    '-lpanel',
+                    '-lncurses',
+                ],
+            ),
+
+            self.new_module(
+                '_crypt',
+                [
+                    'Modules/_cryptmodule.c',
+                ],
+            ),
+
+            self.new_module(
+                '_ssl',
+                [
+                    'Modules/_ssl.c',
+                ],
+                include_directories=[
+                    '/usr/local/opt/openssl@1.1/include',
+                ],
+                link_options=[
+                    '-L/usr/local/opt/openssl@1.1/lib',
+                    '-lssl',
+                    '-lcrypto',
+                ],
+            ),
+
+            self.new_module(
+                '_hashlib',
+                [
+                    'Modules/_hashopenssl.c',
+                ],
+                include_directories=[
+                    '/usr/local/opt/openssl@1.1/include',
+                ],
+                link_options=[
+                    '-L/usr/local/opt/openssl@1.1/lib',
+                    '-lssl',
+                    '-lcrypto',
+                ],
+            ),
+
+            self.new_module(
+                '_sha256',
+                [
+                    'Modules/sha256module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_sha512',
+                [
+                    'Modules/sha512module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_md5',
+                [
+                    'Modules/md5module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_sha1',
+                [
+                    'Modules/sha1module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_blake2',
+                [
+                    'Modules/_blake2/blake2b_impl.c',
+                    'Modules/_blake2/blake2module.c',
+                    'Modules/_blake2/blake2s_impl.c',
+                ],
+            ),
+
+            self.new_module(
+                '_sha3',
+                [
+                    'Modules/_sha3/sha3module.c',
+                ],
+            ),
+
+            self.new_module(
+                '_dbm',
+                [
+                    'Modules/_dbmmodule.c',
+                ],
+                compile_options=[
+                    '-DHAVE_NDBM_H',
+                ],
+            ),
+
+            self.new_module(
+                '_gdbm',
+                [
+                    'Modules/_gdbmmodule.c',
+                ],
+                link_options=[
+                    '-lgdbm',
+                ]
+            ),
+
+            self.new_module(
+                '_sqlite3',
+                [
+                    'Modules/_sqlite/cache.c',
+                    'Modules/_sqlite/connection.c',
+                    'Modules/_sqlite/cursor.c',
+                    'Modules/_sqlite/microprotocols.c',
+                    'Modules/_sqlite/module.c',
+                    'Modules/_sqlite/prepare_protocol.c',
+                    'Modules/_sqlite/row.c',
+                    'Modules/_sqlite/statement.c',
+                    'Modules/_sqlite/util.c',
+                ],
+                include_directories=[
+                    'Modules/_sqlite',
+                    '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include',
+                ],
+                compile_options=[
+                    '-DMODULE_NAME="sqlite3"',
+                    '-DSQLITE_OMIT_LOAD_EXTENSION=1',
+                ],
+                link_options=[
+                    '-L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib',
+                    '-lsqlite3',
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                'termios',
+                [
+                    'Modules/termios.c',
+                ],
+            ),
+
+            self.new_module(
+                'resource',
+                [
+                    'Modules/resource.c',
+                ],
+            ),
+
+            self.new_module(
+                '_scproxy',
+                [
+                    'Modules/_scproxy.c',
+                ],
+                link_options=[
+                    '"SHELL:-framework SystemConfiguration"',
+                    '"SHELL:-framework CoreFoundation"',
+                ],
+            ),
+
+            self.new_module(
+                'nis',
+                [
+                    'Modules/nismodule.c',
+                ],
+            ),
+
+            self.new_module(
+                'zlib',
+                [
+                    'Modules/zlibmodule.c',
+                ],
+                link_options=[
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                'binascii',
+                [
+                    'Modules/binascii.c',
+                ],
+                compile_options=[
+                    '-DUSE_ZLIB_CRC32',
+                ],
+                link_options=[
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                '_bz2',
+                [
+                    'Modules/_bz2module.c',
+                ],
+                link_options=[
+                    '-lbz2',
+                    '-Wl,-search_paths_first',
+                ],
+            ),
+
+            self.new_module(
+                '_lzma',
+                [
+                    'Modules/_lzmamodule.c',
+                ],
+                link_options=[
+                    '-llzma',
+                ],
+            ),
+
+            self.new_module(
+                'pyexpat',
+                [
+                    'Modules/expat/xmlparse.c',
+                    'Modules/expat/xmlrole.c',
+                    'Modules/expat/xmltok.c',
+                    'Modules/pyexpat.c',
+                ],
+                include_directories=[
+                    'Modules/expat',
+                ],
+                compile_options=[
+                    '-DHAVE_EXPAT_CONFIG_H=1',
+                    '-DXML_POOR_ENTROPY=1',
+                    '-DUSE_PYEXPAT_CAPI',
+                    '-Wno-unreachable-code',
+                ],
+            ),
+
+            self.new_module(
+                '_elementtree',
+                [
+                    'Modules/_elementtree.c',
+                ],
+                include_directories=[
+                    'Modules/expat',
+                ],
+                compile_options=[
+                    '-DHAVE_EXPAT_CONFIG_H=1',
+                    '-DXML_POOR_ENTROPY=1',
+                    '-DUSE_PYEXPAT_CAPI',
+                ],
+            ),
+
+            self.new_module(
+                '_multibytecodec',
+                [
+                    'Modules/cjkcodecs/multibytecodec.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_kr',
+                [
+                    'Modules/cjkcodecs/_codecs_kr.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_jp',
+                [
+                    'Modules/cjkcodecs/_codecs_jp.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_cn',
+                [
+                    'Modules/cjkcodecs/_codecs_cn.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_tw',
+                [
+                    'Modules/cjkcodecs/_codecs_tw.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_hk',
+                [
+                    'Modules/cjkcodecs/_codecs_hk.c',
+                ],
+            ),
+
+            self.new_module(
+                '_codecs_iso2022',
+                [
+                    'Modules/cjkcodecs/_codecs_iso2022.c',
+                ],
+            ),
+
+            self.new_module(
+                '_decimal',
+                [
+                    'Modules/_decimal/_decimal.c',
+                    'Modules/_decimal/libmpdec/basearith.c',
+                    'Modules/_decimal/libmpdec/constants.c',
+                    'Modules/_decimal/libmpdec/context.c',
+                    'Modules/_decimal/libmpdec/convolute.c',
+                    'Modules/_decimal/libmpdec/crt.c',
+                    'Modules/_decimal/libmpdec/difradix2.c',
+                    'Modules/_decimal/libmpdec/fnt.c',
+                    'Modules/_decimal/libmpdec/fourstep.c',
+                    'Modules/_decimal/libmpdec/io.c',
+                    'Modules/_decimal/libmpdec/memory.c',
+                    'Modules/_decimal/libmpdec/mpdecimal.c',
+                    'Modules/_decimal/libmpdec/numbertheory.c',
+                    'Modules/_decimal/libmpdec/sixstep.c',
+                    'Modules/_decimal/libmpdec/transpose.c',
+                ],
+                include_directories=[
+                    'Modules/_decimal/libmpdec',
+                ],
+                compile_options=[
+                    '-DUNIVERSAL=1',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_ctypes_test',
+                [
+                    'Modules/_ctypes/_ctypes_test.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_posixshmem',
+                [
+                    'Modules/_multiprocessing/posixshmem.c',
+                ],
+                include_directories=[
+                    'Modules/_multiprocessing',
+                ],
+            ),
+
+            self.new_module(
+                '_multiprocessing',
+                [
+                    'Modules/_multiprocessing/multiprocessing.c',
+                    'Modules/_multiprocessing/semaphore.c',
+                ],
+                include_directories=[
+                    'Modules/_multiprocessing',
+                ],
+            ),
+
+            self.new_module(
+                '_uuid',
+                [
+                    'Modules/_uuidmodule.c',
+                ],
+                include_directories=[
+                    '/usr/include/uuid',
+                ],
+            ),
+
+            self.new_module(
+                '_ctypes',
+                [
+                    'Modules/_ctypes/_ctypes.c',
+                    'Modules/_ctypes/callbacks.c',
+                    'Modules/_ctypes/callproc.c',
+                    'Modules/_ctypes/stgdict.c',
+                    'Modules/_ctypes/cfield.c',
+                    'Modules/_ctypes/malloc_closure.c',
+                    'Modules/_ctypes/darwin/dlfcn_simple.c',
+                    'Modules/_ctypes/libffi_osx/ffi.c',
+                    'Modules/_ctypes/libffi_osx/x86/darwin64.S',
+                    'Modules/_ctypes/libffi_osx/x86/x86-darwin.S',
+                    'Modules/_ctypes/libffi_osx/x86/x86-ffi_darwin.c',
+                    'Modules/_ctypes/libffi_osx/x86/x86-ffi64.c',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc-darwin.S',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc-darwin_closure.S',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc-ffi_darwin.c',
+                    'Modules/_ctypes/libffi_osx/powerpc/ppc64-darwin_closure.S',
+                ],
+                include_directories=[
+                    'Modules/_ctypes/darwin',
+                    'Modules/_ctypes/libffi_osx/include',
+                    'Modules/_ctypes/libffi_osx/powerpc',
+                ],
+                compile_options=[
+                    '-DMACOSX',
+                ],
+            ),
+
+        ]
+
     def write(self) -> None:
         self._write(self.preamble, spacing=1)
 
@@ -461,12 +1166,15 @@ class CmakeGen:
         for var in self.common_vars:
             self._write_var(var)
 
-        for target in self.targets:
+        for target in self.executable_targets:
+            self._write_target(target)
+
+        for target in self.module_targets:
             self._write_target(target)
 
 
 def main():
-    with open('CMakeLists_.txt', 'w') as f:
+    with open('CMakeLists.txt', 'w') as f:
         CmakeGen(f).write()
 
 

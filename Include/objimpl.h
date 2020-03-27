@@ -138,10 +138,12 @@ _PyObject_INIT(PyObject *op, PyTypeObject *typeobj)
 {
     assert(op != NULL);
     Py_TYPE(op) = typeobj;
-    if (PyType_GetFlags(typeobj) & Py_TPFLAGS_HEAPTYPE) {
-        Py_TREFCNT(op)->owned.owner_id = (_Py_Freethreaded ? _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id : 0);
-        Py_INCREF(typeobj);
-    }
+    // FIXME: no? pin? lazy? eager?
+    if (_Py_Freethreaded)
+        Py_TREFCNT(op)->owned.owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
+    else
+        Py_TREFCNT(op)->owned.owner_id = 0;
+    Py_INCREF(typeobj);
     _Py_NewReference(op);
     return op;
 }

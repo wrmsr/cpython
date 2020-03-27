@@ -23,6 +23,7 @@
 
 */
 
+#include <Include/Python.h>
 #include "Python.h"
 #include "pycore_context.h"
 #include "pycore_object.h"
@@ -151,6 +152,96 @@ _PyGC_Initialize(struct _gc_runtime_state *state)
     state->permanent_generation = permanent_generation;
 
     state->sharing_mutex = PyThread_allocate_lock();
+    state->shared_refcnts = NULL;
+    state->free_shared_refcnt = NULL;
+    state->num_shared_refcnts = 0;
+}
+
+void
+_PyGC_ApplySharedRefcnts(struct _gc_runtime_state *state, Py_refcnt_t *shared_refcnts)
+{
+    for (size_t i = 0; i < state->num_shared_refcnts; ++i) {
+        struct _gc_shared_refcnt *shared_refcnt = &state->shared_refcnts[i];
+        shared_refcnt->refcnt += shared_refcnts[i];
+    }
+    memset(shared_refcnts, 0, sizeof(shared_refcnts) * state->num_shared_refcnts);
+}
+
+static Py_refcnt_idx_t
+get_shared_refcnt_idx(struct _gc_runtime_state *state, struct _gc_shared_refcnt *shared)
+{
+    return (Py_refcnt_idx_t) (shared - state->shared_refcnts);
+}
+
+static Py_refcnt_idx_t
+share_obj(struct _gc_runtime_state *state, PyObject *op)
+{
+    if (Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID)
+        return Py_TREFCNT(op)->shared.refcnt_idx;
+
+    struct _gc_shared_refcnt *shared = state->free_shared_refcnt;
+    assert(shared->refcnt == 0);
+
+    state->free_shared_refcnt = shared->obj;
+    shared->obj = op;
+    shared->refcnt = Py_TREFCNT(op)->owned.refcnt;
+
+    Py_refcnt_idx_t idx = get_shared_refcnt_idx(state, shared);
+    Py_TREFCNT(op)->owned.owner_id = Py_SHARED_OWNER_ID;
+    Py_TREFCNT(op)->shared.refcnt_idx = idx;
+    return idx;
+}
+
+static void
+pin_obj(struct _gc_runtime_state *state, PyObject *op)
+{
+    if (Py_TREFCNT(op)->owned.owner_id == Py_PINNED_OWNER_ID)
+        return;
+
+    // FIXME: shared_idx -> freelist
+    assert(Py_TREFCNT(op)->owned.owner_id == 0);
+    Py_TREFCNT(op)->owned.owner_id = Py_PINNED_OWNER_ID;
+}
+
+static void
+share_or_pin_obj(struct _gc_runtime_state *state, PyObject *op)
+{
+    if (1)
+        share_obj(state, op);
+    else
+        pin_obj(state, op);
+}
+
+static int
+freethread_enable_traverse(PyObject *op, void *state)
+{
+    share_or_pin_obj((struct _gc_runtime_state *) state, op);
+    return 0;
+}
+
+void
+_PyGC_EnableFreethreading(struct _gc_runtime_state *state)
+{
+    state->shared_refcnts = PyMem_RawMalloc(1024 * 1024);
+    const size_t num_shared_refcnts = (1024 * 1024) / sizeof(struct _gc_shared_refcnt);
+    state->num_shared_refcnts = num_shared_refcnts;
+
+    for (size_t i = 0; i < num_shared_refcnts; ++i) {
+        state->shared_refcnts[i].obj = &state->shared_refcnts[i+1].obj;
+        state->shared_refcnts[i].refcnt = 0;
+    }
+    state->shared_refcnts[num_shared_refcnts-1].obj = NULL;
+    state->free_shared_refcnt = state->shared_refcnts;
+
+    for (int i = 0; i < NUM_GENERATIONS; i++) {
+        PyGC_Head *gc;
+        PyGC_Head *gc_list = GEN_HEAD(state, i);
+        for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
+            PyObject *op = FROM_GC(gc);
+            share_or_pin_obj(state, op);
+            Py_TYPE(op)->tp_traverse(op, freethread_enable_traverse, state);
+        }
+    }
 }
 
 /*
@@ -1020,6 +1111,9 @@ collect(struct _gc_runtime_state *state, int generation,
     PyGC_Head finalizers;  /* objects with, & reachable from, __del__ */
     PyGC_Head *gc;
     _PyTime_t t1 = 0;   /* initialize to prevent a compiler warning */
+
+    if (_Py_Freethreaded)
+        _PyThreadState_ApplySharedRefcnts(_PyThreadState_GET());
 
     if (state->debug & DEBUG_STATS) {
         PySys_WriteStderr("gc: collecting generation %d...\n", generation);
@@ -1919,16 +2013,33 @@ _PyGC_Fini(_PyRuntimeState *runtime)
     Py_CLEAR(state->callbacks);
 }
 
-void
+Py_refcnt_idx_t
 PyGC_ShareObject(PyObject *obj)
 {
-   SHARING_LOCK();
+    SHARING_LOCK();
 
-   // FIXME lols
-   // _PyRuntime.
+    struct _gc_runtime_state *state = &_PyRuntime.gc;
+    Py_refcnt_idx_t idx = share_obj(state, obj);
 
-   SHARING_UNLOCK();
+    SHARING_UNLOCK();
+
+    return idx;
 }
+
+void
+PyGC_PinObject(PyObject *obj)
+{
+    struct _gc_runtime_state *state = &_PyRuntime.gc;
+    pin_obj(state, obj);
+}
+
+void
+_Py_AssertObjectOwned(PyObject *obj)
+{
+    if (_Py_Freethreaded)
+        assert(Py_TREFCNT(obj)->owned.owner_id == _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id);
+}
+
 
 /* for debugging */
 void

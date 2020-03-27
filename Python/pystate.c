@@ -558,24 +558,29 @@ static _PyObject_ListPage *
 pyobject_listpage_new(void) {
     _PyObject_ListPage *page;
     page = PyMem_RawMalloc(1024 * 1024);
+    page->next = NULL;
     page->capacity = ((1024 * 1024) - sizeof(_PyObject_ListPage)) / sizeof(PyObject *);
+    page->count = 0;
     return page;
 }
 
 void
-_PyThreadState_PrepareFreethreading(void)
+_PyThreadState_EnableFreethreading(void)
 {
     PyInterpreterState *interp;
     PyThreadState *tstate;
-    assert(_Py_Freethreaded);
+    assert(!_Py_Freethreaded);
+
+    _Py_Freethreaded = 1;
 
     _PyRuntimeState *runtime = &_PyRuntime;
     HEAD_LOCK(runtime);
     for (interp = _PyRuntime.interpreters.head; interp != NULL; interp = interp->next) {
         for (tstate = interp->tstate_head; tstate != NULL; tstate = tstate->next) {
-            if (tstate->ownership.shared_refcnts == NULL)
+            if (tstate->ownership.shared_refcnts == NULL) {
                 tstate->ownership.shared_refcnts = PyMem_RawMalloc(1024 * 1024);
-
+                memset(tstate->ownership.shared_refcnts, 0, 1024 * 1024);
+            }
             if (tstate->unshared_increfs == NULL)
                 tstate->unshared_increfs = pyobject_listpage_new();
             if (tstate->unshared_decrefs == NULL)
@@ -583,6 +588,8 @@ _PyThreadState_PrepareFreethreading(void)
         }
     }
     HEAD_UNLOCK(runtime);
+
+    _PyGC_EnableFreethreading(&runtime->gc);
 }
 
 void
@@ -631,6 +638,13 @@ _PyThreadState_AppendUnsharedDecref(PyObject *ob)
 
     page->contents[page->count] = ob;
     page->count++;
+}
+
+void
+_PyThreadState_ApplySharedRefcnts(PyThreadState *tstate)
+{
+    _PyRuntimeState *runtime = &_PyRuntime;
+    _PyGC_ApplySharedRefcnts(&runtime->gc, tstate->ownership.shared_refcnts);
 }
 
 /* Default implementation for _PyThreadState_GetFrame */
@@ -702,6 +716,7 @@ new_threadstate(PyInterpreterState *interp, int init)
 
     if (_Py_Freethreaded) {
         tstate->ownership.shared_refcnts = PyMem_RawMalloc(1024 * 1024);
+        memset(tstate->ownership.shared_refcnts, 0, 1024 * 1024);
         tstate->unshared_increfs = pyobject_listpage_new();
         tstate->unshared_decrefs = pyobject_listpage_new();
     }
@@ -712,6 +727,7 @@ new_threadstate(PyInterpreterState *interp, int init)
     }
 
     _PyThreadState_OwnershipBlock = &tstate->ownership;
+    _PyMem_SetupThreadAllocator();
 
     if (init) {
         _PyThreadState_Init(runtime, tstate);

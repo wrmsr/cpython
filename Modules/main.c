@@ -38,6 +38,9 @@ pymain_init(const _PyArgv *args)
 {
     PyStatus status;
 
+    // pthread_rwlock_t rwlock;
+    // pthread_rwlock_init(&rwlock, NULL);
+
     status = _PyRuntime_Initialize();
     if (_PyStatus_EXCEPTION(status)) {
         return status;

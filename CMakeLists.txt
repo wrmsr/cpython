@@ -38,11 +38,11 @@ set(CPYTHON_MODULE_INCLUDE
         Include/internal
         Include
         .
-        usr/local/include
+        /usr/local/include
         )
 
 
-### Programs
+### _programs
 
 add_library(_programs STATIC
         Programs/python.c
@@ -58,7 +58,7 @@ target_compile_options(_programs PRIVATE
         )
 
 
-### Parser
+### _parser
 
 add_library(_parser STATIC
         Parser/acceler.c
@@ -82,7 +82,7 @@ target_compile_options(_parser PRIVATE
         )
 
 
-### Objects
+### _objects
 
 add_library(_objects STATIC
         Objects/abstract.c
@@ -139,7 +139,7 @@ target_compile_options(_objects PRIVATE
         )
 
 
-### Python
+### _python
 
 add_library(_python STATIC
         Python/_warnings.c
@@ -217,7 +217,7 @@ set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
         )
 
 set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
-        -DPLATFORM='"darwin"'
+        "-DPLATFORM='\"darwin\"'"
         )
 
 set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
@@ -225,7 +225,7 @@ set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
         )
 
 
-### Modules
+### _modules
 
 add_library(_modules STATIC
         Modules/config.c
@@ -248,7 +248,7 @@ set_source_files_properties(Modules/getpath.c PROPERTIES COMPILE_FLAGS
         )
 
 
-### Builtin Modules
+### _builtin_modules
 
 add_library(_builtin_modules STATIC
         Modules/_abc.c
@@ -285,7 +285,7 @@ target_compile_options(_builtin_modules PRIVATE
         )
 
 
-### IO Module
+### _io_module
 
 add_library(_io_module STATIC
         Modules/_io/_iomodule.c
@@ -308,7 +308,7 @@ target_compile_options(_io_module PRIVATE
         )
 
 
-# Executable
+### python.exe
 
 add_executable(python.exe
         Modules/_math.c
@@ -347,7 +347,7 @@ target_link_libraries(python.exe PRIVATE
         )
 
 
-# _struct
+### _struct
 
 add_library(_struct MODULE
         Modules/_struct.c
@@ -366,7 +366,7 @@ target_link_options(_struct PRIVATE
         )
 
 
-# array
+### array
 
 add_library(array MODULE
         Modules/arraymodule.c
@@ -385,7 +385,7 @@ target_link_options(array PRIVATE
         )
 
 
-# _contextvars
+### _contextvars
 
 add_library(_contextvars MODULE
         Modules/_contextvarsmodule.c
@@ -404,7 +404,7 @@ target_link_options(_contextvars PRIVATE
         )
 
 
-# math
+### math
 
 add_library(math MODULE
         Modules/mathmodule.c
@@ -424,7 +424,7 @@ target_link_options(math PRIVATE
         )
 
 
-# cmath
+### cmath
 
 add_library(cmath MODULE
         Modules/cmathmodule.c
@@ -444,7 +444,7 @@ target_link_options(cmath PRIVATE
         )
 
 
-# _datetime
+### _datetime
 
 add_library(_datetime MODULE
         Modules/_datetimemodule.c
@@ -464,7 +464,7 @@ target_link_options(_datetime PRIVATE
         )
 
 
-# _random
+### _random
 
 add_library(_random MODULE
         Modules/_randommodule.c
@@ -483,7 +483,7 @@ target_link_options(_random PRIVATE
         )
 
 
-# _bisect
+### _bisect
 
 add_library(_bisect MODULE
         Modules/_bisectmodule.c
@@ -502,7 +502,7 @@ target_link_options(_bisect PRIVATE
         )
 
 
-# _heapq
+### _heapq
 
 add_library(_heapq MODULE
         Modules/_heapqmodule.c
@@ -521,7 +521,7 @@ target_link_options(_heapq PRIVATE
         )
 
 
-# _pickle
+### _pickle
 
 add_library(_pickle MODULE
         Modules/_pickle.c
@@ -541,7 +541,7 @@ target_link_options(_pickle PRIVATE
         )
 
 
-# _json
+### _json
 
 add_library(_json MODULE
         Modules/_json.c
@@ -561,7 +561,7 @@ target_link_options(_json PRIVATE
         )
 
 
-# _lsprof
+### _lsprof
 
 add_library(_lsprof MODULE
         Modules/_lsprof.c
@@ -581,7 +581,7 @@ target_link_options(_lsprof PRIVATE
         )
 
 
-# unicodedata
+### unicodedata
 
 add_library(unicodedata MODULE
         Modules/unicodedata.c
@@ -600,7 +600,7 @@ target_link_options(unicodedata PRIVATE
         )
 
 
-# _opcode
+### _opcode
 
 add_library(_opcode MODULE
         Modules/_opcode.c
@@ -619,7 +619,7 @@ target_link_options(_opcode PRIVATE
         )
 
 
-# _queue
+### _queue
 
 add_library(_queue MODULE
         Modules/_queuemodule.c
@@ -638,7 +638,7 @@ target_link_options(_queue PRIVATE
         )
 
 
-# _statistics
+### _statistics
 
 add_library(_statistics MODULE
         Modules/_statisticsmodule.c
@@ -657,7 +657,7 @@ target_link_options(_statistics PRIVATE
         )
 
 
-# fcntl
+### fcntl
 
 add_library(fcntl MODULE
         Modules/fcntlmodule.c
@@ -676,7 +676,7 @@ target_link_options(fcntl PRIVATE
         )
 
 
-# grp
+### grp
 
 add_library(grp MODULE
         Modules/grpmodule.c
@@ -695,7 +695,7 @@ target_link_options(grp PRIVATE
         )
 
 
-# select
+### select
 
 add_library(select MODULE
         Modules/selectmodule.c
@@ -714,7 +714,7 @@ target_link_options(select PRIVATE
         )
 
 
-# parser
+### parser
 
 add_library(parser MODULE
         Modules/parsermodule.c
@@ -733,7 +733,7 @@ target_link_options(parser PRIVATE
         )
 
 
-# mmap
+### mmap
 
 add_library(mmap MODULE
         Modules/mmapmodule.c
@@ -752,7 +752,7 @@ target_link_options(mmap PRIVATE
         )
 
 
-# syslog
+### syslog
 
 add_library(syslog MODULE
         Modules/syslogmodule.c
@@ -771,7 +771,7 @@ target_link_options(syslog PRIVATE
         )
 
 
-# _xxsubinterpreters
+### _xxsubinterpreters
 
 add_library(_xxsubinterpreters MODULE
         Modules/_xxsubinterpretersmodule.c
@@ -790,7 +790,7 @@ target_link_options(_xxsubinterpreters PRIVATE
         )
 
 
-# audioop
+### audioop
 
 add_library(audioop MODULE
         Modules/audioop.c
@@ -808,3 +808,978 @@ target_link_options(audioop PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         -lm
         )
+
+
+### _csv
+
+add_library(_csv MODULE
+        Modules/_csv.c
+        )
+
+target_include_directories(_csv PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_csv PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_csv PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _posixsubprocess
+
+add_library(_posixsubprocess MODULE
+        Modules/_posixsubprocess.c
+        )
+
+target_include_directories(_posixsubprocess PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_posixsubprocess PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_posixsubprocess PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testcapi
+
+add_library(_testcapi MODULE
+        Modules/_testcapimodule.c
+        )
+
+target_include_directories(_testcapi PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testcapi PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testcapi PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testinternalcapi
+
+add_library(_testinternalcapi MODULE
+        Modules/_testinternalcapi.c
+        )
+
+target_include_directories(_testinternalcapi PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testinternalcapi PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE_MODULE
+        )
+
+target_link_options(_testinternalcapi PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testbuffer
+
+add_library(_testbuffer MODULE
+        Modules/_testbuffer.c
+        )
+
+target_include_directories(_testbuffer PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testbuffer PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testbuffer PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testimportmultiple
+
+add_library(_testimportmultiple MODULE
+        Modules/_testimportmultiple.c
+        )
+
+target_include_directories(_testimportmultiple PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testimportmultiple PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testimportmultiple PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _testmultiphase
+
+add_library(_testmultiphase MODULE
+        Modules/_testmultiphase.c
+        )
+
+target_include_directories(_testmultiphase PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_testmultiphase PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_testmultiphase PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _xxtestfuzz
+
+add_library(_xxtestfuzz MODULE
+        Modules/_xxtestfuzz/_xxtestfuzz.c
+        Modules/_xxtestfuzz/fuzzer.c
+        )
+
+target_include_directories(_xxtestfuzz PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_xxtestfuzz PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_xxtestfuzz PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### readline
+
+add_library(readline MODULE
+        Modules/readline.c
+        )
+
+target_include_directories(readline PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(readline PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(readline PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/usr/lib/termcap
+        -lreadline
+        -lncurses
+        )
+
+
+### _curses
+
+add_library(_curses MODULE
+        Modules/_cursesmodule.c
+        )
+
+target_include_directories(_curses PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_curses PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_NCURSESW=1
+        -D_XOPEN_SOURCE_EXTENDED=1
+        )
+
+target_link_options(_curses PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lncurses
+        )
+
+
+### _curses_panel
+
+add_library(_curses_panel MODULE
+        Modules/_curses_panel.c
+        )
+
+target_include_directories(_curses_panel PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_curses_panel PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_NCURSESW=1
+        -D_XOPEN_SOURCE_EXTENDED=1
+        )
+
+target_link_options(_curses_panel PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lpanel
+        -lncurses
+        )
+
+
+### _crypt
+
+add_library(_crypt MODULE
+        Modules/_cryptmodule.c
+        )
+
+target_include_directories(_crypt PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_crypt PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_crypt PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _ssl
+
+add_library(_ssl MODULE
+        Modules/_ssl.c
+        )
+
+target_include_directories(_ssl PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        /usr/local/opt/openssl@1.1/include
+        )
+
+target_compile_options(_ssl PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_ssl PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/usr/local/opt/openssl@1.1/lib
+        -lssl
+        -lcrypto
+        )
+
+
+### _hashlib
+
+add_library(_hashlib MODULE
+        Modules/_hashopenssl.c
+        )
+
+target_include_directories(_hashlib PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        /usr/local/opt/openssl@1.1/include
+        )
+
+target_compile_options(_hashlib PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_hashlib PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/usr/local/opt/openssl@1.1/lib
+        -lssl
+        -lcrypto
+        )
+
+
+### _sha256
+
+add_library(_sha256 MODULE
+        Modules/sha256module.c
+        )
+
+target_include_directories(_sha256 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha256 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha256 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _sha512
+
+add_library(_sha512 MODULE
+        Modules/sha512module.c
+        )
+
+target_include_directories(_sha512 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha512 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha512 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _md5
+
+add_library(_md5 MODULE
+        Modules/md5module.c
+        )
+
+target_include_directories(_md5 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_md5 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_md5 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _sha1
+
+add_library(_sha1 MODULE
+        Modules/sha1module.c
+        )
+
+target_include_directories(_sha1 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha1 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha1 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _blake2
+
+add_library(_blake2 MODULE
+        Modules/_blake2/blake2b_impl.c
+        Modules/_blake2/blake2module.c
+        Modules/_blake2/blake2s_impl.c
+        )
+
+target_include_directories(_blake2 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_blake2 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_blake2 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _sha3
+
+add_library(_sha3 MODULE
+        Modules/_sha3/sha3module.c
+        )
+
+target_include_directories(_sha3 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_sha3 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_sha3 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _dbm
+
+add_library(_dbm MODULE
+        Modules/_dbmmodule.c
+        )
+
+target_include_directories(_dbm PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_dbm PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_NDBM_H
+        )
+
+target_link_options(_dbm PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _gdbm
+
+add_library(_gdbm MODULE
+        Modules/_gdbmmodule.c
+        )
+
+target_include_directories(_gdbm PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_gdbm PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_gdbm PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lgdbm
+        )
+
+
+### _sqlite3
+
+add_library(_sqlite3 MODULE
+        Modules/_sqlite/cache.c
+        Modules/_sqlite/connection.c
+        Modules/_sqlite/cursor.c
+        Modules/_sqlite/microprotocols.c
+        Modules/_sqlite/module.c
+        Modules/_sqlite/prepare_protocol.c
+        Modules/_sqlite/row.c
+        Modules/_sqlite/statement.c
+        Modules/_sqlite/util.c
+        )
+
+target_include_directories(_sqlite3 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_sqlite
+        /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include
+        )
+
+target_compile_options(_sqlite3 PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DMODULE_NAME="sqlite3"
+        -DSQLITE_OMIT_LOAD_EXTENSION=1
+        )
+
+target_link_options(_sqlite3 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/lib
+        -lsqlite3
+        -Wl,-search_paths_first
+        )
+
+
+### termios
+
+add_library(termios MODULE
+        Modules/termios.c
+        )
+
+target_include_directories(termios PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(termios PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(termios PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### resource
+
+add_library(resource MODULE
+        Modules/resource.c
+        )
+
+target_include_directories(resource PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(resource PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(resource PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _scproxy
+
+add_library(_scproxy MODULE
+        Modules/_scproxy.c
+        )
+
+target_include_directories(_scproxy PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_scproxy PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_scproxy PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        "SHELL:-framework SystemConfiguration"
+        "SHELL:-framework CoreFoundation"
+        )
+
+
+### nis
+
+add_library(nis MODULE
+        Modules/nismodule.c
+        )
+
+target_include_directories(nis PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(nis PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(nis PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### zlib
+
+add_library(zlib MODULE
+        Modules/zlibmodule.c
+        )
+
+target_include_directories(zlib PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(zlib PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(zlib PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -Wl,-search_paths_first
+        )
+
+
+### binascii
+
+add_library(binascii MODULE
+        Modules/binascii.c
+        )
+
+target_include_directories(binascii PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(binascii PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DUSE_ZLIB_CRC32
+        )
+
+target_link_options(binascii PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -Wl,-search_paths_first
+        )
+
+
+### _bz2
+
+add_library(_bz2 MODULE
+        Modules/_bz2module.c
+        )
+
+target_include_directories(_bz2 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_bz2 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_bz2 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lbz2
+        -Wl,-search_paths_first
+        )
+
+
+### _lzma
+
+add_library(_lzma MODULE
+        Modules/_lzmamodule.c
+        )
+
+target_include_directories(_lzma PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_lzma PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_lzma PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -llzma
+        )
+
+
+### pyexpat
+
+add_library(pyexpat MODULE
+        Modules/expat/xmlparse.c
+        Modules/expat/xmlrole.c
+        Modules/expat/xmltok.c
+        Modules/pyexpat.c
+        )
+
+target_include_directories(pyexpat PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/expat
+        )
+
+target_compile_options(pyexpat PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_EXPAT_CONFIG_H=1
+        -DXML_POOR_ENTROPY=1
+        -DUSE_PYEXPAT_CAPI
+        -Wno-unreachable-code
+        )
+
+target_link_options(pyexpat PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _elementtree
+
+add_library(_elementtree MODULE
+        Modules/_elementtree.c
+        )
+
+target_include_directories(_elementtree PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/expat
+        )
+
+target_compile_options(_elementtree PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DHAVE_EXPAT_CONFIG_H=1
+        -DXML_POOR_ENTROPY=1
+        -DUSE_PYEXPAT_CAPI
+        )
+
+target_link_options(_elementtree PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _multibytecodec
+
+add_library(_multibytecodec MODULE
+        Modules/cjkcodecs/multibytecodec.c
+        )
+
+target_include_directories(_multibytecodec PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_multibytecodec PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_multibytecodec PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_kr
+
+add_library(_codecs_kr MODULE
+        Modules/cjkcodecs/_codecs_kr.c
+        )
+
+target_include_directories(_codecs_kr PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_kr PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_kr PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_jp
+
+add_library(_codecs_jp MODULE
+        Modules/cjkcodecs/_codecs_jp.c
+        )
+
+target_include_directories(_codecs_jp PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_jp PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_jp PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_cn
+
+add_library(_codecs_cn MODULE
+        Modules/cjkcodecs/_codecs_cn.c
+        )
+
+target_include_directories(_codecs_cn PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_cn PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_cn PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_tw
+
+add_library(_codecs_tw MODULE
+        Modules/cjkcodecs/_codecs_tw.c
+        )
+
+target_include_directories(_codecs_tw PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_tw PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_tw PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_hk
+
+add_library(_codecs_hk MODULE
+        Modules/cjkcodecs/_codecs_hk.c
+        )
+
+target_include_directories(_codecs_hk PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_hk PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_hk PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _codecs_iso2022
+
+add_library(_codecs_iso2022 MODULE
+        Modules/cjkcodecs/_codecs_iso2022.c
+        )
+
+target_include_directories(_codecs_iso2022 PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_codecs_iso2022 PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_codecs_iso2022 PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _decimal
+
+add_library(_decimal MODULE
+        Modules/_decimal/_decimal.c
+        Modules/_decimal/libmpdec/basearith.c
+        Modules/_decimal/libmpdec/constants.c
+        Modules/_decimal/libmpdec/context.c
+        Modules/_decimal/libmpdec/convolute.c
+        Modules/_decimal/libmpdec/crt.c
+        Modules/_decimal/libmpdec/difradix2.c
+        Modules/_decimal/libmpdec/fnt.c
+        Modules/_decimal/libmpdec/fourstep.c
+        Modules/_decimal/libmpdec/io.c
+        Modules/_decimal/libmpdec/memory.c
+        Modules/_decimal/libmpdec/mpdecimal.c
+        Modules/_decimal/libmpdec/numbertheory.c
+        Modules/_decimal/libmpdec/sixstep.c
+        Modules/_decimal/libmpdec/transpose.c
+        )
+
+target_include_directories(_decimal PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_decimal/libmpdec
+        )
+
+target_compile_options(_decimal PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DUNIVERSAL=1
+        )
+
+target_link_options(_decimal PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### _ctypes_test
+
+add_library(_ctypes_test MODULE
+        Modules/_ctypes/_ctypes_test.c
+        )
+
+target_include_directories(_ctypes_test PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_ctypes_test PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_ctypes_test PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### _posixshmem
+
+add_library(_posixshmem MODULE
+        Modules/_multiprocessing/posixshmem.c
+        )
+
+target_include_directories(_posixshmem PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_multiprocessing
+        )
+
+target_compile_options(_posixshmem PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_posixshmem PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _multiprocessing
+
+add_library(_multiprocessing MODULE
+        Modules/_multiprocessing/multiprocessing.c
+        Modules/_multiprocessing/semaphore.c
+        )
+
+target_include_directories(_multiprocessing PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_multiprocessing
+        )
+
+target_compile_options(_multiprocessing PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_multiprocessing PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _uuid
+
+add_library(_uuid MODULE
+        Modules/_uuidmodule.c
+        )
+
+target_include_directories(_uuid PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        /usr/include/uuid
+        )
+
+target_compile_options(_uuid PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_uuid PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _ctypes
+
+add_library(_ctypes MODULE
+        Modules/_ctypes/_ctypes.c
+        Modules/_ctypes/callbacks.c
+        Modules/_ctypes/callproc.c
+        Modules/_ctypes/stgdict.c
+        Modules/_ctypes/cfield.c
+        Modules/_ctypes/malloc_closure.c
+        Modules/_ctypes/darwin/dlfcn_simple.c
+        Modules/_ctypes/libffi_osx/ffi.c
+        Modules/_ctypes/libffi_osx/x86/darwin64.S
+        Modules/_ctypes/libffi_osx/x86/x86-darwin.S
+        Modules/_ctypes/libffi_osx/x86/x86-ffi_darwin.c
+        Modules/_ctypes/libffi_osx/x86/x86-ffi64.c
+        Modules/_ctypes/libffi_osx/powerpc/ppc-darwin.S
+        Modules/_ctypes/libffi_osx/powerpc/ppc-darwin_closure.S
+        Modules/_ctypes/libffi_osx/powerpc/ppc-ffi_darwin.c
+        Modules/_ctypes/libffi_osx/powerpc/ppc64-darwin_closure.S
+        )
+
+target_include_directories(_ctypes PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_ctypes/darwin
+        Modules/_ctypes/libffi_osx/include
+        Modules/_ctypes/libffi_osx/powerpc
+        )
+
+target_compile_options(_ctypes PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DMACOSX
+        )
+
+target_link_options(_ctypes PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+

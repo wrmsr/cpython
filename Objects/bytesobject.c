@@ -3012,7 +3012,7 @@ _PyBytes_Resize(PyObject **pv, Py_ssize_t newsize)
         Py_DECREF(v);
         return (*pv == NULL) ? -1 : 0;
     }
-    if (Py_REFCNT(v) != 1) {
+    if (!_Py_Freethreaded && Py_REFCNT(v) != 1) {
         goto error;
     }
     if (newsize == 0) {

@@ -67,6 +67,8 @@ typedef struct {
     void (*free) (void *ctx, void *ptr);
 } PyMemAllocatorEx;
 
+PyAPI_FUNC(void) _PyMem_SetupThreadAllocator(void);
+
 /* Get the memory block allocator of the specified domain. */
 PyAPI_FUNC(void) PyMem_GetAllocator(PyMemAllocatorDomain domain,
                                     PyMemAllocatorEx *allocator);
