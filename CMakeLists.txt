@@ -292,9 +292,33 @@ target_compile_options(_io_module PRIVATE
         )
 
 
-# ! -DPy_BUILD_CORE
-# gcc -o Python/frozen.o Python/frozen.c
-# gcc -o Modules/_math.o Modules/_math.c
-# gcc -o Programs/_testembed.o ./Programs/_testembed.c
-# gcc -DGITVERSION="\"`LC_ALL=C git --git-dir ./.git rev-parse --short HEAD`\"" -DGITTAG="\"`LC_ALL=C git --git-dir ./.git describe --all --always --dirty`\"" -DGITBRANCH="\"`LC_ALL=C git --git-dir ./.git name-rev --name-only HEAD`\"" -o Modules/getbuildinfo.o ./Modules/getbuildinfo.c
-# # gcc -DGITVERSION="fa7e2a5240" -DGITTAG="heads/freethreading3" -DGITBRANCH="freethreading3" -o Modules/getbuildinfo.o ./Modules/getbuildinfo.c
+# Executable
+
+add_executable(python.exe
+        Python/frozen.c
+        Modules/_math.c
+        Modules/getbuildinfo.c
+        )
+
+target_include_directories(python.exe PRIVATE
+        ${CPYTHON_INCLUDE}
+        )
+
+target_compile_options(python.exe PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DPy_BUILD_CORE
+        )
+
+set_source_files_properties(Modules/getbuildinfo.c PROPERTIES COMPILE_FLAGS
+        \"-DGITVERSION=\"fa7e2a5240\" -DGITTAG=\"heads/freethreading3\" -DGITBRANCH=\"freethreading3\"\"
+        )
+
+target_link_libraries(python.exe PRIVATE
+        _programs
+        _parser
+        _objects
+        _python
+        _modules
+        _builtin_modules
+        _io_module
+        )
