@@ -197,9 +197,19 @@ target_compile_options(python PRIVATE
         -DPy_BUILD_CORE
         )
 
+set_source_files_properties(Python/getplatform.c PROPERTIES COMPILE_FLAGS
+        -DPLATFORM='"darwin"'
+        )
 
-# gcc -DPLATFORM='"darwin"' -o Python/getplatform.o ./Python/getplatform.c
-# gcc -DABIFLAGS='"d"' -DMULTIARCH=\"darwin\" -o Python/sysmodule.o ./Python/sysmodule.c
-# gcc -fno-strict-aliasing -o Python/dtoa.o Python/dtoa.c
-# gcc -DSOABI='"cpython-38d-darwin"' -o Python/dynload_shlib.o ./Python/dynload_shlib.c
+set_source_files_properties(Python/sysmodule.c PROPERTIES COMPILE_FLAGS
+        -DABIFLAGS='"d"'
+        -DMULTIARCH=\"darwin\"
+        )
 
+set_source_files_properties(Python/dtoa.c PROPERTIES COMPILE_FLAGS
+        -fno-strict-aliasing
+        )
+
+set_source_files_properties(Python/dynload_shlib.c PROPERTIES COMPILE_FLAGS
+        -DSOABI='"cpython-38d-darwin"'
+        )
