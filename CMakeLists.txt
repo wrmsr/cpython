@@ -1628,3 +1628,119 @@ target_link_options(_codecs_iso2022 PRIVATE
         ${CPYTHON_MODULE_LDFLAGS}
         )
 
+
+### _decimal
+
+add_library(_decimal MODULE
+        Modules/_decimal/libmpdec/basearith.c
+        Modules/_decimal/libmpdec/constants.c
+        Modules/_decimal/libmpdec/context.c
+        Modules/_decimal/libmpdec/convolute.c
+        Modules/_decimal/libmpdec/crt.c
+        Modules/_decimal/libmpdec/difradix2.c
+        Modules/_decimal/libmpdec/fnt.c
+        Modules/_decimal/libmpdec/fourstep.c
+        Modules/_decimal/libmpdec/io.c
+        Modules/_decimal/libmpdec/memory.c
+        Modules/_decimal/libmpdec/mpdecimal.c
+        Modules/_decimal/libmpdec/numbertheory.c
+        Modules/_decimal/libmpdec/sixstep.c
+        Modules/_decimal/libmpdec/transpose.c
+        )
+
+target_include_directories(_decimal PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_decimal/libmpdec
+        )
+
+target_compile_options(_decimal PRIVATE
+        ${CPYTHON_CFLAGS}
+        -DUNIVERSAL=1
+        )
+
+target_link_options(_decimal PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### _ctypes_test
+
+add_library(_ctypes_test MODULE
+        Modules/_ctypes/_ctypes_test.c
+        )
+
+target_include_directories(_ctypes_test PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        )
+
+target_compile_options(_ctypes_test PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_ctypes_test PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        -lm
+        )
+
+
+### _posixshmem
+
+add_library(_posixshmem MODULE
+        Modules/_multiprocessing/posixshmem.c
+        )
+
+target_include_directories(_posixshmem PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_multiprocessing
+        )
+
+target_compile_options(_posixshmem PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_posixshmem PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _multiprocessing
+
+add_library(_multiprocessing MODULE
+        Modules/_multiprocessing/multiprocessing.c
+        Modules/_multiprocessing/semaphore.c
+        )
+
+target_include_directories(_multiprocessing PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        Modules/_multiprocessing
+        )
+
+target_compile_options(_multiprocessing PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_multiprocessing PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+
+
+### _uuid
+
+add_library(_uuid MODULE
+        Modules/_uuidmodule.c
+        )
+
+target_include_directories(_uuid PRIVATE
+        ${CPYTHON_MODULE_INCLUDE}
+        /usr/include/uuid
+        )
+
+target_compile_options(_uuid PRIVATE
+        ${CPYTHON_CFLAGS}
+        )
+
+target_link_options(_uuid PRIVATE
+        ${CPYTHON_MODULE_LDFLAGS}
+        )
+

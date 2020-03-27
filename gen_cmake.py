@@ -973,8 +973,6 @@ class CmakeGen:
                 ],
             ),
 
-            ###
-
             self.new_module(
                 'pyexpat',
                 [
@@ -1058,10 +1056,96 @@ class CmakeGen:
                 ],
             ),
 
+            self.new_module(
+                '_decimal',
+                [
+                    'Modules/_decimal/libmpdec/basearith.c',
+                    'Modules/_decimal/libmpdec/constants.c',
+                    'Modules/_decimal/libmpdec/context.c',
+                    'Modules/_decimal/libmpdec/convolute.c',
+                    'Modules/_decimal/libmpdec/crt.c',
+                    'Modules/_decimal/libmpdec/difradix2.c',
+                    'Modules/_decimal/libmpdec/fnt.c',
+                    'Modules/_decimal/libmpdec/fourstep.c',
+                    'Modules/_decimal/libmpdec/io.c',
+                    'Modules/_decimal/libmpdec/memory.c',
+                    'Modules/_decimal/libmpdec/mpdecimal.c',
+                    'Modules/_decimal/libmpdec/numbertheory.c',
+                    'Modules/_decimal/libmpdec/sixstep.c',
+                    'Modules/_decimal/libmpdec/transpose.c',
+                ],
+                include_directories=[
+                    'Modules/_decimal/libmpdec',
+                ],
+                compile_options=[
+                    '-DUNIVERSAL=1',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_ctypes_test',
+                [
+                    'Modules/_ctypes/_ctypes_test.c',
+                ],
+                link_options=[
+                    '-lm',
+                ],
+            ),
+
+            self.new_module(
+                '_posixshmem',
+                [
+                    'Modules/_multiprocessing/posixshmem.c',
+                ],
+                include_directories=[
+                    'Modules/_multiprocessing',
+                ],
+            ),
+
+            self.new_module(
+                '_multiprocessing',
+                [
+                    'Modules/_multiprocessing/multiprocessing.c',
+                    'Modules/_multiprocessing/semaphore.c',
+                ],
+                include_directories=[
+                    'Modules/_multiprocessing',
+                ],
+            ),
+
+            self.new_module(
+                '_uuid',
+                [
+                    'Modules/_uuidmodule.c',
+                ],
+                include_directories=[
+                    '/usr/include/uuid',
+                ],
+            ),
+
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/_ctypes.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/callbacks.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/callproc.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/stgdict.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/cfield.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/malloc_closure.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/darwin/dlfcn_simple.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/ffi.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/x86/darwin64.S
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/x86/x86-darwin.S
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/x86/x86-ffi_darwin.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/x86/x86-ffi64.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc/ppc-darwin.S
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc/ppc-darwin_closure.S
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc/ppc-ffi_darwin.c
+            # gcc -I./Include/internal -I_ctypes/darwin -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/include -I/Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc -I./Include -I. -I/usr/local/include -I/Users/spinlock/src/wrmsr/cpython-new/Include -I/Users/spinlock/src/wrmsr/cpython-new -c /Users/spinlock/src/wrmsr/cpython-new/Modules/_ctypes/libffi_osx/powerpc/ppc64-darwin_closure.S
+
             # self.new_module(
-            #     'nis',
+            #     '_ctypes',
             #     [
-            #         'Modules/nismodule.c',
             #     ],
             # ),
 
