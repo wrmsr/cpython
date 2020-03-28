@@ -169,8 +169,6 @@ share_obj(struct _gc_runtime_state *state, PyObject *op)
     if (Py_TREFCNT(op)->owned.owner_id == Py_SHARED_OWNER_ID)
         return Py_TREFCNT(op)->shared.refcnt_idx;
 
-    assert(PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE);
-
     struct _gc_shared_refcnt *shared = state->free_shared_refcnt;
     assert(shared->refcnt == 0);
 
@@ -197,7 +195,7 @@ pin_obj(struct _gc_runtime_state *state, PyObject *op)
 static void
 share_or_pin_obj(struct _gc_runtime_state *state, PyObject *op)
 {
-    if (PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE)
+    if (1)
         share_obj(state, op);
     else
         pin_obj(state, op);

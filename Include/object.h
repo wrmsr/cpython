@@ -191,7 +191,7 @@ static inline Py_refcnt_t
 _Py_DefSetRefcnt(PyObject *ob, Py_refcnt_t c)
 {
     if (_Py_Freethreaded)
-        PyGC_PinObject(ob);
+        PyGC_ShareObject(ob);
     Py_TREFCNT(ob)->owned.refcnt = c;
     return c;
 }
@@ -542,8 +542,7 @@ static inline void _Py_INCREF(PyObject *op)
         PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(op)->owned.owner_id;
         if (_py_owner_id == 0) {
-            assert(!(PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE));
-            PyGC_PinObject(op);
+            PyGC_ShareObject(op);
             return;
         }
         if (_py_owner_id == _py_ownership_blk->owner_id) {
@@ -581,8 +580,7 @@ static inline void _Py_DECREF(const char *filename, int lineno,
         PyObjectOwnershipBlock *_py_ownership_blk = _Py_THREADSTATE_OWNERSHIP_BLOCK;
         Py_owner_id_t _py_owner_id = Py_TREFCNT(_py_decref_tmp)->owned.owner_id;
         if (_py_owner_id == 0) {
-            assert(!(PyType_GetFlags(op->ob_type) & Py_TPFLAGS_HEAPTYPE));
-            PyGC_PinObject(op);
+            PyGC_ShareObject(op);
             return;
         }
         if (_py_owner_id == _py_ownership_blk->owner_id) {

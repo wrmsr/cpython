@@ -272,6 +272,8 @@ PyObject_Init(PyObject *op, PyTypeObject *tp)
     if (op == NULL)
         return PyErr_NoMemory();
     /* Any changes should be reflected in PyObject_INIT (objimpl.h) */
+    if (_Py_Freethreaded)
+        Py_TREFCNT(op)->owned.owner_id = _Py_THREADSTATE_OWNERSHIP_BLOCK->owner_id;
     Py_TYPE(op) = tp;
     if (PyType_GetFlags(tp) & Py_TPFLAGS_HEAPTYPE) {
         Py_INCREF(tp);
