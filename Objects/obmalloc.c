@@ -213,16 +213,27 @@ static struct {
 #define PYDBGOBJ_ALLOC \
     {&_PyMem_Debug.obj, _PyMem_DebugMalloc, _PyMem_DebugCalloc, _PyMem_DebugRealloc, _PyMem_DebugFree}
 
-#ifdef Py_DEBUG
-static PyMemAllocatorEx _PyMem_Raw = PYDBGRAW_ALLOC;
-static PyMemAllocatorEx _PyMem = PYDBGMEM_ALLOC;
-static PyMemAllocatorEx _PyObject = PYDBGOBJ_ALLOC;
-#else
-static PyMemAllocatorEx _PyMem_Raw = PYRAW_ALLOC;
-static PyMemAllocatorEx _PyMem = PYMEM_ALLOC;
-static PyMemAllocatorEx _PyObject = PYOBJ_ALLOC;
-#endif
+typedef struct {
+    PyMemAllocatorEx mem_raw;
+    PyMemAllocatorEx raw;
+    PyMemAllocatorEx object;
+} allocator_set_t;
 
+static allocator_set_t _PyMem_GlobalAllocatorSet = {
+#ifdef Py_DEBUG
+    PYDBGRAW_ALLOC,
+    PYDBGMEM_ALLOC,
+    PYDBGOBJ_ALLOC
+#else
+    PYRAW_ALLOC,
+    PYMEM_ALLOC,
+    PYOBJ_ALLOC
+#endif
+};
+
+#define _PyMem_Raw   _PyMem_GlobalAllocatorSet.mem_raw
+#define _PyMem       _PyMem_GlobalAllocatorSet.raw
+#define _PyObject    _PyMem_GlobalAllocatorSet.object
 
 static int
 pymem_set_default_allocator(PyMemAllocatorDomain domain, int debug,

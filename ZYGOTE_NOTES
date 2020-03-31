@@ -10,10 +10,15 @@ gc.collect(2)
 
 ###
 
+PRIO:
+ - thread-local alloc ctx
 
-- eye greenlet
-- https://lwn.net/Articles/754163/
-- https://instagram-engineering.com/tagged/python
+NOTE:
+ - eye greenlet
+ - https://lwn.net/Articles/754163/
+ - https://instagram-engineering.com/tagged/python
+ - arena-level rotation
+ - thread-pinned allocators - double buffered, live/collecting
 
 
 ###
