@@ -157,6 +157,8 @@ struct _gc_runtime_state {
 
 PyAPI_FUNC(void) _PyGC_Initialize(struct _gc_runtime_state *);
 
+PyAPI_FUNC(void) _PyGC_ApplySharedRefcnts(struct _gc_runtime_state *state, Py_refcnt_t *shared_refcnts);
+
 PyAPI_FUNC(void) _PyGC_EnableFreethreading(struct _gc_runtime_state *state);
 
 PyAPI_FUNC(Py_refcnt_idx_t) PyGC_ShareObject(PyObject *obj);

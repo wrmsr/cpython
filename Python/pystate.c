@@ -640,6 +640,13 @@ _PyThreadState_AppendUnsharedDecref(PyObject *ob)
     page->count++;
 }
 
+void
+_PyThreadState_ApplySharedRefcnts(PyThreadState *tstate)
+{
+    _PyRuntimeState *runtime = &_PyRuntime;
+    _PyGC_ApplySharedRefcnts(&runtime->gc, tstate->ownership.shared_refcnts);
+}
+
 /* Default implementation for _PyThreadState_GetFrame */
 static struct _frame *
 threadstate_getframe(PyThreadState *self)

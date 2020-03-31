@@ -157,6 +157,16 @@ _PyGC_Initialize(struct _gc_runtime_state *state)
     state->num_shared_refcnts = 0;
 }
 
+void
+_PyGC_ApplySharedRefcnts(struct _gc_runtime_state *state, Py_refcnt_t *shared_refcnts)
+{
+    for (size_t i = 0; i < state->num_shared_refcnts; ++i) {
+        struct _gc_shared_refcnt *shared_refcnt = &state->shared_refcnts[i];
+        shared_refcnt->refcnt += shared_refcnts[i];
+    }
+    memset(shared_refcnts, 0, sizeof(shared_refcnts) * state->num_shared_refcnts);
+}
+
 static Py_refcnt_idx_t
 get_shared_refcnt_idx(struct _gc_runtime_state *state, struct _gc_shared_refcnt *shared)
 {
@@ -225,7 +235,7 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
     for (int i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
         PyGC_Head *gc_list = GEN_HEAD(state, i);
-        for (gc = GC_NEXT(gc_list); gc != gc_list; gc = GC_NEXT(gc)) {
+        for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
             PyObject *op = FROM_GC(gc);
             share_or_pin_obj(state, op);
             Py_TYPE(op)->tp_traverse(op, freethread_enable_traverse, state);
@@ -1100,6 +1110,9 @@ collect(struct _gc_runtime_state *state, int generation,
     PyGC_Head finalizers;  /* objects with, & reachable from, __del__ */
     PyGC_Head *gc;
     _PyTime_t t1 = 0;   /* initialize to prevent a compiler warning */
+
+    if (_Py_Freethreaded)
+        _PyThreadState_ApplySharedRefcnts(_PyThreadState_GET());
 
     if (state->debug & DEBUG_STATS) {
         PySys_WriteStderr("gc: collecting generation %d...\n", generation);

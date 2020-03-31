@@ -170,6 +170,7 @@ PyAPI_FUNC(PyThreadState *) _PyThreadState_Prealloc(PyInterpreterState *);
 void _PyThreadState_EnableFreethreading(void);
 void _PyThreadState_AppendUnsharedIncref(PyObject *ob);
 void _PyThreadState_AppendUnsharedDecref(PyObject *ob);
+void _PyThreadState_ApplySharedRefcnts(PyThreadState *tstate);
 #endif
 
 /* Similar to PyThreadState_Get(), but don't issue a fatal error
