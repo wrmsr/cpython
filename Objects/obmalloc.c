@@ -231,9 +231,22 @@ static allocator_set_t _PyMem_GlobalAllocatorSet = {
 #endif
 };
 
-#define _PyMem_Raw   _PyMem_GlobalAllocatorSet.mem_raw
-#define _PyMem       _PyMem_GlobalAllocatorSet.raw
-#define _PyObject    _PyMem_GlobalAllocatorSet.object
+static allocator_set_t __thread *allocator_set;
+
+static allocator_set_t *
+get_current_allocator_set()
+{
+    if (_Py_Freethreaded) {
+        allocator_set_t *ret = allocator_set;
+        if (ret)
+            return ret;
+    }
+    return &_PyMem_GlobalAllocatorSet;
+}
+
+#define _PyMem_Raw   (get_current_allocator_set()->mem_raw)
+#define _PyMem       (get_current_allocator_set()->raw)
+#define _PyObject    (get_current_allocator_set()->object)
 
 static int
 pymem_set_default_allocator(PyMemAllocatorDomain domain, int debug,
