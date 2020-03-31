@@ -244,6 +244,13 @@ get_current_allocator_set()
     return &_PyMem_GlobalAllocatorSet;
 }
 
+void
+_PyMem_SetupThreadAllocator(void)
+{
+    if (/*_Py_Freethreaded &&*/ !allocator_set)
+        allocator_set = &_PyMem_GlobalAllocatorSet;
+}
+
 #define _PyMem_Raw   (get_current_allocator_set()->mem_raw)
 #define _PyMem       (get_current_allocator_set()->raw)
 #define _PyObject    (get_current_allocator_set()->object)

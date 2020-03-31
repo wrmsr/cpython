@@ -727,6 +727,7 @@ new_threadstate(PyInterpreterState *interp, int init)
     }
 
     _PyThreadState_OwnershipBlock = &tstate->ownership;
+    _PyMem_SetupThreadAllocator();
 
     if (init) {
         _PyThreadState_Init(runtime, tstate);
