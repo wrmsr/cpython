@@ -1287,6 +1287,14 @@ struct alloc_context _alloc_context = {
 
 static Py_ssize_t _Py_AllocatedBlocks = 0;
 
+#ifdef WITH_TRACK_ALLOCATED_BLOCKS
+#define INC_ALLOCATED_BLOCKS (++_Py_AllocatedBlocks)
+#define DEC_ALLOCATED_BLOCKS (--_Py_AllocatedBlocks)
+#else
+#define INC_ALLOCATED_BLOCKS
+#define DEC_ALLOCATED_BLOCKS
+#endif
+
 Py_ssize_t
 _Py_GetAllocatedBlocks(void)
 {
@@ -1701,13 +1709,13 @@ _PyObject_Malloc(void *ctx, size_t nbytes)
 {
     void* ptr = pymalloc_alloc(ctx, nbytes);
     if (ptr != NULL) {
-        _Py_AllocatedBlocks++;
+        INC_ALLOCATED_BLOCKS;
         return ptr;
     }
 
     ptr = PyMem_RawMalloc(nbytes);
     if (ptr != NULL) {
-        _Py_AllocatedBlocks++;
+        INC_ALLOCATED_BLOCKS;
     }
     return ptr;
 }
@@ -1722,13 +1730,13 @@ _PyObject_Calloc(void *ctx, size_t nelem, size_t elsize)
     void *ptr = pymalloc_alloc(ctx, nbytes);
     if (ptr != NULL) {
         memset(ptr, 0, nbytes);
-        _Py_AllocatedBlocks++;
+        INC_ALLOCATED_BLOCKS;
         return ptr;
     }
 
     ptr = PyMem_RawCalloc(nelem, elsize);
     if (ptr != NULL) {
-        _Py_AllocatedBlocks++;
+        INC_ALLOCATED_BLOCKS;
     }
     return ptr;
 }
@@ -1973,7 +1981,7 @@ _PyObject_Free(void *ctx, void *p)
         return;
     }
 
-    _Py_AllocatedBlocks--;
+    DEC_ALLOCATED_BLOCKS;
     if (!pymalloc_free(ctx, p)) {
         /* pymalloc didn't allocate this address */
         PyMem_RawFree(p);
