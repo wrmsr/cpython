@@ -202,9 +202,9 @@ share_or_pin_obj(struct _gc_runtime_state *state, PyObject *op)
 }
 
 static int
-freethread_enable_traverse(PyObject *op, struct _gc_runtime_state *state)
+freethread_enable_traverse(PyObject *op, void *state)
 {
-    share_or_pin_obj(state, op);
+    share_or_pin_obj((struct _gc_runtime_state *) state, op);
     return 0;
 }
 
@@ -225,11 +225,10 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
     for (int i = 0; i < NUM_GENERATIONS; i++) {
         PyGC_Head *gc;
         PyGC_Head *gc_list = GEN_HEAD(state, i);
-        for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
-
+        for (gc = GC_NEXT(gc_list); gc != gc_list; gc = GC_NEXT(gc)) {
             PyObject *op = FROM_GC(gc);
             share_or_pin_obj(state, op);
-            Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, state);
+            Py_TYPE(op)->tp_traverse(op, freethread_enable_traverse, state);
         }
     }
 }
