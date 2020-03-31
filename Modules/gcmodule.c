@@ -215,7 +215,7 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
     const size_t num_shared_refcnts = (1024 * 1024) / sizeof(struct _gc_shared_refcnt);
     state->num_shared_refcnts = num_shared_refcnts;
 
-    for (int i = 0; i < num_shared_refcnts; ++i) {
+    for (size_t i = 0; i < num_shared_refcnts; ++i) {
         state->shared_refcnts[i].obj = &state->shared_refcnts[i+1].obj;
         state->shared_refcnts[i].refcnt = 0;
     }
