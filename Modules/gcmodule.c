@@ -226,6 +226,7 @@ _PyGC_EnableFreethreading(struct _gc_runtime_state *state)
         PyGC_Head *gc;
         PyGC_Head *gc_list = GEN_HEAD(state, i);
         for (gc = gc_list->_gc_next; gc != gc_list; gc = gc->_gc_next) {
+
             PyObject *op = FROM_GC(gc);
             share_or_pin_obj(state, op);
             Py_TYPE(op)->tp_traverse(op, (traverseproc) freethread_enable_traverse, state);

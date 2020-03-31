@@ -558,6 +558,7 @@ static _PyObject_ListPage *
 pyobject_listpage_new(void) {
     _PyObject_ListPage *page;
     page = PyMem_RawMalloc(1024 * 1024);
+    page->next = NULL;
     page->capacity = ((1024 * 1024) - sizeof(_PyObject_ListPage)) / sizeof(PyObject *);
     page->count = 0;
     return page;
