@@ -184,6 +184,7 @@ share_obj(struct _gc_runtime_state *state, PyObject *op)
 
     state->free_shared_refcnt = shared->obj;
     shared->obj = op;
+    shared->refcnt = Py_TREFCNT(op)->owned.refcnt;
 
     Py_refcnt_idx_t idx = get_shared_refcnt_idx(state, shared);
     Py_TREFCNT(op)->owned.owner_id = Py_SHARED_OWNER_ID;
