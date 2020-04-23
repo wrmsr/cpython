@@ -1266,6 +1266,19 @@ sys_get_asyncgen_hooks_impl(PyObject *module)
 
 
 static PyObject *
+sys_cbreak(PyObject *self, PyObject *args)
+{
+    Py_RETURN_NONE;
+}
+
+PyDoc_STRVAR(cbreak_doc,
+"cbreak()\n\
+\n\
+C breakpoint placeholder."
+);
+
+
+static PyObject *
 sys_freethread_enable(PyObject *self, PyObject *args)
 {
     if (_Py_Freethreaded)
@@ -1976,6 +1989,8 @@ static PyMethodDef sys_methods[] = {
     SYS_GET_COROUTINE_ORIGIN_TRACKING_DEPTH_METHODDEF
     {"set_asyncgen_hooks", (PyCFunction)(void(*)(void))sys_set_asyncgen_hooks,
      METH_VARARGS | METH_KEYWORDS, set_asyncgen_hooks_doc},
+    {"cbreak", sys_cbreak, METH_NOARGS,
+     cbreak_doc},
     {"freethread_enable", sys_freethread_enable, METH_NOARGS,
      freethread_enable_doc},
     {"freethread_enabled", sys_freethread_enabled, METH_NOARGS,
