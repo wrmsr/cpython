@@ -41,15 +41,11 @@ class O(Marker):
     pass
 
 
-print('ready')
-input()
+assert isinstance(M, M)
+assert issubclass(M, M)
 
-
-# assert isinstance(M, M)
-# assert issubclass(M, M)
-
-# assert isinstance(O, O)
-# assert issubclass(O, O)
+assert isinstance(O, O)
+assert issubclass(O, O)
 
 assert not isinstance(M, O)
 assert not issubclass(M, O)
