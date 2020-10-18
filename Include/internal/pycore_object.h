@@ -13,6 +13,8 @@ extern "C" {
 PyAPI_FUNC(int) _PyType_CheckConsistency(PyTypeObject *type);
 PyAPI_FUNC(int) _PyDict_CheckConsistency(PyObject *mp, int check_content);
 
+PyAPI_FUNC(PyObject *) _PyObject_InitABC(PyObject *self);
+
 /* Tell the GC to track this object.
  *
  * NB: While the object is tracked by the collector, it must be safe to call the

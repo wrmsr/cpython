@@ -378,18 +378,8 @@ error:
     return ret;
 }
 
-/*[clinic input]
-_abc._abc_init
-
-    self: object
-    /
-
-Internal ABC helper for class set-up. Should be never used outside abc module.
-[clinic start generated code]*/
-
-static PyObject *
-_abc__abc_init(PyObject *module, PyObject *self)
-/*[clinic end generated code: output=594757375714cda1 input=8d7fe470ff77f029]*/
+PyObject *
+_PyObject_InitABC(PyObject *self)
 {
     PyObject *data;
     if (compute_abstract_methods(self) < 0) {
@@ -407,6 +397,22 @@ _abc__abc_init(PyObject *module, PyObject *self)
     }
     Py_DECREF(data);
     Py_RETURN_NONE;
+}
+
+/*[clinic input]
+_abc._abc_init
+
+    self: object
+    /
+
+Internal ABC helper for class set-up. Should be never used outside abc module.
+[clinic start generated code]*/
+
+static PyObject *
+_abc__abc_init(PyObject *module, PyObject *self)
+/*[clinic end generated code: output=594757375714cda1 input=8d7fe470ff77f029]*/
+{
+    return _PyObject_InitABC(self);
 }
 
 /*[clinic input]

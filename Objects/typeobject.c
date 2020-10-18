@@ -2823,6 +2823,11 @@ type_new(PyTypeObject *metatype, PyObject *args, PyObject *kwds)
     if (set_names(type) < 0)
         goto error;
 
+//    tmp = _PyObject_InitABC((PyObject *) type);
+//    if (tmp == NULL && PyErr_Occurred()) {
+//        goto error;
+//    }
+
     if (init_subclass(type, kwds) < 0)
         goto error;
 
